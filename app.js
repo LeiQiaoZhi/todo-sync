@@ -1,8 +1,8 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 15:50";
-const APP_COMMIT_MESSAGE = "Restore due date picker interactions";
+const APP_VERSION = "2026-03-15 15:54";
+const APP_COMMIT_MESSAGE = "Fix section toggle runtime error";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 
 const state = {
@@ -426,15 +426,6 @@ function syncSectionVisibility(shouldAnimate) {
 function animateSectionVisibility(list, shouldExpand) {
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (reduceMotion) {
-    list.hidden = !shouldExpand;
-    list.dataset.expanded = String(shouldExpand);
-    list.style.removeProperty("height");
-    list.style.removeProperty("opacity");
-    list.style.removeProperty("overflow");
-    return;
-  }
-
-  if (contentHeight === 0) {
     list.hidden = !shouldExpand;
     list.dataset.expanded = String(shouldExpand);
     list.style.removeProperty("height");
