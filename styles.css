@@ -408,12 +408,17 @@ button:disabled {
 
 .inline-date-editor {
   flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
 }
 
 .inline-date-input {
+  height: var(--meta-chip-h);
   min-height: var(--meta-chip-h);
-  padding: 0.28rem 0.56rem;
+  padding: 0.2rem 0.56rem;
   border-radius: 999px;
+  font-size: var(--meta-chip-text);
+  line-height: 1;
 }
 
 .due-label {

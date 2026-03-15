@@ -1,8 +1,8 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 16:14";
-const APP_COMMIT_MESSAGE = "Use inline date editors";
+const APP_VERSION = "2026-03-15 16:17";
+const APP_COMMIT_MESSAGE = "Match inline date control height";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 
 const state = {
