@@ -1,8 +1,8 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 15:46";
-const APP_COMMIT_MESSAGE = "Soften delete button emphasis";
+const APP_VERSION = "2026-03-15 15:50";
+const APP_COMMIT_MESSAGE = "Restore due date picker interactions";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 
 const state = {
@@ -111,6 +111,14 @@ function initialize() {
     const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
     applyTheme(nextTheme);
     localStorage.setItem(THEME_KEY, nextTheme);
+  });
+
+  elements.todoDateField.addEventListener("click", (event) => {
+    if (event.target === elements.todoDateInput) {
+      return;
+    }
+
+    openDatePicker(elements.todoDateInput);
   });
 
   elements.clearTodoDateButton.addEventListener("click", () => {
@@ -268,6 +276,16 @@ function updateEntryDateControl() {
   elements.clearTodoDateButton.hidden = !elements.todoDateInput.value;
 }
 
+function openDatePicker(input) {
+  if (typeof input.showPicker === "function") {
+    input.showPicker();
+    return;
+  }
+
+  input.focus();
+  input.click();
+}
+
 function toggleSection(section) {
   state.collapsedSections[section] = !state.collapsedSections[section];
   syncSectionVisibility(true);
@@ -302,6 +320,14 @@ function renderTodos() {
       dueLabel.textContent = formatDueDate(todo.due_date);
       dueField.classList.toggle("has-date", Boolean(todo.due_date));
       clearDueButton.hidden = !todo.due_date;
+
+      dueField.addEventListener("click", (event) => {
+        if (event.target === dueDateInput) {
+          return;
+        }
+
+        openDatePicker(dueDateInput);
+      });
 
       statusButtons.forEach((button) => {
         const nextStatus = button.dataset.status;
