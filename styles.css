@@ -307,6 +307,16 @@ button:disabled {
   border: 1px solid rgba(73, 55, 34, 0.08);
 }
 
+.sync-button {
+  width: 2rem;
+  height: 2rem;
+  min-width: 2rem;
+  background: rgba(46, 36, 24, 0.05);
+  color: var(--muted);
+  border: 1px solid rgba(73, 55, 34, 0.08);
+  font-size: 0.95rem;
+}
+
 .list-meta {
   justify-content: space-between;
   margin-top: 0.7rem;
