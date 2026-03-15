@@ -1,8 +1,8 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 14:58";
-const APP_COMMIT_MESSAGE = "Split tasks into three sections";
+const APP_VERSION = "2026-03-15 15:02";
+const APP_COMMIT_MESSAGE = "Accent task sections and move done chevron";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 
 const state = {

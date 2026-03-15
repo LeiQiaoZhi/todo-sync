@@ -20,6 +20,9 @@
   --space-4: 1rem;
   --control-h: 2.5rem;
   --icon-h: 2.1rem;
+  --progress-accent: #4f86d9;
+  --backlog-accent: #b57a42;
+  --done-accent: #4d9a68;
 }
 
 :root[data-theme="dark"] {
@@ -151,6 +154,7 @@ h2 {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
+  padding: 0.1rem 0 0.15rem;
 }
 
 .todo-group-header,
@@ -159,6 +163,22 @@ h2 {
   align-items: center;
   justify-content: space-between;
   gap: var(--space-2);
+}
+
+.todo-group-progress .todo-group-header h2,
+.todo-group-progress .group-count {
+  color: var(--progress-accent);
+}
+
+.todo-group-backlog .todo-group-header h2,
+.todo-group-backlog .group-count {
+  color: var(--backlog-accent);
+}
+
+.todo-group-done .done-toggle span,
+.todo-group-done .group-count,
+.todo-group-done .done-chevron {
+  color: var(--done-accent);
 }
 
 .todo-group-header h2,
@@ -183,16 +203,34 @@ h2 {
   font-weight: 700;
 }
 
+.todo-group-progress .group-count {
+  background: color-mix(in srgb, var(--progress-accent) 14%, transparent);
+}
+
+.todo-group-backlog .group-count {
+  background: color-mix(in srgb, var(--backlog-accent) 14%, transparent);
+}
+
+.todo-group-done .group-count {
+  background: color-mix(in srgb, var(--done-accent) 14%, transparent);
+}
+
 .done-toggle {
   padding: 0;
   background: transparent;
   color: inherit;
 }
 
-.done-toggle-meta {
+.done-toggle-title {
   display: flex;
   align-items: center;
   gap: 0.45rem;
+}
+
+.done-toggle-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
 }
 
 .done-chevron {
