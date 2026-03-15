@@ -1,8 +1,8 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 14:28";
-const APP_COMMIT_MESSAGE = "Add theme toggle and softer dark mode";
+const APP_VERSION = "2026-03-15 14:32";
+const APP_COMMIT_MESSAGE = "Unify header icon buttons";
 
 const state = {
   config: loadSavedConfig(),

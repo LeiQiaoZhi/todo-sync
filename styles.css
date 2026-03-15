@@ -261,22 +261,19 @@ button:disabled {
   border: 1px solid color-mix(in srgb, var(--text) 10%, transparent);
 }
 
-.settings-toggle {
+.topbar-icon-button {
   flex: 0 0 auto;
   width: var(--icon-h);
   height: var(--icon-h);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   padding: 0;
-  border-radius: 999px;
   background: color-mix(in srgb, var(--text) 6%, transparent);
-  color: var(--muted);
+  color: var(--text);
   border: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
-  font-size: 0.95rem;
+  font-size: 0.92rem;
+  line-height: 1;
 }
 
-.settings-toggle:hover {
+.topbar-icon-button:hover {
   background: color-mix(in srgb, var(--text) 10%, transparent);
   color: var(--text);
 }
@@ -325,21 +322,11 @@ button:disabled {
 }
 
 .sync-button {
-  width: var(--icon-h);
-  height: var(--icon-h);
-  min-width: var(--icon-h);
-  background: color-mix(in srgb, var(--text) 5%, transparent);
-  color: var(--muted);
-  border: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
+  font-size: 0.96rem;
 }
 
 .theme-button {
-  width: var(--icon-h);
-  height: var(--icon-h);
-  min-width: var(--icon-h);
-  background: color-mix(in srgb, var(--text) 5%, transparent);
-  color: var(--muted);
-  border: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
+  font-size: 0.9rem;
 }
 
 .todo-list {
