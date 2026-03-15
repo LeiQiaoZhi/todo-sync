@@ -1,8 +1,8 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 15:06";
-const APP_COMMIT_MESSAGE = "Make all sections foldable";
+const APP_VERSION = "2026-03-15 15:12";
+const APP_COMMIT_MESSAGE = "Make mobile date picker obvious";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 
 const state = {
@@ -37,6 +37,7 @@ const elements = {
   toggleThemeButton: document.getElementById("toggleThemeButton"),
   todoForm: document.getElementById("todoForm"),
   todoInput: document.getElementById("todoInput"),
+  todoDateButton: document.getElementById("todoDateButton"),
   todoDateInput: document.getElementById("todoDateInput"),
   clearTodoDateButton: document.getElementById("clearTodoDateButton"),
   refreshButton: document.getElementById("refreshButton"),
@@ -108,13 +109,17 @@ function initialize() {
     localStorage.setItem(THEME_KEY, nextTheme);
   });
 
+  elements.todoDateButton.addEventListener("click", () => {
+    openDatePicker(elements.todoDateInput);
+  });
+
   elements.clearTodoDateButton.addEventListener("click", () => {
     elements.todoDateInput.value = "";
-    updateEntryDateClearButton();
+    updateEntryDateControl();
   });
 
   elements.todoDateInput.addEventListener("input", () => {
-    updateEntryDateClearButton();
+    updateEntryDateControl();
   });
 
   elements.todoForm.addEventListener("submit", (event) => {
@@ -138,7 +143,7 @@ function initialize() {
 
     elements.todoInput.value = "";
     elements.todoDateInput.value = "";
-    updateEntryDateClearButton();
+    updateEntryDateControl();
     void updateTodos(nextTodos, `Add todo: ${truncateCommitText(text)}`);
   });
 
@@ -148,7 +153,7 @@ function initialize() {
     setStatus("Add your GitHub settings to connect this app.", "idle");
   }
 
-  updateEntryDateClearButton();
+  updateEntryDateControl();
 }
 
 function loadThemePreference() {
@@ -256,8 +261,21 @@ function updateSettingsToggleLabel() {
   elements.toggleSettingsButton.setAttribute("title", label);
 }
 
-function updateEntryDateClearButton() {
+function updateEntryDateControl() {
+  const hasDate = Boolean(elements.todoDateInput.value);
+  elements.todoDateButton.textContent = hasDate ? formatDueDate(elements.todoDateInput.value) : "Due date";
+  elements.todoDateButton.classList.toggle("has-date", hasDate);
   elements.clearTodoDateButton.hidden = !elements.todoDateInput.value;
+}
+
+function openDatePicker(input) {
+  if (typeof input.showPicker === "function") {
+    input.showPicker();
+    return;
+  }
+
+  input.focus();
+  input.click();
 }
 
 function toggleSection(section) {
