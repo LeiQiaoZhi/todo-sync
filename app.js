@@ -1,7 +1,7 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 14:04";
-const APP_COMMIT_MESSAGE = "Merge top bars into one";
+const APP_VERSION = "2026-03-15 14:10";
+const APP_COMMIT_MESSAGE = "Polish spacing and sizing";
 
 const state = {
   config: loadSavedConfig(),
