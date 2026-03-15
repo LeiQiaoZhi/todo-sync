@@ -401,17 +401,6 @@ button:disabled {
   align-items: center;
 }
 
-.entry-date-button {
-  width: 9.5rem;
-  justify-content: flex-start;
-}
-
-.inline-date-editor {
-  flex: 0 0 auto;
-  display: inline-flex;
-  align-items: center;
-}
-
 .inline-date-input {
   height: var(--meta-chip-h);
   min-height: var(--meta-chip-h);
@@ -421,20 +410,9 @@ button:disabled {
   line-height: 1;
 }
 
-.due-label {
-  min-width: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.clear-date-button {
-  width: var(--icon-h);
-  height: var(--icon-h);
-  min-width: var(--icon-h);
-  background: color-mix(in srgb, var(--text) 5%, transparent);
-  color: var(--muted);
-  border: 1px solid color-mix(in srgb, var(--text) 6%, transparent);
+.entry-date-input,
+.due-date-widget {
+  width: 9.5rem;
 }
 
 .sync-button {
@@ -544,27 +522,6 @@ button:disabled {
 .status-option[data-status="done"].active {
   background: color-mix(in srgb, var(--done-accent) 16%, transparent);
   color: var(--done-accent);
-}
-
-.due-button {
-  min-height: var(--meta-chip-h);
-  padding: 0.3rem 0.68rem;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--text) 6%, transparent);
-  color: var(--muted);
-  font-size: var(--meta-chip-text);
-  font-weight: 700;
-  border: 1px solid color-mix(in srgb, var(--text) 6%, transparent);
-}
-
-.due-button.has-date {
-  background: color-mix(in srgb, var(--primary) 16%, transparent);
-  color: var(--primary-strong);
-}
-
-.due-field {
-  flex: 0 0 auto;
-  justify-content: flex-start;
 }
 
 .icon-button {
@@ -687,9 +644,8 @@ button:disabled {
     width: 100%;
   }
 
-  .entry-date-button,
-  .entry-date-editor,
-  .due-field {
+  .entry-date-input,
+  .due-date-widget {
     width: 100%;
   }
 

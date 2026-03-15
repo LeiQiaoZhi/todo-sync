@@ -3,21 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GitHub Todo Sync 2026-03-15 16:17 | Match inline date control height</title>
+    <title>GitHub Todo Sync 2026-03-15 16:22 | Simplify to inline date widgets</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=2026-03-15-1617" />
+    <link rel="stylesheet" href="styles.css?v=2026-03-15-1622" />
   </head>
   <body>
     <main class="app-shell">
       <section class="hero-card">
         <div class="topbar-main">
           <p id="buildVersion" class="build-version">
-            Version 2026-03-15 16:17 | Match inline date control height
+            Version 2026-03-15 16:22 | Simplify to inline date widgets
           </p>
           <p id="statusText" class="status-text">Add your GitHub settings to connect this app.</p>
         </div>
@@ -104,21 +104,7 @@
             autocomplete="off"
           />
           <div class="todo-entry-side">
-            <button id="todoDateButton" class="due-button entry-date-button" type="button" aria-label="Set due date">
-              <span id="todoDateLabel" class="due-label">Due date</span>
-            </button>
-            <div id="todoDateEditor" class="inline-date-editor entry-date-editor" hidden>
-              <input id="todoDateInput" class="date-input inline-date-input" type="date" aria-label="Due date" />
-            </div>
-            <button
-              id="clearTodoDateButton"
-              class="icon-button clear-date-button"
-              type="button"
-              aria-label="Clear due date"
-              hidden
-            >
-              ×
-            </button>
+            <input id="todoDateInput" class="date-input inline-date-input entry-date-input" type="date" aria-label="Due date" />
           </div>
           <button class="primary-button" type="submit">Add Todo</button>
         </form>
@@ -174,13 +160,7 @@
               <button class="status-option" data-status="backlog" type="button">Backlog</button>
               <button class="status-option" data-status="done" type="button">Done</button>
             </div>
-            <button class="due-button due-field" type="button">
-              <span class="due-label">Set date</span>
-            </button>
-            <div class="inline-date-editor due-editor" hidden>
-              <input class="due-date-input date-input inline-date-input" type="date" aria-label="Edit due date" />
-            </div>
-            <button class="icon-button clear-due-button" type="button" aria-label="Clear due date" hidden>×</button>
+            <input class="due-date-input date-input inline-date-input due-date-widget" type="date" aria-label="Edit due date" />
           </div>
         </div>
         <div class="todo-actions">
@@ -189,6 +169,6 @@
       </li>
     </template>
 
-    <script src="app.js?v=2026-03-15-1617"></script>
+    <script src="app.js?v=2026-03-15-1622"></script>
   </body>
 </html>
