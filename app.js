@@ -1,7 +1,7 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 13:30";
-const APP_COMMIT_MESSAGE = "Tighten header layout";
+const APP_VERSION = "2026-03-15 13:41";
+const APP_COMMIT_MESSAGE = "Add due dates and smart sorting";
 
 const state = {
   config: loadSavedConfig(),
@@ -29,6 +29,8 @@ const elements = {
   syncBadge: document.getElementById("syncBadge"),
   todoForm: document.getElementById("todoForm"),
   todoInput: document.getElementById("todoInput"),
+  todoDateInput: document.getElementById("todoDateInput"),
+  clearTodoDateButton: document.getElementById("clearTodoDateButton"),
   todoCount: document.getElementById("todoCount"),
   refreshButton: document.getElementById("refreshButton"),
   todoList: document.getElementById("todoList"),
@@ -80,6 +82,10 @@ function initialize() {
     void fetchTodosFromGitHub();
   });
 
+  elements.clearTodoDateButton.addEventListener("click", () => {
+    elements.todoDateInput.value = "";
+  });
+
   elements.todoForm.addEventListener("submit", (event) => {
     event.preventDefault();
     const text = elements.todoInput.value.trim();
@@ -93,11 +99,13 @@ function initialize() {
         text,
         completed: false,
         created_at: new Date().toISOString(),
+        due_date: elements.todoDateInput.value || null,
       },
       ...state.todos,
     ];
 
     elements.todoInput.value = "";
+    elements.todoDateInput.value = "";
     void updateTodos(nextTodos, `Add todo: ${truncateCommitText(text)}`);
   });
 
@@ -199,12 +207,17 @@ function renderTodos() {
     const checkbox = item.querySelector(".todo-checkbox");
     const text = item.querySelector(".todo-text");
     const deleteButton = item.querySelector(".delete-button");
-    const moveUpButton = item.querySelector(".move-up-button");
-    const moveDownButton = item.querySelector(".move-down-button");
+    const dueButton = item.querySelector(".due-button");
+    const dueEditor = item.querySelector(".due-editor");
+    const dueDateInput = item.querySelector(".due-date-input");
+    const clearDueButton = item.querySelector(".clear-due-button");
 
     checkbox.checked = todo.completed;
     text.textContent = todo.text;
     item.classList.toggle("completed", todo.completed);
+    dueDateInput.value = todo.due_date || "";
+    dueButton.textContent = formatDueDate(todo.due_date);
+    dueButton.classList.toggle("has-date", Boolean(todo.due_date));
 
     checkbox.addEventListener("change", () => {
       const nextTodos = state.todos.map((currentTodo) =>
@@ -220,15 +233,27 @@ function renderTodos() {
       void updateTodos(nextTodos, `Delete todo: ${truncateCommitText(todo.text)}`);
     });
 
-    moveUpButton.disabled = index === 0;
-    moveDownButton.disabled = index === state.todos.length - 1;
-
-    moveUpButton.addEventListener("click", () => {
-      void moveTodo(index, index - 1);
+    dueButton.addEventListener("click", () => {
+      dueEditor.toggleAttribute("hidden");
     });
 
-    moveDownButton.addEventListener("click", () => {
-      void moveTodo(index, index + 1);
+    dueDateInput.addEventListener("change", () => {
+      const nextTodos = state.todos.map((currentTodo) =>
+        currentTodo.id === todo.id
+          ? { ...currentTodo, due_date: dueDateInput.value || null }
+          : currentTodo
+      );
+      dueEditor.setAttribute("hidden", "");
+      void updateTodos(nextTodos, `Update due date: ${truncateCommitText(todo.text)}`);
+    });
+
+    clearDueButton.addEventListener("click", () => {
+      dueDateInput.value = "";
+      const nextTodos = state.todos.map((currentTodo) =>
+        currentTodo.id === todo.id ? { ...currentTodo, due_date: null } : currentTodo
+      );
+      dueEditor.setAttribute("hidden", "");
+      void updateTodos(nextTodos, `Clear due date: ${truncateCommitText(todo.text)}`);
     });
 
     elements.todoList.appendChild(item);
@@ -237,17 +262,6 @@ function renderTodos() {
   const count = state.todos.length;
   elements.todoCount.textContent = `${count} item${count === 1 ? "" : "s"}`;
   elements.emptyState.hidden = count > 0;
-}
-
-async function moveTodo(fromIndex, toIndex) {
-  if (toIndex < 0 || toIndex >= state.todos.length) {
-    return;
-  }
-
-  const nextTodos = [...state.todos];
-  const [movedTodo] = nextTodos.splice(fromIndex, 1);
-  nextTodos.splice(toIndex, 0, movedTodo);
-  await updateTodos(nextTodos, "Reorder todos");
 }
 
 async function fetchTodosFromGitHub(options = {}) {
@@ -285,8 +299,8 @@ async function fetchTodosFromGitHub(options = {}) {
       return;
     }
 
-    state.todos = parsed.todos;
-    state.lastSyncedTodos = cloneTodos(parsed.todos);
+    state.todos = sortTodos(parsed.todos);
+    state.lastSyncedTodos = cloneTodos(state.todos);
     state.currentSha = payload.sha || null;
     renderTodos();
     setStatus("Synced with GitHub.", "success");
@@ -303,7 +317,7 @@ async function updateTodos(nextTodos, commitMessage) {
     return;
   }
 
-  state.todos = cloneTodos(nextTodos);
+  state.todos = sortTodos(cloneTodos(nextTodos));
   state.hasUnsyncedChanges = true;
   state.pendingCommitMessage = commitMessage;
   renderTodos();
@@ -372,7 +386,7 @@ async function flushPendingSync(options = {}) {
 
   try {
     while (state.hasUnsyncedChanges) {
-      const snapshot = cloneTodos(state.todos);
+      const snapshot = sortTodos(cloneTodos(state.todos));
       const commitMessage = state.pendingCommitMessage || "Update todos";
       state.hasUnsyncedChanges = false;
 
@@ -428,6 +442,7 @@ function parseTodosFile(rawContent) {
       text: String(todo.text),
       completed: Boolean(todo.completed),
       created_at: String(todo.created_at || new Date().toISOString()),
+      due_date: normalizeDueDate(todo.due_date),
     })),
   };
 }
@@ -536,6 +551,72 @@ function cloneTodos(todos) {
 
 function todosEqual(left, right) {
   return JSON.stringify(left) === JSON.stringify(right);
+}
+
+function sortTodos(todos) {
+  return [...todos].sort((left, right) => {
+    const leftDue = left.due_date || "9999-12-31";
+    const rightDue = right.due_date || "9999-12-31";
+
+    if (leftDue !== rightDue) {
+      return leftDue.localeCompare(rightDue);
+    }
+
+    return left.created_at.localeCompare(right.created_at);
+  });
+}
+
+function normalizeDueDate(value) {
+  return /^\d{4}-\d{2}-\d{2}$/.test(String(value || "")) ? String(value) : null;
+}
+
+function formatDueDate(value) {
+  if (!value) {
+    return "Set date";
+  }
+
+  const deltaDays = getRelativeDayDistance(value);
+  if (deltaDays === 0) {
+    return "Today";
+  }
+
+  if (deltaDays === 1) {
+    return "Tomorrow";
+  }
+
+  if (deltaDays > 1 && deltaDays <= 7) {
+    return `Next ${formatWeekday(value)}`;
+  }
+
+  if (deltaDays === -1) {
+    return "Yesterday";
+  }
+
+  return formatShortDate(value);
+}
+
+function getRelativeDayDistance(value) {
+  const target = createLocalDate(value);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const millisecondsPerDay = 24 * 60 * 60 * 1000;
+  return Math.round((target.getTime() - today.getTime()) / millisecondsPerDay);
+}
+
+function createLocalDate(value) {
+  const [year, month, day] = value.split("-").map(Number);
+  return new Date(year, month - 1, day);
+}
+
+function formatWeekday(value) {
+  return createLocalDate(value).toLocaleDateString(undefined, { weekday: "short" });
+}
+
+function formatShortDate(value) {
+  return createLocalDate(value).toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+  });
 }
 
 function formatGitHubError(error, isStartup) {
