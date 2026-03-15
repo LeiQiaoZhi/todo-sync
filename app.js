@@ -1,8 +1,8 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 16:22";
-const APP_COMMIT_MESSAGE = "Simplify to inline date widgets";
+const APP_VERSION = "2026-03-15 16:28";
+const APP_COMMIT_MESSAGE = "Add friendly labels to date widgets";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 
 const state = {
@@ -38,6 +38,7 @@ const elements = {
   todoForm: document.getElementById("todoForm"),
   todoInput: document.getElementById("todoInput"),
   todoDateInput: document.getElementById("todoDateInput"),
+  todoDateMeta: document.getElementById("todoDateMeta"),
   refreshButton: document.getElementById("refreshButton"),
   progressList: document.getElementById("progressList"),
   backlogList: document.getElementById("backlogList"),
@@ -107,6 +108,10 @@ function initialize() {
     localStorage.setItem(THEME_KEY, nextTheme);
   });
 
+  elements.todoDateInput.addEventListener("input", () => {
+    updateEntryDateMeta();
+  });
+
   elements.todoForm.addEventListener("submit", (event) => {
     event.preventDefault();
     const text = elements.todoInput.value.trim();
@@ -128,6 +133,7 @@ function initialize() {
 
     elements.todoInput.value = "";
     elements.todoDateInput.value = "";
+    updateEntryDateMeta();
     void updateTodos(nextTodos, `Add todo: ${truncateCommitText(text)}`);
   });
 
@@ -137,6 +143,20 @@ function initialize() {
     setStatus("Add your GitHub settings to connect this app.", "idle");
   }
 
+  updateEntryDateMeta();
+
+}
+
+function updateEntryDateMeta() {
+  const value = elements.todoDateInput.value;
+  if (!value) {
+    elements.todoDateMeta.hidden = true;
+    elements.todoDateMeta.textContent = "";
+    return;
+  }
+
+  elements.todoDateMeta.hidden = false;
+  elements.todoDateMeta.textContent = formatDueDate(value);
 }
 
 function loadThemePreference() {
@@ -266,12 +286,15 @@ function renderTodos() {
       const text = item.querySelector(".todo-text");
       const deleteButton = item.querySelector(".delete-button");
       const dueDateInput = item.querySelector(".due-date-input");
+      const dueDateMeta = item.querySelector(".due-date-meta");
       const statusButtons = item.querySelectorAll(".status-option");
 
       item.style.viewTransitionName = getTodoTransitionName(todo.id);
       text.textContent = todo.text;
       item.classList.toggle("completed", todo.status === "done");
       dueDateInput.value = todo.due_date || "";
+      dueDateMeta.hidden = !todo.due_date;
+      dueDateMeta.textContent = todo.due_date ? formatDueDate(todo.due_date) : "";
 
       statusButtons.forEach((button) => {
         const nextStatus = button.dataset.status;
@@ -296,6 +319,8 @@ function renderTodos() {
       });
 
       dueDateInput.addEventListener("input", () => {
+        dueDateMeta.hidden = !dueDateInput.value;
+        dueDateMeta.textContent = dueDateInput.value ? formatDueDate(dueDateInput.value) : "";
         const nextTodos = state.todos.map((currentTodo) =>
           currentTodo.id === todo.id ? { ...currentTodo, due_date: dueDateInput.value || null } : currentTodo
         );

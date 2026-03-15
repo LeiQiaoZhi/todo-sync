@@ -399,11 +399,14 @@ button:disabled {
   display: flex;
   gap: var(--space-2);
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .inline-date-input {
+  display: block;
   height: var(--meta-chip-h);
   min-height: var(--meta-chip-h);
+  max-height: var(--meta-chip-h);
   padding: 0.2rem 0.56rem;
   border-radius: 999px;
   font-size: var(--meta-chip-text);
@@ -413,6 +416,15 @@ button:disabled {
 .entry-date-input,
 .due-date-widget {
   width: 9.5rem;
+  flex: 0 0 auto;
+}
+
+.date-meta-label {
+  font-size: 0.72rem;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .sync-button {
