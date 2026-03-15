@@ -1,8 +1,8 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 15:24";
-const APP_COMMIT_MESSAGE = "Open due date picker on first tap";
+const APP_VERSION = "2026-03-15 15:27";
+const APP_COMMIT_MESSAGE = "Match section control to section colors";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 
 const state = {

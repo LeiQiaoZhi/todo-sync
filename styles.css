@@ -522,6 +522,21 @@ button:disabled {
   color: var(--primary-strong);
 }
 
+.status-option[data-status="progress"].active {
+  background: color-mix(in srgb, var(--progress-accent) 16%, transparent);
+  color: var(--progress-accent);
+}
+
+.status-option[data-status="backlog"].active {
+  background: color-mix(in srgb, var(--backlog-accent) 16%, transparent);
+  color: var(--backlog-accent);
+}
+
+.status-option[data-status="done"].active {
+  background: color-mix(in srgb, var(--done-accent) 16%, transparent);
+  color: var(--done-accent);
+}
+
 .due-button {
   min-height: var(--meta-chip-h);
   padding: 0.3rem 0.68rem;
