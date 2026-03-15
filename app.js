@@ -1,7 +1,8 @@
 const STORAGE_KEY = "github-todo-sync-config";
+const THEME_KEY = "github-todo-theme";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 14:20";
-const APP_COMMIT_MESSAGE = "Flatten surfaces and add dark mode";
+const APP_VERSION = "2026-03-15 14:28";
+const APP_COMMIT_MESSAGE = "Add theme toggle and softer dark mode";
 
 const state = {
   config: loadSavedConfig(),
@@ -27,6 +28,7 @@ const elements = {
   buildVersion: document.getElementById("buildVersion"),
   statusText: document.getElementById("statusText"),
   syncBadge: document.getElementById("syncBadge"),
+  toggleThemeButton: document.getElementById("toggleThemeButton"),
   todoForm: document.getElementById("todoForm"),
   todoInput: document.getElementById("todoInput"),
   todoDateInput: document.getElementById("todoDateInput"),
@@ -40,6 +42,7 @@ const elements = {
 initialize();
 
 function initialize() {
+  applyTheme(loadThemePreference());
   populateSettingsForm();
   elements.buildVersion.textContent = `Version ${APP_VERSION} | ${APP_COMMIT_MESSAGE}`;
   updateConfigBadge();
@@ -79,6 +82,12 @@ function initialize() {
     }
 
     void fetchTodosFromGitHub();
+  });
+
+  elements.toggleThemeButton.addEventListener("click", () => {
+    const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+    applyTheme(nextTheme);
+    localStorage.setItem(THEME_KEY, nextTheme);
   });
 
   elements.clearTodoDateButton.addEventListener("click", () => {
@@ -121,6 +130,28 @@ function initialize() {
   }
 
   updateEntryDateClearButton();
+}
+
+function loadThemePreference() {
+  const savedTheme = localStorage.getItem(THEME_KEY);
+  if (savedTheme === "light" || savedTheme === "dark") {
+    return savedTheme;
+  }
+
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+
+function applyTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  elements.toggleThemeButton.textContent = theme === "dark" ? "☀" : "◐";
+  elements.toggleThemeButton.setAttribute(
+    "aria-label",
+    theme === "dark" ? "Switch to light theme" : "Switch to dark theme"
+  );
+  elements.toggleThemeButton.setAttribute(
+    "title",
+    theme === "dark" ? "Switch to light theme" : "Switch to dark theme"
+  );
 }
 
 function emptyConfig() {

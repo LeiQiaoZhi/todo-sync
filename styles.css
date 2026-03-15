@@ -22,20 +22,18 @@
   --icon-h: 2.1rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #181613;
-    --surface: rgba(31, 28, 24, 0.9);
-    --surface-strong: #24201c;
-    --border: rgba(235, 225, 214, 0.1);
-    --text: #f2eadf;
-    --muted: #b8ab99;
-    --primary: #d07a48;
-    --primary-strong: #e0905f;
-    --success: #78bc8b;
-    --danger: #e07a66;
-    --shadow: 0 1px 2px rgba(0, 0, 0, 0.24);
-  }
+:root[data-theme="dark"] {
+  --bg: #23201d;
+  --surface: rgba(42, 38, 34, 0.94);
+  --surface-strong: #302b26;
+  --border: rgba(242, 234, 223, 0.1);
+  --text: #f3eadf;
+  --muted: #b8aa99;
+  --primary: #d48959;
+  --primary-strong: #e49a6a;
+  --success: #83c697;
+  --danger: #e48b78;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
 }
 
 * {
@@ -48,6 +46,7 @@ body {
   font-family: "Space Grotesk", sans-serif;
   color: var(--text);
   background: var(--bg);
+  transition: background-color 140ms ease, color 140ms ease;
 }
 
 button,
@@ -326,6 +325,15 @@ button:disabled {
 }
 
 .sync-button {
+  width: var(--icon-h);
+  height: var(--icon-h);
+  min-width: var(--icon-h);
+  background: color-mix(in srgb, var(--text) 5%, transparent);
+  color: var(--muted);
+  border: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
+}
+
+.theme-button {
   width: var(--icon-h);
   height: var(--icon-h);
   min-width: var(--icon-h);
