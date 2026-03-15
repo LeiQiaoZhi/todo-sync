@@ -1,8 +1,8 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 15:12";
-const APP_COMMIT_MESSAGE = "Make mobile date picker obvious";
+const APP_VERSION = "2026-03-15 15:15";
+const APP_COMMIT_MESSAGE = "Show exact date with relative labels";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 
 const state = {
@@ -710,24 +710,25 @@ function formatDueDate(value) {
     return "Set date";
   }
 
+  const shortDate = formatShortDate(value);
   const deltaDays = getRelativeDayDistance(value);
   if (deltaDays === 0) {
-    return "Today";
+    return `Today · ${shortDate}`;
   }
 
   if (deltaDays === 1) {
-    return "Tomorrow";
+    return `Tomorrow · ${shortDate}`;
   }
 
   if (deltaDays > 1 && deltaDays <= 7) {
-    return `Next ${formatWeekday(value)}`;
+    return `Next ${formatWeekday(value)} · ${shortDate}`;
   }
 
   if (deltaDays === -1) {
-    return "Yesterday";
+    return `Yesterday · ${shortDate}`;
   }
 
-  return formatShortDate(value);
+  return shortDate;
 }
 
 function getRelativeDayDistance(value) {
