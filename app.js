@@ -1,8 +1,8 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 14:37";
-const APP_COMMIT_MESSAGE = "Soften version line color";
+const APP_VERSION = "2026-03-15 14:40";
+const APP_COMMIT_MESSAGE = "Fix theme toggle icon styling";
 
 const state = {
   config: loadSavedConfig(),
@@ -143,7 +143,7 @@ function loadThemePreference() {
 
 function applyTheme(theme) {
   document.documentElement.dataset.theme = theme;
-  elements.toggleThemeButton.textContent = theme === "dark" ? "☀" : "◐";
+  elements.toggleThemeButton.textContent = theme === "dark" ? "☀" : "☾";
   elements.toggleThemeButton.setAttribute(
     "aria-label",
     theme === "dark" ? "Switch to light theme" : "Switch to dark theme"

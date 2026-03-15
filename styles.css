@@ -272,7 +272,7 @@ button:disabled {
   height: var(--icon-h);
   padding: 0;
   background: color-mix(in srgb, var(--text) 6%, transparent);
-  color: var(--text);
+  color: var(--muted);
   border: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
   font-size: 0.92rem;
   line-height: 1;
@@ -331,7 +331,7 @@ button:disabled {
 }
 
 .theme-button {
-  font-size: 0.9rem;
+  font-size: 0.88rem;
 }
 
 .todo-list {
