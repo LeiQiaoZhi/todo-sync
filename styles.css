@@ -404,9 +404,6 @@ button:disabled {
 
 .inline-date-input {
   display: block;
-  height: var(--meta-chip-h);
-  min-height: var(--meta-chip-h);
-  max-height: var(--meta-chip-h);
   padding: 0.2rem 0.56rem;
   border-radius: 999px;
   font-size: var(--meta-chip-text);
@@ -417,6 +414,20 @@ button:disabled {
 .due-date-widget {
   width: 9.5rem;
   flex: 0 0 auto;
+}
+
+.entry-date-input {
+  height: var(--control-h);
+  min-height: var(--control-h);
+  max-height: var(--control-h);
+  padding: 0.72rem 0.8rem;
+  font-size: 0.88rem;
+}
+
+.due-date-widget {
+  height: var(--meta-chip-h);
+  min-height: var(--meta-chip-h);
+  max-height: var(--meta-chip-h);
 }
 
 .date-meta-label {

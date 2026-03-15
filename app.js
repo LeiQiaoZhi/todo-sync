@@ -1,8 +1,8 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 16:28";
-const APP_COMMIT_MESSAGE = "Add friendly labels to date widgets";
+const APP_VERSION = "2026-03-15 16:31";
+const APP_COMMIT_MESSAGE = "Match composer date input height";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 
 const state = {
