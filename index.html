@@ -3,21 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GitHub Todo Sync 2026-03-15 15:59 | Remove section fold animation</title>
+    <title>GitHub Todo Sync 2026-03-15 16:07 | Use a shared date picker dialog</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=2026-03-15-1559" />
+    <link rel="stylesheet" href="styles.css?v=2026-03-15-1607" />
   </head>
   <body>
     <main class="app-shell">
       <section class="hero-card">
         <div class="topbar-main">
           <p id="buildVersion" class="build-version">
-            Version 2026-03-15 15:59 | Remove section fold animation
+            Version 2026-03-15 16:07 | Use a shared date picker dialog
           </p>
           <p id="statusText" class="status-text">Add your GitHub settings to connect this app.</p>
         </div>
@@ -104,10 +104,9 @@
             autocomplete="off"
           />
           <div class="todo-entry-side">
-            <label id="todoDateField" class="due-button date-field entry-date-field">
+            <button id="todoDateButton" class="due-button entry-date-button" type="button" aria-label="Set due date">
               <span id="todoDateLabel" class="due-label">Due date</span>
-              <input id="todoDateInput" class="date-input chip-date-input" type="date" aria-label="Due date" />
-            </label>
+            </button>
             <button
               id="clearTodoDateButton"
               class="icon-button clear-date-button"
@@ -172,10 +171,9 @@
               <button class="status-option" data-status="backlog" type="button">Backlog</button>
               <button class="status-option" data-status="done" type="button">Done</button>
             </div>
-            <label class="due-button date-field due-field">
+            <button class="due-button due-field" type="button">
               <span class="due-label">Set date</span>
-              <input class="due-date-input date-input chip-date-input" type="date" aria-label="Edit due date" />
-            </label>
+            </button>
             <button class="icon-button clear-due-button" type="button" aria-label="Clear due date" hidden>×</button>
           </div>
         </div>
@@ -185,6 +183,20 @@
       </li>
     </template>
 
-    <script src="app.js?v=2026-03-15-1559"></script>
+    <dialog id="datePickerDialog" class="date-dialog">
+      <form method="dialog" class="date-dialog-card">
+        <div class="date-dialog-header">
+          <p id="datePickerTitle" class="date-dialog-title">Choose due date</p>
+        </div>
+        <input id="datePickerInput" class="date-input date-dialog-input" type="date" aria-label="Choose due date" />
+        <div class="date-dialog-actions">
+          <button id="datePickerClearButton" class="ghost-button" type="button">Clear</button>
+          <button id="datePickerCancelButton" class="ghost-button" type="button">Cancel</button>
+          <button id="datePickerApplyButton" class="primary-button" type="button">Apply</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script src="app.js?v=2026-03-15-1607"></script>
   </body>
 </html>

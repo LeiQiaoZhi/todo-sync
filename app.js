@@ -1,8 +1,8 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 15:59";
-const APP_COMMIT_MESSAGE = "Remove section fold animation";
+const APP_VERSION = "2026-03-15 16:07";
+const APP_COMMIT_MESSAGE = "Use a shared date picker dialog";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 
 const state = {
@@ -14,6 +14,8 @@ const state = {
   isSyncing: false,
   hasUnsyncedChanges: false,
   pendingCommitMessage: "",
+  entryDueDate: "",
+  datePickerContext: null,
   collapsedSections: {
     progress: false,
     backlog: false,
@@ -37,9 +39,8 @@ const elements = {
   toggleThemeButton: document.getElementById("toggleThemeButton"),
   todoForm: document.getElementById("todoForm"),
   todoInput: document.getElementById("todoInput"),
-  todoDateField: document.getElementById("todoDateField"),
+  todoDateButton: document.getElementById("todoDateButton"),
   todoDateLabel: document.getElementById("todoDateLabel"),
-  todoDateInput: document.getElementById("todoDateInput"),
   clearTodoDateButton: document.getElementById("clearTodoDateButton"),
   refreshButton: document.getElementById("refreshButton"),
   progressList: document.getElementById("progressList"),
@@ -53,6 +54,12 @@ const elements = {
   doneToggleButton: document.getElementById("doneToggleButton"),
   emptyState: document.getElementById("emptyState"),
   todoItemTemplate: document.getElementById("todoItemTemplate"),
+  datePickerDialog: document.getElementById("datePickerDialog"),
+  datePickerTitle: document.getElementById("datePickerTitle"),
+  datePickerInput: document.getElementById("datePickerInput"),
+  datePickerClearButton: document.getElementById("datePickerClearButton"),
+  datePickerCancelButton: document.getElementById("datePickerCancelButton"),
+  datePickerApplyButton: document.getElementById("datePickerApplyButton"),
 };
 
 initialize();
@@ -110,21 +117,34 @@ function initialize() {
     localStorage.setItem(THEME_KEY, nextTheme);
   });
 
-  elements.todoDateField.addEventListener("click", (event) => {
-    if (event.target === elements.todoDateInput) {
-      return;
-    }
-
-    openDatePicker(elements.todoDateInput);
+  elements.todoDateButton.addEventListener("click", () => {
+    openDateDialog({
+      type: "entry",
+      value: state.entryDueDate,
+      title: "Choose due date",
+    });
   });
 
   elements.clearTodoDateButton.addEventListener("click", () => {
-    elements.todoDateInput.value = "";
+    state.entryDueDate = "";
     updateEntryDateControl();
   });
 
-  elements.todoDateInput.addEventListener("input", () => {
-    updateEntryDateControl();
+  elements.datePickerClearButton.addEventListener("click", () => {
+    elements.datePickerInput.value = "";
+  });
+
+  elements.datePickerCancelButton.addEventListener("click", () => {
+    closeDateDialog();
+  });
+
+  elements.datePickerApplyButton.addEventListener("click", () => {
+    void applyDateDialog();
+  });
+
+  elements.datePickerDialog.addEventListener("cancel", (event) => {
+    event.preventDefault();
+    closeDateDialog();
   });
 
   elements.todoForm.addEventListener("submit", (event) => {
@@ -141,13 +161,13 @@ function initialize() {
         status: "progress",
         completed: false,
         created_at: new Date().toISOString(),
-        due_date: elements.todoDateInput.value || null,
+        due_date: state.entryDueDate || null,
       },
       ...state.todos,
     ];
 
     elements.todoInput.value = "";
-    elements.todoDateInput.value = "";
+    state.entryDueDate = "";
     updateEntryDateControl();
     void updateTodos(nextTodos, `Add todo: ${truncateCommitText(text)}`);
   });
@@ -267,20 +287,53 @@ function updateSettingsToggleLabel() {
 }
 
 function updateEntryDateControl() {
-  const hasDate = Boolean(elements.todoDateInput.value);
-  elements.todoDateLabel.textContent = hasDate ? formatDueDate(elements.todoDateInput.value) : "Due date";
-  elements.todoDateField.classList.toggle("has-date", hasDate);
-  elements.clearTodoDateButton.hidden = !elements.todoDateInput.value;
+  const hasDate = Boolean(state.entryDueDate);
+  elements.todoDateLabel.textContent = hasDate ? formatDueDate(state.entryDueDate) : "Due date";
+  elements.todoDateButton.classList.toggle("has-date", hasDate);
+  elements.clearTodoDateButton.hidden = !state.entryDueDate;
 }
 
-function openDatePicker(input) {
-  if (typeof input.showPicker === "function") {
-    input.showPicker();
+function openDateDialog(context) {
+  state.datePickerContext = context;
+  elements.datePickerTitle.textContent = context.title;
+  elements.datePickerInput.value = context.value || "";
+  elements.datePickerDialog.showModal();
+  queueMicrotask(() => {
+    elements.datePickerInput.focus();
+    if (typeof elements.datePickerInput.showPicker === "function") {
+      elements.datePickerInput.showPicker();
+    }
+  });
+}
+
+function closeDateDialog() {
+  if (elements.datePickerDialog.open) {
+    elements.datePickerDialog.close();
+  }
+  state.datePickerContext = null;
+}
+
+async function applyDateDialog() {
+  if (!state.datePickerContext) {
+    closeDateDialog();
     return;
   }
 
-  input.focus();
-  input.click();
+  const nextValue = elements.datePickerInput.value || "";
+  const context = state.datePickerContext;
+  closeDateDialog();
+
+  if (context.type === "entry") {
+    state.entryDueDate = nextValue;
+    updateEntryDateControl();
+    return;
+  }
+
+  const nextTodos = state.todos.map((todo) =>
+    todo.id === context.todoId ? { ...todo, due_date: nextValue || null } : todo
+  );
+
+  await updateTodos(nextTodos, `${nextValue ? "Update due date" : "Clear due date"}: ${truncateCommitText(context.text)}`);
 }
 
 function toggleSection(section) {
@@ -306,24 +359,24 @@ function renderTodos() {
       const deleteButton = item.querySelector(".delete-button");
       const dueField = item.querySelector(".due-field");
       const dueLabel = item.querySelector(".due-label");
-      const dueDateInput = item.querySelector(".due-date-input");
       const clearDueButton = item.querySelector(".clear-due-button");
       const statusButtons = item.querySelectorAll(".status-option");
 
       item.style.viewTransitionName = getTodoTransitionName(todo.id);
       text.textContent = todo.text;
       item.classList.toggle("completed", todo.status === "done");
-      dueDateInput.value = todo.due_date || "";
       dueLabel.textContent = formatDueDate(todo.due_date);
       dueField.classList.toggle("has-date", Boolean(todo.due_date));
       clearDueButton.hidden = !todo.due_date;
 
-      dueField.addEventListener("click", (event) => {
-        if (event.target === dueDateInput) {
-          return;
-        }
-
-        openDatePicker(dueDateInput);
+      dueField.addEventListener("click", () => {
+        openDateDialog({
+          type: "todo",
+          todoId: todo.id,
+          text: todo.text,
+          value: todo.due_date || "",
+          title: "Choose due date",
+        });
       });
 
       statusButtons.forEach((button) => {
@@ -348,17 +401,7 @@ function renderTodos() {
         void updateTodos(nextTodos, `Delete todo: ${truncateCommitText(todo.text)}`);
       });
 
-      dueDateInput.addEventListener("change", () => {
-        const nextTodos = state.todos.map((currentTodo) =>
-          currentTodo.id === todo.id
-            ? { ...currentTodo, due_date: dueDateInput.value || null }
-            : currentTodo
-        );
-        void updateTodos(nextTodos, `Update due date: ${truncateCommitText(todo.text)}`);
-      });
-
       clearDueButton.addEventListener("click", () => {
-        dueDateInput.value = "";
         const nextTodos = state.todos.map((currentTodo) =>
           currentTodo.id === todo.id ? { ...currentTodo, due_date: null } : currentTodo
         );
