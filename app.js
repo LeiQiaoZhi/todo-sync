@@ -1,8 +1,8 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 15:56";
-const APP_COMMIT_MESSAGE = "Restrict delete hover target";
+const APP_VERSION = "2026-03-15 15:59";
+const APP_COMMIT_MESSAGE = "Remove section fold animation";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 
 const state = {
@@ -103,9 +103,6 @@ function initialize() {
   elements.progressToggleButton.addEventListener("click", () => toggleSection("progress"));
   elements.backlogToggleButton.addEventListener("click", () => toggleSection("backlog"));
   elements.doneToggleButton.addEventListener("click", () => toggleSection("done"));
-  elements.progressList.addEventListener("transitionend", handleSectionTransitionEnd);
-  elements.backlogList.addEventListener("transitionend", handleSectionTransitionEnd);
-  elements.doneList.addEventListener("transitionend", handleSectionTransitionEnd);
 
   elements.toggleThemeButton.addEventListener("click", () => {
     const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
@@ -288,7 +285,7 @@ function openDatePicker(input) {
 
 function toggleSection(section) {
   state.collapsedSections[section] = !state.collapsedSections[section];
-  syncSectionVisibility(true);
+  syncSectionVisibility();
 }
 
 function renderTodos() {
@@ -375,7 +372,7 @@ function renderTodos() {
   elements.progressCount.textContent = String(groupedTodos.progress.length);
   elements.backlogCount.textContent = String(groupedTodos.backlog.length);
   elements.doneCount.textContent = String(groupedTodos.done.length);
-  syncSectionVisibility(false);
+  syncSectionVisibility();
   elements.emptyState.hidden = state.todos.length > 0;
 }
 
@@ -403,95 +400,19 @@ function getToggleButton(status) {
   return elements.doneToggleButton;
 }
 
-function syncSectionVisibility(shouldAnimate) {
+function syncSectionVisibility() {
   TODO_STATUSES.forEach((status) => {
     const list = getListElement(status);
     const button = getToggleButton(status);
     const isCollapsed = state.collapsedSections[status];
 
     button.setAttribute("aria-expanded", String(!isCollapsed));
-
-    if (shouldAnimate) {
-      animateSectionVisibility(list, !isCollapsed);
-    } else {
-      list.hidden = isCollapsed;
-      list.dataset.expanded = String(!isCollapsed);
-      list.style.removeProperty("height");
-      list.style.removeProperty("opacity");
-      list.style.removeProperty("overflow");
-    }
-  });
-}
-
-function animateSectionVisibility(list, shouldExpand) {
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (reduceMotion) {
-    list.hidden = !shouldExpand;
-    list.dataset.expanded = String(shouldExpand);
+    list.hidden = isCollapsed;
+    list.dataset.expanded = String(!isCollapsed);
     list.style.removeProperty("height");
     list.style.removeProperty("opacity");
     list.style.removeProperty("overflow");
-    return;
-  }
-
-  list.getAnimations().forEach((animation) => animation.cancel());
-  list.style.overflow = "hidden";
-
-  if (shouldExpand) {
-    list.hidden = false;
-    list.dataset.expanded = "true";
-    const contentHeight = list.scrollHeight;
-
-    if (contentHeight === 0) {
-      list.style.removeProperty("height");
-      list.style.removeProperty("opacity");
-      list.style.removeProperty("overflow");
-      return;
-    }
-
-    list.style.height = "0px";
-    list.style.opacity = "0";
-    const targetHeight = `${contentHeight}px`;
-
-    requestAnimationFrame(() => {
-      list.style.height = targetHeight;
-      list.style.opacity = "1";
-    });
-  } else {
-    const contentHeight = list.scrollHeight;
-
-    if (contentHeight === 0) {
-      list.hidden = true;
-      list.dataset.expanded = "false";
-      list.style.removeProperty("height");
-      list.style.removeProperty("opacity");
-      list.style.removeProperty("overflow");
-      return;
-    }
-
-    const startHeight = `${contentHeight}px`;
-    list.dataset.expanded = "false";
-    list.style.height = startHeight;
-    list.style.opacity = "1";
-
-    requestAnimationFrame(() => {
-      list.style.height = "0px";
-      list.style.opacity = "0";
-    });
-  }
-}
-
-function handleSectionTransitionEnd(event) {
-  if (event.propertyName !== "height") {
-    return;
-  }
-
-  const list = event.currentTarget;
-  const isExpanded = list.dataset.expanded === "true";
-  list.hidden = !isExpanded;
-  list.style.removeProperty("height");
-  list.style.removeProperty("opacity");
-  list.style.removeProperty("overflow");
+  });
 }
 
 function withOptionalViewTransition(updateFn) {

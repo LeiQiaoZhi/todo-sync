@@ -458,8 +458,6 @@ button:disabled {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
-  transition: height 220ms ease, opacity 180ms ease;
-  transform-origin: top;
 }
 
 .todo-item {
