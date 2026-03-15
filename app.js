@@ -1,7 +1,7 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 13:12";
-const APP_COMMIT_MESSAGE = "Remove CORS-breaking cache headers";
+const APP_VERSION = "2026-03-15 13:14";
+const APP_COMMIT_MESSAGE = "Hide saved settings by default";
 
 const state = {
   config: loadSavedConfig(),
@@ -38,10 +38,12 @@ function initialize() {
   populateSettingsForm();
   elements.buildVersion.textContent = `Version ${APP_VERSION} | ${APP_COMMIT_MESSAGE}`;
   updateConfigBadge();
+  updateSettingsVisibility();
   renderTodos();
 
   elements.toggleSettingsButton.addEventListener("click", () => {
     elements.settingsPanel.toggleAttribute("hidden");
+    updateSettingsToggleLabel();
   });
 
   elements.settingsForm.addEventListener("submit", (event) => {
@@ -56,6 +58,7 @@ function initialize() {
     state.currentSha = null;
     populateSettingsForm();
     updateConfigBadge();
+    updateSettingsVisibility();
     setStatus("Saved settings cleared from this browser.", "idle");
     renderTodos();
   });
@@ -132,11 +135,12 @@ async function saveSettingsFromForm() {
   updateConfigBadge();
 
   if (!isConfigReady()) {
+    updateSettingsVisibility();
     setStatus("Please complete all GitHub settings.", "error");
     return;
   }
 
-  elements.settingsPanel.setAttribute("hidden", "");
+  updateSettingsVisibility();
   setStatus("Settings saved. Connecting to GitHub...", "idle");
   await fetchTodosFromGitHub();
 }
@@ -154,6 +158,27 @@ function updateConfigBadge() {
 function isConfigReady() {
   const { owner, repo, branch, token } = state.config;
   return Boolean(owner && repo && branch && token);
+}
+
+function updateSettingsVisibility() {
+  if (isConfigReady()) {
+    elements.settingsPanel.setAttribute("hidden", "");
+  } else {
+    elements.settingsPanel.removeAttribute("hidden");
+  }
+
+  updateSettingsToggleLabel();
+}
+
+function updateSettingsToggleLabel() {
+  const isHidden = elements.settingsPanel.hasAttribute("hidden");
+
+  if (!isConfigReady()) {
+    elements.toggleSettingsButton.textContent = isHidden ? "GitHub Settings" : "Hide Settings";
+    return;
+  }
+
+  elements.toggleSettingsButton.textContent = isHidden ? "Edit Settings" : "Hide Settings";
 }
 
 function renderTodos() {
