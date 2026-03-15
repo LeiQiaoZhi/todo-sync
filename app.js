@@ -1,8 +1,8 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 15:15";
-const APP_COMMIT_MESSAGE = "Show exact date with relative labels";
+const APP_VERSION = "2026-03-15 15:20";
+const APP_COMMIT_MESSAGE = "Add smooth section and task motion";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 
 const state = {
@@ -102,6 +102,9 @@ function initialize() {
   elements.progressToggleButton.addEventListener("click", () => toggleSection("progress"));
   elements.backlogToggleButton.addEventListener("click", () => toggleSection("backlog"));
   elements.doneToggleButton.addEventListener("click", () => toggleSection("done"));
+  elements.progressList.addEventListener("transitionend", handleSectionTransitionEnd);
+  elements.backlogList.addEventListener("transitionend", handleSectionTransitionEnd);
+  elements.doneList.addEventListener("transitionend", handleSectionTransitionEnd);
 
   elements.toggleThemeButton.addEventListener("click", () => {
     const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
@@ -280,7 +283,7 @@ function openDatePicker(input) {
 
 function toggleSection(section) {
   state.collapsedSections[section] = !state.collapsedSections[section];
-  renderTodos();
+  syncSectionVisibility(true);
 }
 
 function renderTodos() {
@@ -305,6 +308,7 @@ function renderTodos() {
       const clearDueButton = item.querySelector(".clear-due-button");
       const statusButtons = item.querySelectorAll(".status-option");
 
+      item.style.viewTransitionName = getTodoTransitionName(todo.id);
       text.textContent = todo.text;
       item.classList.toggle("completed", todo.status === "done");
       dueDateInput.value = todo.due_date || "";
@@ -363,12 +367,7 @@ function renderTodos() {
   elements.progressCount.textContent = String(groupedTodos.progress.length);
   elements.backlogCount.textContent = String(groupedTodos.backlog.length);
   elements.doneCount.textContent = String(groupedTodos.done.length);
-  elements.progressList.hidden = state.collapsedSections.progress;
-  elements.backlogList.hidden = state.collapsedSections.backlog;
-  elements.doneList.hidden = state.collapsedSections.done;
-  elements.progressToggleButton.setAttribute("aria-expanded", String(!state.collapsedSections.progress));
-  elements.backlogToggleButton.setAttribute("aria-expanded", String(!state.collapsedSections.backlog));
-  elements.doneToggleButton.setAttribute("aria-expanded", String(!state.collapsedSections.done));
+  syncSectionVisibility(false);
   elements.emptyState.hidden = state.todos.length > 0;
 }
 
@@ -382,6 +381,107 @@ function getListElement(status) {
   }
 
   return elements.doneList;
+}
+
+function getToggleButton(status) {
+  if (status === "progress") {
+    return elements.progressToggleButton;
+  }
+
+  if (status === "backlog") {
+    return elements.backlogToggleButton;
+  }
+
+  return elements.doneToggleButton;
+}
+
+function syncSectionVisibility(shouldAnimate) {
+  TODO_STATUSES.forEach((status) => {
+    const list = getListElement(status);
+    const button = getToggleButton(status);
+    const isCollapsed = state.collapsedSections[status];
+
+    button.setAttribute("aria-expanded", String(!isCollapsed));
+
+    if (shouldAnimate) {
+      animateSectionVisibility(list, !isCollapsed);
+    } else {
+      list.hidden = isCollapsed;
+      list.dataset.expanded = String(!isCollapsed);
+      list.style.removeProperty("height");
+      list.style.removeProperty("opacity");
+      list.style.removeProperty("overflow");
+    }
+  });
+}
+
+function animateSectionVisibility(list, shouldExpand) {
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduceMotion) {
+    list.hidden = !shouldExpand;
+    list.dataset.expanded = String(shouldExpand);
+    list.style.removeProperty("height");
+    list.style.removeProperty("opacity");
+    list.style.removeProperty("overflow");
+    return;
+  }
+
+  list.getAnimations().forEach((animation) => animation.cancel());
+  list.style.overflow = "hidden";
+
+  if (shouldExpand) {
+    list.hidden = false;
+    list.dataset.expanded = "true";
+    list.style.height = "0px";
+    list.style.opacity = "0";
+    const targetHeight = `${list.scrollHeight}px`;
+
+    requestAnimationFrame(() => {
+      list.style.height = targetHeight;
+      list.style.opacity = "1";
+    });
+  } else {
+    const startHeight = `${list.scrollHeight}px`;
+    list.dataset.expanded = "false";
+    list.style.height = startHeight;
+    list.style.opacity = "1";
+
+    requestAnimationFrame(() => {
+      list.style.height = "0px";
+      list.style.opacity = "0";
+    });
+  }
+}
+
+function handleSectionTransitionEnd(event) {
+  if (event.propertyName !== "height") {
+    return;
+  }
+
+  const list = event.currentTarget;
+  const isExpanded = list.dataset.expanded === "true";
+  list.hidden = !isExpanded;
+  list.style.removeProperty("height");
+  list.style.removeProperty("opacity");
+  list.style.removeProperty("overflow");
+}
+
+function withOptionalViewTransition(updateFn) {
+  const canTransition = typeof document.startViewTransition === "function";
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (!canTransition || reduceMotion) {
+    updateFn();
+    return;
+  }
+
+  document.startViewTransition(() => {
+    updateFn();
+  });
+}
+
+function getTodoTransitionName(id) {
+  return `todo-${String(id).replace(/[^a-zA-Z0-9_-]/g, "")}`;
 }
 
 function normalizeTodo(todo) {
@@ -454,10 +554,12 @@ async function updateTodos(nextTodos, commitMessage) {
     return;
   }
 
-  state.todos = normalizeTodos(nextTodos);
-  state.hasUnsyncedChanges = true;
-  state.pendingCommitMessage = commitMessage;
-  renderTodos();
+  withOptionalViewTransition(() => {
+    state.todos = normalizeTodos(nextTodos);
+    state.hasUnsyncedChanges = true;
+    state.pendingCommitMessage = commitMessage;
+    renderTodos();
+  });
   setStatus("Saving changes...", "idle");
   void flushPendingSync();
 }

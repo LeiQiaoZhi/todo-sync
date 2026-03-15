@@ -441,6 +441,8 @@ button:disabled {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
+  transition: height 220ms ease, opacity 180ms ease;
+  transform-origin: top;
 }
 
 .todo-item {
@@ -452,6 +454,16 @@ button:disabled {
   border-radius: 18px;
   background: var(--surface-strong);
   border: 1px solid color-mix(in srgb, var(--text) 6%, transparent);
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 180ms;
+}
+
+::view-transition-group(*) {
+  animation-duration: 220ms;
+  animation-timing-function: ease;
 }
 
 .todo-main {
