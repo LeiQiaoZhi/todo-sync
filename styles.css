@@ -1,5 +1,5 @@
 :root {
-  color-scheme: light;
+  color-scheme: light dark;
   --bg: #f4efe6;
   --surface: rgba(255, 251, 245, 0.82);
   --surface-strong: #fffdf8;
@@ -10,7 +10,7 @@
   --primary-strong: #a44e22;
   --success: #357a49;
   --danger: #b24432;
-  --shadow: 0 20px 45px rgba(94, 67, 35, 0.12);
+  --shadow: 0 1px 2px rgba(73, 55, 34, 0.04);
   --radius-xl: 28px;
   --radius-lg: 20px;
   --radius-md: 14px;
@@ -20,6 +20,22 @@
   --space-4: 1rem;
   --control-h: 2.5rem;
   --icon-h: 2.1rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #181613;
+    --surface: rgba(31, 28, 24, 0.9);
+    --surface-strong: #24201c;
+    --border: rgba(235, 225, 214, 0.1);
+    --text: #f2eadf;
+    --muted: #b8ab99;
+    --primary: #d07a48;
+    --primary-strong: #e0905f;
+    --success: #78bc8b;
+    --danger: #e07a66;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.24);
+  }
 }
 
 * {
@@ -147,17 +163,17 @@ h2 {
 }
 
 .badge-muted {
-  background: rgba(46, 36, 24, 0.08);
+  background: color-mix(in srgb, var(--text) 8%, transparent);
   color: var(--muted);
 }
 
 .badge-success {
-  background: rgba(53, 122, 73, 0.12);
+  background: color-mix(in srgb, var(--success) 16%, transparent);
   color: var(--success);
 }
 
 .badge-danger {
-  background: rgba(178, 68, 50, 0.12);
+  background: color-mix(in srgb, var(--danger) 16%, transparent);
   color: var(--danger);
 }
 
@@ -236,14 +252,14 @@ button:disabled {
 }
 
 .secondary-button {
-  background: rgba(196, 99, 47, 0.12);
+  background: color-mix(in srgb, var(--primary) 14%, transparent);
   color: var(--primary-strong);
 }
 
 .ghost-button {
   background: transparent;
   color: var(--muted);
-  border: 1px solid rgba(73, 55, 34, 0.12);
+  border: 1px solid color-mix(in srgb, var(--text) 10%, transparent);
 }
 
 .settings-toggle {
@@ -255,14 +271,14 @@ button:disabled {
   justify-content: center;
   padding: 0;
   border-radius: 999px;
-  background: rgba(46, 36, 24, 0.06);
+  background: color-mix(in srgb, var(--text) 6%, transparent);
   color: var(--muted);
-  border: 1px solid rgba(73, 55, 34, 0.08);
+  border: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
   font-size: 0.95rem;
 }
 
 .settings-toggle:hover {
-  background: rgba(46, 36, 24, 0.1);
+  background: color-mix(in srgb, var(--text) 10%, transparent);
   color: var(--text);
 }
 
@@ -304,18 +320,18 @@ button:disabled {
   width: var(--icon-h);
   height: var(--icon-h);
   min-width: var(--icon-h);
-  background: rgba(46, 36, 24, 0.05);
+  background: color-mix(in srgb, var(--text) 5%, transparent);
   color: var(--muted);
-  border: 1px solid rgba(73, 55, 34, 0.08);
+  border: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
 }
 
 .sync-button {
   width: var(--icon-h);
   height: var(--icon-h);
   min-width: var(--icon-h);
-  background: rgba(46, 36, 24, 0.05);
+  background: color-mix(in srgb, var(--text) 5%, transparent);
   color: var(--muted);
-  border: 1px solid rgba(73, 55, 34, 0.08);
+  border: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
 }
 
 .todo-list {
@@ -335,7 +351,7 @@ button:disabled {
   padding: 0.8rem 0.9rem;
   border-radius: 18px;
   background: var(--surface-strong);
-  border: 1px solid rgba(73, 55, 34, 0.08);
+  border: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
 }
 
 .todo-main {
@@ -388,15 +404,15 @@ button:disabled {
   min-height: 1.9rem;
   padding: 0.32rem 0.68rem;
   border-radius: 999px;
-  background: rgba(46, 36, 24, 0.06);
+  background: color-mix(in srgb, var(--text) 6%, transparent);
   color: var(--muted);
   font-size: 0.75rem;
   font-weight: 700;
-  border: 1px solid rgba(73, 55, 34, 0.08);
+  border: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
 }
 
 .due-button.has-date {
-  background: rgba(196, 99, 47, 0.12);
+  background: color-mix(in srgb, var(--primary) 16%, transparent);
   color: var(--primary-strong);
 }
 
@@ -423,7 +439,7 @@ button:disabled {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: rgba(46, 36, 24, 0.07);
+  background: color-mix(in srgb, var(--text) 7%, transparent);
   color: var(--text);
   font-size: 0.92rem;
   border-radius: 999px;

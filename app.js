@@ -1,7 +1,7 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 14:16";
-const APP_COMMIT_MESSAGE = "Use plain background color";
+const APP_VERSION = "2026-03-15 14:20";
+const APP_COMMIT_MESSAGE = "Flatten surfaces and add dark mode";
 
 const state = {
   config: loadSavedConfig(),
