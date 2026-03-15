@@ -440,7 +440,7 @@ button:disabled {
   align-items: center;
   justify-content: center;
   background: color-mix(in srgb, var(--text) 7%, transparent);
-  color: var(--text);
+  color: var(--muted);
   font-size: 0.92rem;
   border-radius: 999px;
 }

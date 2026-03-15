@@ -1,8 +1,8 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 14:40";
-const APP_COMMIT_MESSAGE = "Fix theme toggle icon styling";
+const APP_VERSION = "2026-03-15 14:42";
+const APP_COMMIT_MESSAGE = "Fix light theme icon color";
 
 const state = {
   config: loadSavedConfig(),
