@@ -1,6 +1,7 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 12:57";
+const APP_VERSION = "2026-03-15 13:01";
+const APP_COMMIT_MESSAGE = "Show version with commit message";
 
 const state = {
   config: loadSavedConfig(),
@@ -35,7 +36,7 @@ initialize();
 
 function initialize() {
   populateSettingsForm();
-  elements.buildVersion.textContent = `Version ${APP_VERSION}`;
+  elements.buildVersion.textContent = `Version ${APP_VERSION} | ${APP_COMMIT_MESSAGE}`;
   updateConfigBadge();
   renderTodos();
 
