@@ -3,7 +3,7 @@
   --bg: #f4efe6;
   --surface: rgba(255, 251, 245, 0.82);
   --surface-strong: #fffdf8;
-  --border: rgba(73, 55, 34, 0.12);
+  --border: rgba(73, 55, 34, 0.08);
   --text: #2e2418;
   --muted: #6d5b46;
   --primary: #c4632f;
@@ -31,7 +31,7 @@
   --bg: #1f2226;
   --surface: rgba(34, 38, 43, 0.94);
   --surface-strong: #2a2f35;
-  --border: rgba(236, 239, 244, 0.1);
+  --border: rgba(236, 239, 244, 0.07);
   --text: #eef2f7;
   --muted: #aab4c0;
   --primary: #d48959;
@@ -256,7 +256,7 @@ h2 {
 }
 
 .badge-muted {
-  background: color-mix(in srgb, var(--text) 8%, transparent);
+  background: color-mix(in srgb, var(--text) 6%, transparent);
   color: var(--muted);
 }
 
@@ -362,7 +362,7 @@ button:disabled {
   padding: 0;
   background: color-mix(in srgb, var(--text) 6%, transparent);
   color: var(--muted);
-  border: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text) 6%, transparent);
   font-size: 0.92rem;
   line-height: 1;
 }
@@ -412,7 +412,7 @@ button:disabled {
   min-width: var(--icon-h);
   background: color-mix(in srgb, var(--text) 5%, transparent);
   color: var(--muted);
-  border: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text) 6%, transparent);
 }
 
 .sync-button {
@@ -440,7 +440,7 @@ button:disabled {
   padding: 0.8rem 0.9rem;
   border-radius: 18px;
   background: var(--surface-strong);
-  border: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text) 6%, transparent);
 }
 
 .todo-main {
@@ -480,7 +480,7 @@ button:disabled {
   min-height: var(--meta-chip-h);
   border-radius: 999px;
   background: color-mix(in srgb, var(--text) 5%, transparent);
-  border: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text) 6%, transparent);
 }
 
 .status-option {
@@ -506,7 +506,7 @@ button:disabled {
   color: var(--muted);
   font-size: var(--meta-chip-text);
   font-weight: 700;
-  border: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text) 6%, transparent);
 }
 
 .due-button.has-date {
