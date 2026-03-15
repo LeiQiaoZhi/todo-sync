@@ -1,13 +1,17 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 13:17";
-const APP_COMMIT_MESSAGE = "Use subtle gear settings button";
+const APP_VERSION = "2026-03-15 13:25";
+const APP_COMMIT_MESSAGE = "Make todo edits sync in background";
 
 const state = {
   config: loadSavedConfig(),
   todos: [],
+  lastSyncedTodos: [],
   currentSha: null,
   isBusy: false,
+  isSyncing: false,
+  hasUnsyncedChanges: false,
+  pendingCommitMessage: "",
 };
 
 const elements = {
@@ -55,7 +59,11 @@ function initialize() {
     localStorage.removeItem(STORAGE_KEY);
     state.config = emptyConfig();
     state.todos = [];
+    state.lastSyncedTodos = [];
     state.currentSha = null;
+    state.isSyncing = false;
+    state.hasUnsyncedChanges = false;
+    state.pendingCommitMessage = "";
     populateSettingsForm();
     updateConfigBadge();
     updateSettingsVisibility();
@@ -64,6 +72,11 @@ function initialize() {
   });
 
   elements.refreshButton.addEventListener("click", () => {
+    if (state.hasUnsyncedChanges || state.isSyncing) {
+      void flushPendingSync({ manual: true });
+      return;
+    }
+
     void fetchTodosFromGitHub();
   });
 
@@ -253,7 +266,9 @@ async function fetchTodosFromGitHub(options = {}) {
 
     if (response.status === 404) {
       state.todos = [];
+      state.lastSyncedTodos = [];
       state.currentSha = null;
+      state.hasUnsyncedChanges = false;
       renderTodos();
       setStatus("Connected. No todos yet, so your first save will create todos.json.", "idle");
       return;
@@ -265,7 +280,13 @@ async function fetchTodosFromGitHub(options = {}) {
 
     const payload = await response.json();
     const parsed = parseTodosFile(fromBase64(payload.content || ""));
+    if (state.hasUnsyncedChanges || state.isSyncing) {
+      setStatus("Local changes are still syncing. Try Sync Now again in a moment.", "idle");
+      return;
+    }
+
     state.todos = parsed.todos;
+    state.lastSyncedTodos = cloneTodos(parsed.todos);
     state.currentSha = payload.sha || null;
     renderTodos();
     setStatus("Synced with GitHub.", "success");
@@ -282,18 +303,12 @@ async function updateTodos(nextTodos, commitMessage) {
     return;
   }
 
-  try {
-    setBusy(true, "Syncing changes to GitHub...", "idle");
-    const data = await commitTodos(nextTodos, commitMessage);
-    state.todos = nextTodos;
-    state.currentSha = data.content?.sha || null;
-    renderTodos();
-    setStatus("Changes synced to GitHub.", "success");
-  } catch (error) {
-    setStatus(error.message, "error");
-  } finally {
-    setBusy(false);
-  }
+  state.todos = cloneTodos(nextTodos);
+  state.hasUnsyncedChanges = true;
+  state.pendingCommitMessage = commitMessage;
+  renderTodos();
+  setStatus("Saving changes...", "idle");
+  void flushPendingSync();
 }
 
 async function commitTodos(nextTodos, commitMessage, hasRetried = false) {
@@ -328,6 +343,55 @@ async function commitTodos(nextTodos, commitMessage, hasRetried = false) {
   }
 
   throw new Error(errorMessage);
+}
+
+async function flushPendingSync(options = {}) {
+  const { manual = false } = options;
+
+  if (!isConfigReady()) {
+    setStatus("Please save your GitHub settings before editing todos.", "error");
+    return;
+  }
+
+  if (state.isSyncing) {
+    if (manual) {
+      setStatus("Still syncing your latest changes...", "idle");
+    }
+    return;
+  }
+
+  if (!state.hasUnsyncedChanges) {
+    if (manual) {
+      await fetchTodosFromGitHub();
+    }
+    return;
+  }
+
+  state.isSyncing = true;
+  setStatus("Syncing latest changes...", "idle");
+
+  try {
+    while (state.hasUnsyncedChanges) {
+      const snapshot = cloneTodos(state.todos);
+      const commitMessage = state.pendingCommitMessage || "Update todos";
+      state.hasUnsyncedChanges = false;
+
+      const data = await commitTodos(snapshot, commitMessage);
+      state.currentSha = data.content?.sha || null;
+      state.lastSyncedTodos = cloneTodos(snapshot);
+
+      if (!todosEqual(state.todos, snapshot)) {
+        state.hasUnsyncedChanges = true;
+      }
+    }
+
+    setStatus("Changes synced to GitHub.", "success");
+  } catch (error) {
+    state.hasUnsyncedChanges = true;
+    setStatus(formatGitHubError(error, false), "error");
+  } finally {
+    state.isSyncing = false;
+  }
 }
 
 async function fetchLatestSha() {
@@ -408,7 +472,6 @@ async function githubRequest(method, url, body, options = {}) {
 function setBusy(isBusy, nextStatusText = "", tone = "idle") {
   state.isBusy = isBusy;
   elements.refreshButton.disabled = isBusy;
-  elements.todoInput.disabled = isBusy;
   elements.settingsForm.querySelectorAll("button").forEach((button) => {
     button.disabled = isBusy;
   });
@@ -433,7 +496,7 @@ function setStatus(message, tone) {
     return;
   }
 
-  elements.syncBadge.textContent = state.isBusy ? "Working" : "Idle";
+  elements.syncBadge.textContent = state.isSyncing ? "Syncing" : state.isBusy ? "Working" : "Idle";
   elements.syncBadge.className = "badge badge-muted";
 }
 
@@ -465,6 +528,14 @@ function fromBase64(value) {
 
 function truncateCommitText(text) {
   return text.length > 48 ? `${text.slice(0, 45)}...` : text;
+}
+
+function cloneTodos(todos) {
+  return todos.map((todo) => ({ ...todo }));
+}
+
+function todosEqual(left, right) {
+  return JSON.stringify(left) === JSON.stringify(right);
 }
 
 function formatGitHubError(error, isStartup) {
