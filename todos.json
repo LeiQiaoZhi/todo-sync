@@ -3,6 +3,7 @@
     {
       "id": "bc7c639c-57e2-4840-ac97-63a27918da3e",
       "text": "print and file tax",
+      "status": "backlog",
       "completed": false,
       "created_at": "2026-03-15T20:16:44.942Z",
       "due_date": "2026-03-16"
@@ -10,6 +11,7 @@
     {
       "id": "679e86e1-e07f-4fc5-ac5f-176f29c88320",
       "text": "mobile test",
+      "status": "progress",
       "completed": false,
       "created_at": "2026-03-15T20:19:23.824Z",
       "due_date": null
