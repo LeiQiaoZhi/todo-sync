@@ -473,6 +473,7 @@ button:disabled {
 }
 
 .todo-actions {
+  flex: 0 0 auto;
   gap: var(--space-1);
 }
 
@@ -578,10 +579,14 @@ button:disabled {
   .hero-card,
   .panel-header,
   .settings-actions,
-  .todo-entry,
-  .todo-item {
+  .todo-entry {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .todo-item {
+    flex-direction: row;
+    align-items: flex-start;
   }
 
   .hero-card,
@@ -618,6 +623,7 @@ button:disabled {
   }
 
   .todo-actions {
+    align-self: flex-start;
     justify-content: flex-end;
   }
 
