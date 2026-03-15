@@ -116,7 +116,7 @@ h2 {
 
 .build-version {
   font-size: 0.72rem;
-  color: var(--muted);
+  color: color-mix(in srgb, var(--muted) 72%, var(--bg));
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
