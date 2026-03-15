@@ -1,6 +1,6 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 12:43";
+const APP_VERSION = "2026-03-15 12:49";
 
 const state = {
   config: loadSavedConfig(),
