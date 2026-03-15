@@ -22,6 +22,7 @@
             A tiny personal todo app that runs on GitHub Pages and syncs through
             a single <code>todos.json</code> file in your repository.
           </p>
+          <p id="buildVersion" class="build-version">Version loading...</p>
         </div>
         <button id="toggleSettingsButton" class="secondary-button" type="button">
           GitHub Settings
@@ -66,8 +67,7 @@
           </label>
 
           <div class="settings-actions settings-span">
-            <button class="primary-button" type="submit">Save Settings</button>
-            <button id="loadButton" class="secondary-button" type="button">Load Todos</button>
+            <button class="primary-button" type="submit">Save and Connect</button>
             <button id="clearButton" class="ghost-button" type="button">Clear Saved Settings</button>
           </div>
         </form>
@@ -77,7 +77,7 @@
         <div class="panel-header">
           <div>
             <h2>Tasks</h2>
-            <p id="statusText">Add your GitHub settings, then load your todos.</p>
+            <p id="statusText">Add your GitHub settings to connect this app.</p>
           </div>
           <span id="syncBadge" class="badge badge-muted">Idle</span>
         </div>
@@ -95,7 +95,7 @@
 
         <div class="list-meta">
           <span id="todoCount">0 items</span>
-          <button id="refreshButton" class="ghost-button" type="button">Refresh from GitHub</button>
+          <button id="refreshButton" class="ghost-button" type="button">Sync Now</button>
         </div>
 
         <ul id="todoList" class="todo-list" aria-live="polite"></ul>

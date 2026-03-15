@@ -33,10 +33,9 @@ A simple single-user todo list web app that runs entirely in the browser, can be
    - Repository name
    - Branch name, usually `main`
    - Personal access token
-6. Click `Save Settings`.
-7. Click `Load Todos`.
+6. Click `Save and Connect`.
 
-The app stores the token and repo settings in `localStorage` on that device only. Nothing is stored in a backend server.
+The app stores the token and repo settings in `localStorage` on that device only. Saving settings also loads the current todos automatically. Nothing is stored in a backend server.
 
 ## Deploy with GitHub Pages
 

@@ -97,6 +97,12 @@ h2 {
   color: var(--muted);
 }
 
+.build-version {
+  margin-top: 0.8rem;
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
 .panel {
   margin-top: 1rem;
   padding: 1.25rem;

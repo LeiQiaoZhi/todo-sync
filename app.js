@@ -1,5 +1,6 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const TODOS_PATH = "todos.json";
+const APP_VERSION = "2026-03-15 12:43";
 
 const state = {
   config: loadSavedConfig(),
@@ -16,9 +17,9 @@ const elements = {
   repoInput: document.getElementById("repoInput"),
   branchInput: document.getElementById("branchInput"),
   tokenInput: document.getElementById("tokenInput"),
-  loadButton: document.getElementById("loadButton"),
   clearButton: document.getElementById("clearButton"),
   configBadge: document.getElementById("configBadge"),
+  buildVersion: document.getElementById("buildVersion"),
   statusText: document.getElementById("statusText"),
   syncBadge: document.getElementById("syncBadge"),
   todoForm: document.getElementById("todoForm"),
@@ -34,6 +35,7 @@ initialize();
 
 function initialize() {
   populateSettingsForm();
+  elements.buildVersion.textContent = `Version ${APP_VERSION}`;
   updateConfigBadge();
   renderTodos();
 
@@ -43,11 +45,7 @@ function initialize() {
 
   elements.settingsForm.addEventListener("submit", (event) => {
     event.preventDefault();
-    saveSettingsFromForm();
-  });
-
-  elements.loadButton.addEventListener("click", () => {
-    void fetchTodosFromGitHub();
+    void saveSettingsFromForm();
   });
 
   elements.clearButton.addEventListener("click", () => {
@@ -89,7 +87,7 @@ function initialize() {
   if (isConfigReady()) {
     void fetchTodosFromGitHub();
   } else {
-    setStatus("Add your GitHub settings, then load your todos.", "idle");
+    setStatus("Add your GitHub settings to connect this app.", "idle");
   }
 }
 
@@ -121,7 +119,7 @@ function populateSettingsForm() {
   elements.tokenInput.value = state.config.token;
 }
 
-function saveSettingsFromForm() {
+async function saveSettingsFromForm() {
   state.config = {
     owner: elements.ownerInput.value.trim(),
     repo: elements.repoInput.value.trim(),
@@ -131,7 +129,15 @@ function saveSettingsFromForm() {
 
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state.config));
   updateConfigBadge();
-  setStatus("Settings saved locally in this browser.", "success");
+
+  if (!isConfigReady()) {
+    setStatus("Please complete all GitHub settings.", "error");
+    return;
+  }
+
+  elements.settingsPanel.setAttribute("hidden", "");
+  setStatus("Settings saved. Connecting to GitHub...", "idle");
+  await fetchTodosFromGitHub();
 }
 
 function updateConfigBadge() {
@@ -222,7 +228,7 @@ async function fetchTodosFromGitHub() {
       state.todos = [];
       state.currentSha = null;
       renderTodos();
-      setStatus("No todos.json found yet. Your first save will create it.", "idle");
+      setStatus("Connected. No todos yet, so your first save will create todos.json.", "idle");
       return;
     }
 
@@ -235,7 +241,7 @@ async function fetchTodosFromGitHub() {
     state.todos = parsed.todos;
     state.currentSha = payload.sha || null;
     renderTodos();
-    setStatus("Todos loaded from GitHub.", "success");
+    setStatus("Synced with GitHub.", "success");
   } catch (error) {
     setStatus(error.message, "error");
   } finally {
@@ -251,23 +257,7 @@ async function updateTodos(nextTodos, commitMessage) {
 
   try {
     setBusy(true, "Syncing changes to GitHub...", "idle");
-    const latestFile = await fetchLatestSha();
-    const payload = {
-      todos: nextTodos,
-    };
-
-    const response = await githubRequest("PUT", buildContentsUrl(false), {
-      message: commitMessage,
-      content: toBase64(JSON.stringify(payload, null, 2) + "\n"),
-      sha: latestFile.sha || undefined,
-      branch: state.config.branch,
-    });
-
-    if (!response.ok) {
-      throw new Error(await readErrorMessage(response));
-    }
-
-    const data = await response.json();
+    const data = await commitTodos(nextTodos, commitMessage);
     state.todos = nextTodos;
     state.currentSha = data.content?.sha || null;
     renderTodos();
@@ -277,6 +267,35 @@ async function updateTodos(nextTodos, commitMessage) {
   } finally {
     setBusy(false);
   }
+}
+
+async function commitTodos(nextTodos, commitMessage, hasRetried = false) {
+  const latestFile = await fetchLatestSha();
+  const payload = {
+    todos: nextTodos,
+  };
+
+  const response = await githubRequest("PUT", buildContentsUrl(false), {
+    message: commitMessage,
+    content: toBase64(JSON.stringify(payload, null, 2) + "\n"),
+    sha: latestFile.sha || undefined,
+    branch: state.config.branch,
+  });
+
+  if (response.ok) {
+    return response.json();
+  }
+
+  const errorMessage = await readErrorMessage(response);
+  const looksLikeShaConflict =
+    response.status === 409 ||
+    (response.status === 422 && /sha/i.test(errorMessage));
+
+  if (looksLikeShaConflict && !hasRetried) {
+    return commitTodos(nextTodos, commitMessage, true);
+  }
+
+  throw new Error(errorMessage);
 }
 
 async function fetchLatestSha() {
@@ -339,7 +358,6 @@ async function githubRequest(method, url, body) {
 
 function setBusy(isBusy, nextStatusText = "", tone = "idle") {
   state.isBusy = isBusy;
-  elements.loadButton.disabled = isBusy;
   elements.refreshButton.disabled = isBusy;
   elements.todoInput.disabled = isBusy;
   elements.settingsForm.querySelectorAll("button").forEach((button) => {
