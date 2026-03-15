@@ -1,6 +1,6 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 12:49";
+const APP_VERSION = "2026-03-15 12:54";
 
 const state = {
   config: loadSavedConfig(),
@@ -222,7 +222,7 @@ async function fetchTodosFromGitHub() {
 
   try {
     setBusy(true, "Loading todos from GitHub...", "idle");
-    const response = await githubRequest("GET", buildContentsUrl(true));
+    const response = await githubRequest("GET", buildContentsUrl(true, true));
 
     if (response.status === 404) {
       state.todos = [];
@@ -299,7 +299,7 @@ async function commitTodos(nextTodos, commitMessage, hasRetried = false) {
 }
 
 async function fetchLatestSha() {
-  const response = await githubRequest("GET", buildContentsUrl(true));
+  const response = await githubRequest("GET", buildContentsUrl(true, true));
 
   if (response.status === 404) {
     return { sha: null };
@@ -334,11 +334,14 @@ function parseTodosFile(rawContent) {
   };
 }
 
-function buildContentsUrl(includeRef) {
+function buildContentsUrl(includeRef, bustCache = false) {
   const { owner, repo, branch } = state.config;
   const url = new URL(`https://api.github.com/repos/${owner}/${repo}/contents/${TODOS_PATH}`);
   if (includeRef) {
     url.searchParams.set("ref", branch);
+  }
+  if (bustCache) {
+    url.searchParams.set("_", Date.now().toString());
   }
   return url.toString();
 }
@@ -346,9 +349,12 @@ function buildContentsUrl(includeRef) {
 async function githubRequest(method, url, body) {
   return fetch(url, {
     method,
+    cache: "no-store",
     headers: {
       Accept: "application/vnd.github+json",
       Authorization: `Bearer ${state.config.token}`,
+      "Cache-Control": "no-cache",
+      Pragma: "no-cache",
       "Content-Type": "application/json",
       "X-GitHub-Api-Version": "2022-11-28",
     },
