@@ -1,7 +1,7 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 13:25";
-const APP_COMMIT_MESSAGE = "Make todo edits sync in background";
+const APP_VERSION = "2026-03-15 13:30";
+const APP_COMMIT_MESSAGE = "Tighten header layout";
 
 const state = {
   config: loadSavedConfig(),
