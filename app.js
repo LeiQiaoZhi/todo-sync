@@ -1,7 +1,7 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 13:41";
-const APP_COMMIT_MESSAGE = "Add due dates and smart sorting";
+const APP_VERSION = "2026-03-15 13:45";
+const APP_COMMIT_MESSAGE = "Simplify add-row date picker";
 
 const state = {
   config: loadSavedConfig(),
@@ -84,6 +84,11 @@ function initialize() {
 
   elements.clearTodoDateButton.addEventListener("click", () => {
     elements.todoDateInput.value = "";
+    updateEntryDateClearButton();
+  });
+
+  elements.todoDateInput.addEventListener("input", () => {
+    updateEntryDateClearButton();
   });
 
   elements.todoForm.addEventListener("submit", (event) => {
@@ -106,6 +111,7 @@ function initialize() {
 
     elements.todoInput.value = "";
     elements.todoDateInput.value = "";
+    updateEntryDateClearButton();
     void updateTodos(nextTodos, `Add todo: ${truncateCommitText(text)}`);
   });
 
@@ -114,6 +120,8 @@ function initialize() {
   } else {
     setStatus("Add your GitHub settings to connect this app.", "idle");
   }
+
+  updateEntryDateClearButton();
 }
 
 function emptyConfig() {
@@ -197,6 +205,10 @@ function updateSettingsToggleLabel() {
 
   elements.toggleSettingsButton.setAttribute("aria-label", label);
   elements.toggleSettingsButton.setAttribute("title", label);
+}
+
+function updateEntryDateClearButton() {
+  elements.clearTodoDateButton.hidden = !elements.todoDateInput.value;
 }
 
 function renderTodos() {

@@ -277,8 +277,13 @@ button:disabled {
   padding: 0.9rem 0.85rem;
 }
 
-.todo-entry-side .ghost-button {
-  white-space: nowrap;
+.clear-date-button {
+  width: 2rem;
+  height: 2rem;
+  min-width: 2rem;
+  background: rgba(46, 36, 24, 0.05);
+  color: var(--muted);
+  border: 1px solid rgba(73, 55, 34, 0.08);
 }
 
 .list-meta {
