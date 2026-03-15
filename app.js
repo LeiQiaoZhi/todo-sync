@@ -1,7 +1,7 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 13:47";
-const APP_COMMIT_MESSAGE = "Remove title from header";
+const APP_VERSION = "2026-03-15 13:50";
+const APP_COMMIT_MESSAGE = "Keep header rows on one line";
 
 const state = {
   config: loadSavedConfig(),
