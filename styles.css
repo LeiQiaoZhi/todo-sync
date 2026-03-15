@@ -23,12 +23,12 @@
 }
 
 :root[data-theme="dark"] {
-  --bg: #23201d;
-  --surface: rgba(42, 38, 34, 0.94);
-  --surface-strong: #302b26;
-  --border: rgba(242, 234, 223, 0.1);
-  --text: #f3eadf;
-  --muted: #b8aa99;
+  --bg: #1f2226;
+  --surface: rgba(34, 38, 43, 0.94);
+  --surface-strong: #2a2f35;
+  --border: rgba(236, 239, 244, 0.1);
+  --text: #eef2f7;
+  --muted: #aab4c0;
   --primary: #d48959;
   --primary-strong: #e49a6a;
   --success: #83c697;
