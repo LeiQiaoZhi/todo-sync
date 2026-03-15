@@ -1,7 +1,7 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 14:13";
-const APP_COMMIT_MESSAGE = "Refine background texture";
+const APP_VERSION = "2026-03-15 14:15";
+const APP_COMMIT_MESSAGE = "Remove diagonal background gradient";
 
 const state = {
   config: loadSavedConfig(),

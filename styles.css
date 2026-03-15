@@ -36,7 +36,6 @@ body {
   background:
     radial-gradient(circle at top left, rgba(255, 255, 255, 0.68), transparent 28%),
     radial-gradient(circle at 85% 12%, rgba(196, 99, 47, 0.08), transparent 22%),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0 12%, transparent 12% 100%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0)),
     repeating-linear-gradient(
       0deg,
@@ -45,7 +44,7 @@ body {
       var(--bg-ink) 31px,
       var(--bg-ink) 32px
     ),
-    linear-gradient(165deg, var(--bg) 0%, #efe4d0 52%, var(--bg-accent) 100%);
+    linear-gradient(180deg, var(--bg) 0%, #efe4d0 58%, var(--bg-accent) 100%);
   background-attachment: fixed;
 }
 
