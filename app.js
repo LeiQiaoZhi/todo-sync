@@ -1,8 +1,8 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 15:27";
-const APP_COMMIT_MESSAGE = "Match section control to section colors";
+const APP_VERSION = "2026-03-15 15:31";
+const APP_COMMIT_MESSAGE = "Fix empty section folding";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 
 const state = {
@@ -418,7 +418,17 @@ function syncSectionVisibility(shouldAnimate) {
 
 function animateSectionVisibility(list, shouldExpand) {
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const contentHeight = list.scrollHeight;
   if (reduceMotion) {
+    list.hidden = !shouldExpand;
+    list.dataset.expanded = String(shouldExpand);
+    list.style.removeProperty("height");
+    list.style.removeProperty("opacity");
+    list.style.removeProperty("overflow");
+    return;
+  }
+
+  if (contentHeight === 0) {
     list.hidden = !shouldExpand;
     list.dataset.expanded = String(shouldExpand);
     list.style.removeProperty("height");
@@ -435,14 +445,14 @@ function animateSectionVisibility(list, shouldExpand) {
     list.dataset.expanded = "true";
     list.style.height = "0px";
     list.style.opacity = "0";
-    const targetHeight = `${list.scrollHeight}px`;
+    const targetHeight = `${contentHeight}px`;
 
     requestAnimationFrame(() => {
       list.style.height = targetHeight;
       list.style.opacity = "1";
     });
   } else {
-    const startHeight = `${list.scrollHeight}px`;
+    const startHeight = `${contentHeight}px`;
     list.dataset.expanded = "false";
     list.style.height = startHeight;
     list.style.opacity = "1";
