@@ -1,7 +1,7 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 13:01";
-const APP_COMMIT_MESSAGE = "Show version with commit message";
+const APP_VERSION = "2026-03-15 13:07";
+const APP_COMMIT_MESSAGE = "Harden startup sync network handling";
 
 const state = {
   config: loadSavedConfig(),
@@ -86,7 +86,7 @@ function initialize() {
   });
 
   if (isConfigReady()) {
-    void fetchTodosFromGitHub();
+    void fetchTodosFromGitHub({ isStartup: true });
   } else {
     setStatus("Add your GitHub settings to connect this app.", "idle");
   }
@@ -215,7 +215,9 @@ async function moveTodo(fromIndex, toIndex) {
   await updateTodos(nextTodos, "Reorder todos");
 }
 
-async function fetchTodosFromGitHub() {
+async function fetchTodosFromGitHub(options = {}) {
+  const { isStartup = false } = options;
+
   if (!isConfigReady()) {
     setStatus("Please save your GitHub owner, repo, branch, and token first.", "error");
     return;
@@ -223,7 +225,9 @@ async function fetchTodosFromGitHub() {
 
   try {
     setBusy(true, "Loading todos from GitHub...", "idle");
-    const response = await githubRequest("GET", buildContentsUrl(true, true));
+    const response = await githubRequest("GET", buildContentsUrl(true, true), undefined, {
+      retries: isStartup ? 2 : 1,
+    });
 
     if (response.status === 404) {
       state.todos = [];
@@ -244,7 +248,7 @@ async function fetchTodosFromGitHub() {
     renderTodos();
     setStatus("Synced with GitHub.", "success");
   } catch (error) {
-    setStatus(error.message, "error");
+    setStatus(formatGitHubError(error, isStartup), "error");
   } finally {
     setBusy(false);
   }
@@ -276,12 +280,17 @@ async function commitTodos(nextTodos, commitMessage, hasRetried = false) {
     todos: nextTodos,
   };
 
-  const response = await githubRequest("PUT", buildContentsUrl(false), {
-    message: commitMessage,
-    content: toBase64(JSON.stringify(payload, null, 2) + "\n"),
-    sha: latestFile.sha || undefined,
-    branch: state.config.branch,
-  });
+  const response = await githubRequest(
+    "PUT",
+    buildContentsUrl(false),
+    {
+      message: commitMessage,
+      content: toBase64(JSON.stringify(payload, null, 2) + "\n"),
+      sha: latestFile.sha || undefined,
+      branch: state.config.branch,
+    },
+    { retries: 1 }
+  );
 
   if (response.ok) {
     return response.json();
@@ -300,7 +309,9 @@ async function commitTodos(nextTodos, commitMessage, hasRetried = false) {
 }
 
 async function fetchLatestSha() {
-  const response = await githubRequest("GET", buildContentsUrl(true, true));
+  const response = await githubRequest("GET", buildContentsUrl(true, true), undefined, {
+    retries: 1,
+  });
 
   if (response.status === 404) {
     return { sha: null };
@@ -347,20 +358,31 @@ function buildContentsUrl(includeRef, bustCache = false) {
   return url.toString();
 }
 
-async function githubRequest(method, url, body) {
-  return fetch(url, {
-    method,
-    cache: "no-store",
-    headers: {
-      Accept: "application/vnd.github+json",
-      Authorization: `Bearer ${state.config.token}`,
-      "Cache-Control": "no-cache",
-      Pragma: "no-cache",
-      "Content-Type": "application/json",
-      "X-GitHub-Api-Version": "2022-11-28",
-    },
-    body: body ? JSON.stringify(body) : undefined,
-  });
+async function githubRequest(method, url, body, options = {}) {
+  const { retries = 0 } = options;
+
+  try {
+    return await fetch(url, {
+      method,
+      cache: "no-store",
+      headers: {
+        Accept: "application/vnd.github+json",
+        Authorization: `Bearer ${state.config.token}`,
+        "Cache-Control": "no-cache",
+        Pragma: "no-cache",
+        "Content-Type": "application/json",
+        "X-GitHub-Api-Version": "2022-11-28",
+      },
+      body: body ? JSON.stringify(body) : undefined,
+    });
+  } catch (error) {
+    if (retries > 0) {
+      await delay(500);
+      return githubRequest(method, url, body, { retries: retries - 1 });
+    }
+
+    throw new Error("Could not reach GitHub.");
+  }
 }
 
 function setBusy(isBusy, nextStatusText = "", tone = "idle") {
@@ -423,4 +445,20 @@ function fromBase64(value) {
 
 function truncateCommitText(text) {
   return text.length > 48 ? `${text.slice(0, 45)}...` : text;
+}
+
+function formatGitHubError(error, isStartup) {
+  if (/Could not reach GitHub/i.test(error?.message || "")) {
+    return isStartup
+      ? "Could not connect to GitHub on startup. Tap Sync Now to retry."
+      : "Could not reach GitHub. Check your connection and try Sync Now.";
+  }
+
+  return error?.message || "GitHub sync failed.";
+}
+
+function delay(milliseconds) {
+  return new Promise((resolve) => {
+    window.setTimeout(resolve, milliseconds);
+  });
 }
