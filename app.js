@@ -1,7 +1,7 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 13:59";
-const APP_COMMIT_MESSAGE = "Use subtle sync icon button";
+const APP_VERSION = "2026-03-15 14:04";
+const APP_COMMIT_MESSAGE = "Merge top bars into one";
 
 const state = {
   config: loadSavedConfig(),
