@@ -211,6 +211,25 @@ button:disabled {
   border: 1px solid rgba(73, 55, 34, 0.12);
 }
 
+.settings-toggle {
+  width: 2.7rem;
+  height: 2.7rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border-radius: 999px;
+  background: rgba(46, 36, 24, 0.06);
+  color: var(--muted);
+  border: 1px solid rgba(73, 55, 34, 0.08);
+  font-size: 1.05rem;
+}
+
+.settings-toggle:hover {
+  background: rgba(46, 36, 24, 0.1);
+  color: var(--text);
+}
+
 .settings-actions,
 .todo-entry,
 .list-meta,

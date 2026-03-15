@@ -1,7 +1,7 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 13:14";
-const APP_COMMIT_MESSAGE = "Hide saved settings by default";
+const APP_VERSION = "2026-03-15 13:17";
+const APP_COMMIT_MESSAGE = "Use subtle gear settings button";
 
 const state = {
   config: loadSavedConfig(),
@@ -172,13 +172,10 @@ function updateSettingsVisibility() {
 
 function updateSettingsToggleLabel() {
   const isHidden = elements.settingsPanel.hasAttribute("hidden");
+  const label = isHidden ? "Edit GitHub settings" : "Hide GitHub settings";
 
-  if (!isConfigReady()) {
-    elements.toggleSettingsButton.textContent = isHidden ? "GitHub Settings" : "Hide Settings";
-    return;
-  }
-
-  elements.toggleSettingsButton.textContent = isHidden ? "Edit Settings" : "Hide Settings";
+  elements.toggleSettingsButton.setAttribute("aria-label", label);
+  elements.toggleSettingsButton.setAttribute("title", label);
 }
 
 function renderTodos() {
