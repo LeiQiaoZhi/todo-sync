@@ -1,7 +1,7 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 13:07";
-const APP_COMMIT_MESSAGE = "Harden startup sync network handling";
+const APP_VERSION = "2026-03-15 13:12";
+const APP_COMMIT_MESSAGE = "Remove CORS-breaking cache headers";
 
 const state = {
   config: loadSavedConfig(),
@@ -368,8 +368,6 @@ async function githubRequest(method, url, body, options = {}) {
       headers: {
         Accept: "application/vnd.github+json",
         Authorization: `Bearer ${state.config.token}`,
-        "Cache-Control": "no-cache",
-        Pragma: "no-cache",
         "Content-Type": "application/json",
         "X-GitHub-Api-Version": "2022-11-28",
       },
