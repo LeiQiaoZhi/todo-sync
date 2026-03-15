@@ -1,7 +1,7 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 13:45";
-const APP_COMMIT_MESSAGE = "Simplify add-row date picker";
+const APP_VERSION = "2026-03-15 13:47";
+const APP_COMMIT_MESSAGE = "Remove title from header";
 
 const state = {
   config: loadSavedConfig(),
