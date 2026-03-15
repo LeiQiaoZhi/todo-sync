@@ -3,21 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GitHub Todo Sync 2026-03-15 14:45 | Fix unchecked checkbox styling</title>
+    <title>GitHub Todo Sync 2026-03-15 14:58 | Split tasks into three sections</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=2026-03-15-1445" />
+    <link rel="stylesheet" href="styles.css?v=2026-03-15-1458" />
   </head>
   <body>
     <main class="app-shell">
       <section class="hero-card">
         <div class="topbar-main">
           <p id="buildVersion" class="build-version">
-            Version 2026-03-15 14:45 | Fix unchecked checkbox styling
+            Version 2026-03-15 14:58 | Split tasks into three sections
           </p>
           <p id="statusText" class="status-text">Add your GitHub settings to connect this app.</p>
         </div>
@@ -118,7 +118,34 @@
           <button class="primary-button" type="submit">Add Todo</button>
         </form>
 
-        <ul id="todoList" class="todo-list" aria-live="polite"></ul>
+        <div class="todo-sections">
+          <section class="todo-group">
+            <div class="todo-group-header">
+              <h2>Progress</h2>
+              <span id="progressCount" class="group-count">0</span>
+            </div>
+            <ul id="progressList" class="todo-list" aria-live="polite"></ul>
+          </section>
+
+          <section class="todo-group">
+            <div class="todo-group-header">
+              <h2>Backlog</h2>
+              <span id="backlogCount" class="group-count">0</span>
+            </div>
+            <ul id="backlogList" class="todo-list" aria-live="polite"></ul>
+          </section>
+
+          <section class="todo-group">
+            <button id="doneToggleButton" class="done-toggle" type="button" aria-expanded="false">
+              <span>Done</span>
+              <div class="done-toggle-meta">
+                <span id="doneCount" class="group-count">0</span>
+                <span id="doneChevron" class="done-chevron" aria-hidden="true">▾</span>
+              </div>
+            </button>
+            <ul id="doneList" class="todo-list" aria-live="polite" hidden></ul>
+          </section>
+        </div>
         <p id="emptyState" class="empty-state">No todos yet.</p>
       </section>
     </main>
@@ -126,11 +153,13 @@
     <template id="todoItemTemplate">
       <li class="todo-item">
         <div class="todo-main">
-          <label class="todo-checkline">
-            <input class="todo-checkbox" type="checkbox" />
-            <span class="todo-text"></span>
-          </label>
+          <p class="todo-text"></p>
           <div class="todo-meta-row">
+            <div class="status-control" role="group" aria-label="Task section">
+              <button class="status-option" data-status="progress" type="button">Progress</button>
+              <button class="status-option" data-status="backlog" type="button">Backlog</button>
+              <button class="status-option" data-status="done" type="button">Done</button>
+            </div>
             <button class="due-button" type="button"></button>
             <div class="due-editor" hidden>
               <input class="due-date-input date-input" type="date" aria-label="Edit due date" />
@@ -144,6 +173,6 @@
       </li>
     </template>
 
-    <script src="app.js?v=2026-03-15-1445"></script>
+    <script src="app.js?v=2026-03-15-1458"></script>
   </body>
 </html>

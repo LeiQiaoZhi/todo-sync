@@ -1,8 +1,9 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 14:45";
-const APP_COMMIT_MESSAGE = "Fix unchecked checkbox styling";
+const APP_VERSION = "2026-03-15 14:58";
+const APP_COMMIT_MESSAGE = "Split tasks into three sections";
+const TODO_STATUSES = ["progress", "backlog", "done"];
 
 const state = {
   config: loadSavedConfig(),
@@ -13,6 +14,7 @@ const state = {
   isSyncing: false,
   hasUnsyncedChanges: false,
   pendingCommitMessage: "",
+  doneCollapsed: true,
 };
 
 const elements = {
@@ -34,7 +36,14 @@ const elements = {
   todoDateInput: document.getElementById("todoDateInput"),
   clearTodoDateButton: document.getElementById("clearTodoDateButton"),
   refreshButton: document.getElementById("refreshButton"),
-  todoList: document.getElementById("todoList"),
+  progressList: document.getElementById("progressList"),
+  backlogList: document.getElementById("backlogList"),
+  doneList: document.getElementById("doneList"),
+  progressCount: document.getElementById("progressCount"),
+  backlogCount: document.getElementById("backlogCount"),
+  doneCount: document.getElementById("doneCount"),
+  doneToggleButton: document.getElementById("doneToggleButton"),
+  doneChevron: document.getElementById("doneChevron"),
   emptyState: document.getElementById("emptyState"),
   todoItemTemplate: document.getElementById("todoItemTemplate"),
 };
@@ -84,6 +93,11 @@ function initialize() {
     void fetchTodosFromGitHub();
   });
 
+  elements.doneToggleButton.addEventListener("click", () => {
+    state.doneCollapsed = !state.doneCollapsed;
+    renderTodos();
+  });
+
   elements.toggleThemeButton.addEventListener("click", () => {
     const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
     applyTheme(nextTheme);
@@ -110,6 +124,7 @@ function initialize() {
       {
         id: crypto.randomUUID(),
         text,
+        status: "progress",
         completed: false,
         created_at: new Date().toISOString(),
         due_date: elements.todoDateInput.value || null,
@@ -242,65 +257,118 @@ function updateEntryDateClearButton() {
 }
 
 function renderTodos() {
-  elements.todoList.innerHTML = "";
+  elements.progressList.innerHTML = "";
+  elements.backlogList.innerHTML = "";
+  elements.doneList.innerHTML = "";
 
-  state.todos.forEach((todo, index) => {
-    const item = elements.todoItemTemplate.content.firstElementChild.cloneNode(true);
-    const checkbox = item.querySelector(".todo-checkbox");
-    const text = item.querySelector(".todo-text");
-    const deleteButton = item.querySelector(".delete-button");
-    const dueButton = item.querySelector(".due-button");
-    const dueEditor = item.querySelector(".due-editor");
-    const dueDateInput = item.querySelector(".due-date-input");
-    const clearDueButton = item.querySelector(".clear-due-button");
+  const groupedTodos = {
+    progress: sortTodos(state.todos.filter((todo) => todo.status === "progress")),
+    backlog: sortTodos(state.todos.filter((todo) => todo.status === "backlog")),
+    done: sortTodos(state.todos.filter((todo) => todo.status === "done")),
+  };
 
-    checkbox.checked = todo.completed;
-    text.textContent = todo.text;
-    item.classList.toggle("completed", todo.completed);
-    dueDateInput.value = todo.due_date || "";
-    dueButton.textContent = formatDueDate(todo.due_date);
-    dueButton.classList.toggle("has-date", Boolean(todo.due_date));
+  TODO_STATUSES.forEach((status) => {
+    groupedTodos[status].forEach((todo) => {
+      const item = elements.todoItemTemplate.content.firstElementChild.cloneNode(true);
+      const text = item.querySelector(".todo-text");
+      const deleteButton = item.querySelector(".delete-button");
+      const dueButton = item.querySelector(".due-button");
+      const dueEditor = item.querySelector(".due-editor");
+      const dueDateInput = item.querySelector(".due-date-input");
+      const clearDueButton = item.querySelector(".clear-due-button");
+      const statusButtons = item.querySelectorAll(".status-option");
 
-    checkbox.addEventListener("change", () => {
-      const nextTodos = state.todos.map((currentTodo) =>
-        currentTodo.id === todo.id
-          ? { ...currentTodo, completed: checkbox.checked }
-          : currentTodo
-      );
-      void updateTodos(nextTodos, `${checkbox.checked ? "Complete" : "Reopen"} todo`);
+      text.textContent = todo.text;
+      item.classList.toggle("completed", todo.status === "done");
+      dueDateInput.value = todo.due_date || "";
+      dueButton.textContent = formatDueDate(todo.due_date);
+      dueButton.classList.toggle("has-date", Boolean(todo.due_date));
+
+      statusButtons.forEach((button) => {
+        const nextStatus = button.dataset.status;
+        button.classList.toggle("active", nextStatus === todo.status);
+        button.addEventListener("click", () => {
+          if (nextStatus === todo.status) {
+            return;
+          }
+
+          const nextTodos = state.todos.map((currentTodo) =>
+            currentTodo.id === todo.id
+              ? { ...currentTodo, status: nextStatus, completed: nextStatus === "done" }
+              : currentTodo
+          );
+          void updateTodos(nextTodos, `Move todo: ${truncateCommitText(todo.text)}`);
+        });
+      });
+
+      deleteButton.addEventListener("click", () => {
+        const nextTodos = state.todos.filter((currentTodo) => currentTodo.id !== todo.id);
+        void updateTodos(nextTodos, `Delete todo: ${truncateCommitText(todo.text)}`);
+      });
+
+      dueButton.addEventListener("click", () => {
+        dueEditor.toggleAttribute("hidden");
+      });
+
+      dueDateInput.addEventListener("change", () => {
+        const nextTodos = state.todos.map((currentTodo) =>
+          currentTodo.id === todo.id
+            ? { ...currentTodo, due_date: dueDateInput.value || null }
+            : currentTodo
+        );
+        dueEditor.setAttribute("hidden", "");
+        void updateTodos(nextTodos, `Update due date: ${truncateCommitText(todo.text)}`);
+      });
+
+      clearDueButton.addEventListener("click", () => {
+        dueDateInput.value = "";
+        const nextTodos = state.todos.map((currentTodo) =>
+          currentTodo.id === todo.id ? { ...currentTodo, due_date: null } : currentTodo
+        );
+        dueEditor.setAttribute("hidden", "");
+        void updateTodos(nextTodos, `Clear due date: ${truncateCommitText(todo.text)}`);
+      });
+
+      getListElement(status).appendChild(item);
     });
-
-    deleteButton.addEventListener("click", () => {
-      const nextTodos = state.todos.filter((currentTodo) => currentTodo.id !== todo.id);
-      void updateTodos(nextTodos, `Delete todo: ${truncateCommitText(todo.text)}`);
-    });
-
-    dueButton.addEventListener("click", () => {
-      dueEditor.toggleAttribute("hidden");
-    });
-
-    dueDateInput.addEventListener("change", () => {
-      const nextTodos = state.todos.map((currentTodo) =>
-        currentTodo.id === todo.id
-          ? { ...currentTodo, due_date: dueDateInput.value || null }
-          : currentTodo
-      );
-      dueEditor.setAttribute("hidden", "");
-      void updateTodos(nextTodos, `Update due date: ${truncateCommitText(todo.text)}`);
-    });
-
-    clearDueButton.addEventListener("click", () => {
-      dueDateInput.value = "";
-      const nextTodos = state.todos.map((currentTodo) =>
-        currentTodo.id === todo.id ? { ...currentTodo, due_date: null } : currentTodo
-      );
-      dueEditor.setAttribute("hidden", "");
-      void updateTodos(nextTodos, `Clear due date: ${truncateCommitText(todo.text)}`);
-    });
-
-    elements.todoList.appendChild(item);
   });
+
+  elements.progressCount.textContent = String(groupedTodos.progress.length);
+  elements.backlogCount.textContent = String(groupedTodos.backlog.length);
+  elements.doneCount.textContent = String(groupedTodos.done.length);
+  elements.doneList.hidden = state.doneCollapsed;
+  elements.doneToggleButton.setAttribute("aria-expanded", String(!state.doneCollapsed));
+  elements.doneChevron.textContent = state.doneCollapsed ? "▸" : "▾";
   elements.emptyState.hidden = state.todos.length > 0;
+}
+
+function getListElement(status) {
+  if (status === "progress") {
+    return elements.progressList;
+  }
+
+  if (status === "backlog") {
+    return elements.backlogList;
+  }
+
+  return elements.doneList;
+}
+
+function normalizeTodo(todo) {
+  const status = TODO_STATUSES.includes(todo.status)
+    ? todo.status
+    : todo.completed
+      ? "done"
+      : "progress";
+
+  return {
+    id: String(todo.id),
+    text: String(todo.text),
+    status,
+    completed: status === "done",
+    created_at: String(todo.created_at || new Date().toISOString()),
+    due_date: normalizeDueDate(todo.due_date),
+  };
 }
 
 async function fetchTodosFromGitHub(options = {}) {
@@ -338,7 +406,7 @@ async function fetchTodosFromGitHub(options = {}) {
       return;
     }
 
-    state.todos = sortTodos(parsed.todos);
+    state.todos = cloneTodos(parsed.todos);
     state.lastSyncedTodos = cloneTodos(state.todos);
     state.currentSha = payload.sha || null;
     renderTodos();
@@ -356,7 +424,7 @@ async function updateTodos(nextTodos, commitMessage) {
     return;
   }
 
-  state.todos = sortTodos(cloneTodos(nextTodos));
+  state.todos = normalizeTodos(nextTodos);
   state.hasUnsyncedChanges = true;
   state.pendingCommitMessage = commitMessage;
   renderTodos();
@@ -425,7 +493,7 @@ async function flushPendingSync(options = {}) {
 
   try {
     while (state.hasUnsyncedChanges) {
-      const snapshot = sortTodos(cloneTodos(state.todos));
+      const snapshot = normalizeTodos(state.todos);
       const commitMessage = state.pendingCommitMessage || "Update todos";
       state.hasUnsyncedChanges = false;
 
@@ -476,13 +544,7 @@ function parseTodosFile(rawContent) {
   }
 
   return {
-    todos: parsed.todos.map((todo) => ({
-      id: String(todo.id),
-      text: String(todo.text),
-      completed: Boolean(todo.completed),
-      created_at: String(todo.created_at || new Date().toISOString()),
-      due_date: normalizeDueDate(todo.due_date),
-    })),
+    todos: normalizeTodos(parsed.todos),
   };
 }
 
@@ -586,6 +648,10 @@ function truncateCommitText(text) {
 
 function cloneTodos(todos) {
   return todos.map((todo) => ({ ...todo }));
+}
+
+function normalizeTodos(todos) {
+  return todos.map((todo) => normalizeTodo(todo));
 }
 
 function todosEqual(left, right) {
