@@ -1,7 +1,7 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 14:11";
-const APP_COMMIT_MESSAGE = "Remove item count label";
+const APP_VERSION = "2026-03-15 14:13";
+const APP_COMMIT_MESSAGE = "Refine background texture";
 
 const state = {
   config: loadSavedConfig(),
