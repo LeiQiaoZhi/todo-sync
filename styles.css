@@ -153,12 +153,17 @@ h2 {
 
 .badge {
   flex: 0 0 auto;
+  min-height: var(--icon-h);
   align-self: center;
-  padding: 0.34rem 0.62rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0.62rem;
   border-radius: 999px;
   font-size: 0.75rem;
   font-weight: 700;
   white-space: nowrap;
+  line-height: 1;
 }
 
 .badge-muted {

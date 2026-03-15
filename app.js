@@ -1,8 +1,8 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 14:34";
-const APP_COMMIT_MESSAGE = "Cool down dark theme palette";
+const APP_VERSION = "2026-03-15 14:36";
+const APP_COMMIT_MESSAGE = "Match sync badge to icon size";
 
 const state = {
   config: loadSavedConfig(),
