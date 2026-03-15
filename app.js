@@ -1,7 +1,7 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 14:10";
-const APP_COMMIT_MESSAGE = "Polish spacing and sizing";
+const APP_VERSION = "2026-03-15 14:11";
+const APP_COMMIT_MESSAGE = "Remove item count label";
 
 const state = {
   config: loadSavedConfig(),
@@ -31,7 +31,6 @@ const elements = {
   todoInput: document.getElementById("todoInput"),
   todoDateInput: document.getElementById("todoDateInput"),
   clearTodoDateButton: document.getElementById("clearTodoDateButton"),
-  todoCount: document.getElementById("todoCount"),
   refreshButton: document.getElementById("refreshButton"),
   todoList: document.getElementById("todoList"),
   emptyState: document.getElementById("emptyState"),
@@ -270,10 +269,7 @@ function renderTodos() {
 
     elements.todoList.appendChild(item);
   });
-
-  const count = state.todos.length;
-  elements.todoCount.textContent = `${count} item${count === 1 ? "" : "s"}`;
-  elements.emptyState.hidden = count > 0;
+  elements.emptyState.hidden = state.todos.length > 0;
 }
 
 async function fetchTodosFromGitHub(options = {}) {
