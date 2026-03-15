@@ -163,6 +163,12 @@ h2 {
   align-items: center;
   justify-content: space-between;
   gap: var(--space-2);
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  border: 0;
+  text-align: left;
+  cursor: pointer;
 }
 
 .todo-group-progress .todo-group-header h2,
@@ -176,14 +182,14 @@ h2 {
 }
 
 .todo-group-done .done-toggle span,
-.todo-group-done .group-count,
-.todo-group-done .done-chevron {
+.todo-group-done .group-count {
   color: var(--done-accent);
 }
 
 .todo-group-header h2,
 .done-toggle span {
   font-size: 0.78rem;
+  font-weight: 400;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--muted);
@@ -215,27 +221,10 @@ h2 {
   background: color-mix(in srgb, var(--done-accent) 14%, transparent);
 }
 
-.done-toggle {
-  padding: 0;
-  background: transparent;
-  color: inherit;
-}
-
-.done-toggle-title {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-}
-
 .done-toggle-meta {
   display: flex;
   align-items: center;
   gap: 0.35rem;
-}
-
-.done-chevron {
-  color: var(--muted);
-  font-size: 0.85rem;
 }
 
 .status-text {

@@ -1,8 +1,8 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 15:02";
-const APP_COMMIT_MESSAGE = "Accent task sections and move done chevron";
+const APP_VERSION = "2026-03-15 15:06";
+const APP_COMMIT_MESSAGE = "Make all sections foldable";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 
 const state = {
@@ -14,7 +14,11 @@ const state = {
   isSyncing: false,
   hasUnsyncedChanges: false,
   pendingCommitMessage: "",
-  doneCollapsed: true,
+  collapsedSections: {
+    progress: false,
+    backlog: false,
+    done: true,
+  },
 };
 
 const elements = {
@@ -42,8 +46,9 @@ const elements = {
   progressCount: document.getElementById("progressCount"),
   backlogCount: document.getElementById("backlogCount"),
   doneCount: document.getElementById("doneCount"),
+  progressToggleButton: document.getElementById("progressToggleButton"),
+  backlogToggleButton: document.getElementById("backlogToggleButton"),
   doneToggleButton: document.getElementById("doneToggleButton"),
-  doneChevron: document.getElementById("doneChevron"),
   emptyState: document.getElementById("emptyState"),
   todoItemTemplate: document.getElementById("todoItemTemplate"),
 };
@@ -93,10 +98,9 @@ function initialize() {
     void fetchTodosFromGitHub();
   });
 
-  elements.doneToggleButton.addEventListener("click", () => {
-    state.doneCollapsed = !state.doneCollapsed;
-    renderTodos();
-  });
+  elements.progressToggleButton.addEventListener("click", () => toggleSection("progress"));
+  elements.backlogToggleButton.addEventListener("click", () => toggleSection("backlog"));
+  elements.doneToggleButton.addEventListener("click", () => toggleSection("done"));
 
   elements.toggleThemeButton.addEventListener("click", () => {
     const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
@@ -256,6 +260,11 @@ function updateEntryDateClearButton() {
   elements.clearTodoDateButton.hidden = !elements.todoDateInput.value;
 }
 
+function toggleSection(section) {
+  state.collapsedSections[section] = !state.collapsedSections[section];
+  renderTodos();
+}
+
 function renderTodos() {
   elements.progressList.innerHTML = "";
   elements.backlogList.innerHTML = "";
@@ -336,9 +345,12 @@ function renderTodos() {
   elements.progressCount.textContent = String(groupedTodos.progress.length);
   elements.backlogCount.textContent = String(groupedTodos.backlog.length);
   elements.doneCount.textContent = String(groupedTodos.done.length);
-  elements.doneList.hidden = state.doneCollapsed;
-  elements.doneToggleButton.setAttribute("aria-expanded", String(!state.doneCollapsed));
-  elements.doneChevron.textContent = state.doneCollapsed ? "▸" : "▾";
+  elements.progressList.hidden = state.collapsedSections.progress;
+  elements.backlogList.hidden = state.collapsedSections.backlog;
+  elements.doneList.hidden = state.collapsedSections.done;
+  elements.progressToggleButton.setAttribute("aria-expanded", String(!state.collapsedSections.progress));
+  elements.backlogToggleButton.setAttribute("aria-expanded", String(!state.collapsedSections.backlog));
+  elements.doneToggleButton.setAttribute("aria-expanded", String(!state.collapsedSections.done));
   elements.emptyState.hidden = state.todos.length > 0;
 }
 
