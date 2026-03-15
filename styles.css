@@ -428,6 +428,23 @@ button:disabled {
   height: var(--meta-chip-h);
   min-height: var(--meta-chip-h);
   max-height: var(--meta-chip-h);
+  color: color-mix(in srgb, var(--muted) 72%, transparent);
+  background: color-mix(in srgb, var(--text) 3%, transparent);
+  border-color: color-mix(in srgb, var(--text) 4%, transparent);
+  transition: color 140ms ease, background-color 140ms ease, border-color 140ms ease;
+}
+
+.due-date-widget:hover,
+.due-date-widget:focus {
+  color: var(--text);
+  background: var(--surface-strong);
+  border-color: color-mix(in srgb, var(--text) 8%, transparent);
+}
+
+.due-date-widget.has-value {
+  color: var(--text);
+  background: var(--surface-strong);
+  border-color: color-mix(in srgb, var(--text) 8%, transparent);
 }
 
 .date-meta-label {
@@ -436,6 +453,18 @@ button:disabled {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.due-date-display {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--meta-chip-h);
+  padding: 0;
+  background: transparent;
+  border: 0;
+  color: var(--muted);
+  font-size: 0.72rem;
+  white-space: nowrap;
 }
 
 .sync-button {

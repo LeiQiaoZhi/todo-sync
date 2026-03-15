@@ -1,8 +1,8 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 16:31";
-const APP_COMMIT_MESSAGE = "Match composer date input height";
+const APP_VERSION = "2026-03-15 16:36";
+const APP_COMMIT_MESSAGE = "Refine task date display";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 
 const state = {
@@ -286,15 +286,14 @@ function renderTodos() {
       const text = item.querySelector(".todo-text");
       const deleteButton = item.querySelector(".delete-button");
       const dueDateInput = item.querySelector(".due-date-input");
-      const dueDateMeta = item.querySelector(".due-date-meta");
+      const dueDateDisplay = item.querySelector(".due-date-display");
       const statusButtons = item.querySelectorAll(".status-option");
 
       item.style.viewTransitionName = getTodoTransitionName(todo.id);
       text.textContent = todo.text;
       item.classList.toggle("completed", todo.status === "done");
       dueDateInput.value = todo.due_date || "";
-      dueDateMeta.hidden = !todo.due_date;
-      dueDateMeta.textContent = todo.due_date ? formatDueDate(todo.due_date) : "";
+      syncTodoDatePresentation(dueDateInput, dueDateDisplay, todo.due_date);
 
       statusButtons.forEach((button) => {
         const nextStatus = button.dataset.status;
@@ -318,9 +317,16 @@ function renderTodos() {
         void updateTodos(nextTodos, `Delete todo: ${truncateCommitText(todo.text)}`);
       });
 
+      dueDateDisplay.addEventListener("click", () => {
+        dueDateDisplay.hidden = true;
+        dueDateInput.hidden = false;
+        queueMicrotask(() => {
+          dueDateInput.focus();
+        });
+      });
+
       dueDateInput.addEventListener("input", () => {
-        dueDateMeta.hidden = !dueDateInput.value;
-        dueDateMeta.textContent = dueDateInput.value ? formatDueDate(dueDateInput.value) : "";
+        syncTodoDatePresentation(dueDateInput, dueDateDisplay, dueDateInput.value || null);
         const nextTodos = state.todos.map((currentTodo) =>
           currentTodo.id === todo.id ? { ...currentTodo, due_date: dueDateInput.value || null } : currentTodo
         );
@@ -396,6 +402,14 @@ function withOptionalViewTransition(updateFn) {
 
 function getTodoTransitionName(id) {
   return `todo-${String(id).replace(/[^a-zA-Z0-9_-]/g, "")}`;
+}
+
+function syncTodoDatePresentation(input, display, value) {
+  const hasValue = Boolean(value);
+  input.classList.toggle("has-value", hasValue);
+  input.hidden = hasValue;
+  display.hidden = !hasValue;
+  display.textContent = hasValue ? formatDueDate(value) : "";
 }
 
 function normalizeTodo(todo) {
