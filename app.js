@@ -1,8 +1,8 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 15:39";
-const APP_COMMIT_MESSAGE = "Fix date chip picker behavior";
+const APP_VERSION = "2026-03-15 15:42";
+const APP_COMMIT_MESSAGE = "Fix unfolding hidden sections";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 
 const state = {
@@ -399,7 +399,6 @@ function syncSectionVisibility(shouldAnimate) {
 
 function animateSectionVisibility(list, shouldExpand) {
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const contentHeight = list.scrollHeight;
   if (reduceMotion) {
     list.hidden = !shouldExpand;
     list.dataset.expanded = String(shouldExpand);
@@ -424,6 +423,15 @@ function animateSectionVisibility(list, shouldExpand) {
   if (shouldExpand) {
     list.hidden = false;
     list.dataset.expanded = "true";
+    const contentHeight = list.scrollHeight;
+
+    if (contentHeight === 0) {
+      list.style.removeProperty("height");
+      list.style.removeProperty("opacity");
+      list.style.removeProperty("overflow");
+      return;
+    }
+
     list.style.height = "0px";
     list.style.opacity = "0";
     const targetHeight = `${contentHeight}px`;
@@ -433,6 +441,17 @@ function animateSectionVisibility(list, shouldExpand) {
       list.style.opacity = "1";
     });
   } else {
+    const contentHeight = list.scrollHeight;
+
+    if (contentHeight === 0) {
+      list.hidden = true;
+      list.dataset.expanded = "false";
+      list.style.removeProperty("height");
+      list.style.removeProperty("opacity");
+      list.style.removeProperty("overflow");
+      return;
+    }
+
     const startHeight = `${contentHeight}px`;
     list.dataset.expanded = "false";
     list.style.height = startHeight;
