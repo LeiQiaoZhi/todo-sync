@@ -1,7 +1,7 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 13:53";
-const APP_COMMIT_MESSAGE = "Prevent header wrapping on mobile";
+const APP_VERSION = "2026-03-15 13:57";
+const APP_COMMIT_MESSAGE = "Move sync status below composer";
 
 const state = {
   config: loadSavedConfig(),

@@ -113,11 +113,16 @@ h2 {
   padding-top: 0.8rem;
 }
 
-.list-header {
+.sync-strip {
   display: flex;
   justify-content: space-between;
   gap: 0.75rem;
   align-items: center;
+  margin-top: 0.6rem;
+  padding: 0.65rem 0.8rem;
+  border-radius: 14px;
+  background: rgba(46, 36, 24, 0.04);
+  border: 1px solid rgba(73, 55, 34, 0.08);
   flex-wrap: nowrap;
 }
 
@@ -444,7 +449,7 @@ button:disabled {
   }
 
   .hero-card,
-  .list-header {
+  .sync-strip {
     flex-direction: row;
     align-items: center;
   }
