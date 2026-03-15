@@ -599,7 +599,7 @@ button:disabled {
     transform 120ms ease;
 }
 
-.todo-item:hover .delete-button,
+.delete-button:hover,
 .delete-button:focus-visible {
   opacity: 1;
   color: var(--danger);
