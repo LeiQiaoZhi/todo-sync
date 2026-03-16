@@ -2,8 +2,8 @@ const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const DRAFT_KEY = "github-todo-unsynced-draft";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 17:32";
-const APP_COMMIT_MESSAGE = "Use custom add-row date control";
+const APP_VERSION = "2026-03-15 17:35";
+const APP_COMMIT_MESSAGE = "Close add-row picker after selection";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 const INITIAL_DRAFT = loadDraftState();
 const SYNC_RETRY_MS = 4000;
@@ -127,6 +127,7 @@ function initialize() {
 
   elements.todoDateInput.addEventListener("change", () => {
     updateEntryDateButton();
+    closeEntryDatePicker();
   });
 
   elements.todoForm.addEventListener("submit", (event) => {
@@ -177,6 +178,13 @@ function openEntryDatePicker() {
 
   elements.todoDateInput.focus();
   elements.todoDateInput.click();
+}
+
+function closeEntryDatePicker() {
+  window.setTimeout(() => {
+    elements.todoDateInput.blur();
+    elements.todoDateButton.focus({ preventScroll: true });
+  }, 0);
 }
 
 function updateEntryDateButton() {
