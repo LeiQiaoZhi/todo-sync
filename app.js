@@ -1,19 +1,21 @@
 const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
+const DRAFT_KEY = "github-todo-unsynced-draft";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 16:36";
-const APP_COMMIT_MESSAGE = "Refine task date display";
+const APP_VERSION = "2026-03-15 16:45";
+const APP_COMMIT_MESSAGE = "Persist drafts and timeout sync";
 const TODO_STATUSES = ["progress", "backlog", "done"];
+const INITIAL_DRAFT = loadDraftState();
 
 const state = {
   config: loadSavedConfig(),
-  todos: [],
+  todos: INITIAL_DRAFT?.todos || [],
   lastSyncedTodos: [],
   currentSha: null,
   isBusy: false,
   isSyncing: false,
-  hasUnsyncedChanges: false,
-  pendingCommitMessage: "",
+  hasUnsyncedChanges: Boolean(INITIAL_DRAFT),
+  pendingCommitMessage: INITIAL_DRAFT?.pendingCommitMessage || "",
   collapsedSections: {
     progress: false,
     backlog: false,
@@ -75,6 +77,7 @@ function initialize() {
 
   elements.clearButton.addEventListener("click", () => {
     localStorage.removeItem(STORAGE_KEY);
+    clearDraftState();
     state.config = emptyConfig();
     state.todos = [];
     state.lastSyncedTodos = [];
@@ -137,7 +140,12 @@ function initialize() {
     void updateTodos(nextTodos, `Add todo: ${truncateCommitText(text)}`);
   });
 
-  if (isConfigReady()) {
+  if (state.hasUnsyncedChanges) {
+    setStatus("Restored unsynced local changes.", "idle");
+    if (isConfigReady()) {
+      void flushPendingSync();
+    }
+  } else if (isConfigReady()) {
     void fetchTodosFromGitHub({ isStartup: true });
   } else {
     setStatus("Add your GitHub settings to connect this app.", "idle");
@@ -200,6 +208,41 @@ function loadSavedConfig() {
   } catch (error) {
     return emptyConfig();
   }
+}
+
+function loadDraftState() {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(DRAFT_KEY) || "null");
+    if (!parsed || !Array.isArray(parsed.todos)) {
+      return null;
+    }
+
+    return {
+      todos: normalizeTodos(parsed.todos),
+      pendingCommitMessage: String(parsed.pendingCommitMessage || "Update todos"),
+    };
+  } catch (error) {
+    return null;
+  }
+}
+
+function persistDraftState() {
+  if (!state.hasUnsyncedChanges) {
+    clearDraftState();
+    return;
+  }
+
+  localStorage.setItem(
+    DRAFT_KEY,
+    JSON.stringify({
+      todos: state.todos,
+      pendingCommitMessage: state.pendingCommitMessage || "Update todos",
+    })
+  );
+}
+
+function clearDraftState() {
+  localStorage.removeItem(DRAFT_KEY);
 }
 
 function populateSettingsForm() {
@@ -448,6 +491,7 @@ async function fetchTodosFromGitHub(options = {}) {
       state.lastSyncedTodos = [];
       state.currentSha = null;
       state.hasUnsyncedChanges = false;
+      clearDraftState();
       renderTodos();
       setStatus("Connected. No todos yet, so your first save will create todos.json.", "idle");
       return;
@@ -467,6 +511,7 @@ async function fetchTodosFromGitHub(options = {}) {
     state.todos = cloneTodos(parsed.todos);
     state.lastSyncedTodos = cloneTodos(state.todos);
     state.currentSha = payload.sha || null;
+    clearDraftState();
     renderTodos();
     setStatus("Synced with GitHub.", "success");
   } catch (error) {
@@ -486,6 +531,7 @@ async function updateTodos(nextTodos, commitMessage) {
     state.todos = normalizeTodos(nextTodos);
     state.hasUnsyncedChanges = true;
     state.pendingCommitMessage = commitMessage;
+    persistDraftState();
     renderTodos();
   });
   setStatus("Saving changes...", "idle");
@@ -560,9 +606,11 @@ async function flushPendingSync(options = {}) {
       const data = await commitTodos(snapshot, commitMessage);
       state.currentSha = data.content?.sha || null;
       state.lastSyncedTodos = cloneTodos(snapshot);
+      clearDraftState();
 
       if (!todosEqual(state.todos, snapshot)) {
         state.hasUnsyncedChanges = true;
+        persistDraftState();
       }
     }
 
@@ -624,9 +672,12 @@ async function githubRequest(method, url, body, options = {}) {
   const { retries = 0 } = options;
 
   try {
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), 15000);
     return await fetch(url, {
       method,
       cache: "no-store",
+      signal: controller.signal,
       headers: {
         Accept: "application/vnd.github+json",
         Authorization: `Bearer ${state.config.token}`,
@@ -634,11 +685,17 @@ async function githubRequest(method, url, body, options = {}) {
         "X-GitHub-Api-Version": "2022-11-28",
       },
       body: body ? JSON.stringify(body) : undefined,
+    }).finally(() => {
+      window.clearTimeout(timeoutId);
     });
   } catch (error) {
     if (retries > 0) {
       await delay(500);
       return githubRequest(method, url, body, { retries: retries - 1 });
+    }
+
+    if (error?.name === "AbortError") {
+      throw new Error("GitHub request timed out.");
     }
 
     throw new Error("Could not reach GitHub.");
@@ -786,6 +843,10 @@ function formatShortDate(value) {
 }
 
 function formatGitHubError(error, isStartup) {
+  if (/timed out/i.test(error?.message || "")) {
+    return "GitHub sync timed out. Your local changes were kept. Try Sync Now again.";
+  }
+
   if (/Could not reach GitHub/i.test(error?.message || "")) {
     return isStartup
       ? "Could not connect to GitHub on startup. Tap Sync Now to retry."
