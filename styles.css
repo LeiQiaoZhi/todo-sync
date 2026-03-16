@@ -421,6 +421,17 @@ button:disabled {
   border-radius: var(--radius-md);
 }
 
+.todo-entry > .primary-button {
+  background: color-mix(in srgb, var(--primary) 12%, var(--surface-strong));
+  border-color: color-mix(in srgb, var(--primary) 14%, transparent);
+  color: var(--primary-strong);
+}
+
+.todo-entry > .primary-button:hover {
+  background: color-mix(in srgb, var(--primary) 18%, var(--surface-strong));
+  border-color: color-mix(in srgb, var(--primary) 18%, transparent);
+}
+
 .todo-entry > input[type="text"] {
   padding: 0 1rem;
   line-height: calc(var(--control-h) - 2px);
