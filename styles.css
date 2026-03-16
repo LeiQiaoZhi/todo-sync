@@ -567,12 +567,16 @@ button:disabled {
 .todo-main {
   min-width: 0;
   flex: 1;
-  flex-direction: column;
-  align-items: stretch;
-  gap: var(--space-2);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  column-gap: var(--space-3);
+  row-gap: var(--space-2);
 }
 
 .todo-text {
+  grid-column: 1;
+  grid-row: 1;
   word-break: break-word;
   font-size: 0.96rem;
   line-height: 1.35;
@@ -584,6 +588,8 @@ button:disabled {
 }
 
 .todo-text-editor {
+  grid-column: 1;
+  grid-row: 1;
   width: 100%;
   min-height: 2.75rem;
   resize: none;
@@ -603,10 +609,14 @@ button:disabled {
 }
 
 .todo-meta-row {
-  display: flex;
+  grid-column: 2;
+  grid-row: 1;
+  display: inline-flex;
   gap: var(--space-2);
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  justify-self: end;
+  align-self: start;
 }
 
 .status-control {
@@ -750,6 +760,13 @@ textarea:focus-visible {
   .todo-item {
     flex-direction: row;
     align-items: flex-start;
+  }
+
+  .todo-main {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-2);
   }
 
   .hero-card,
