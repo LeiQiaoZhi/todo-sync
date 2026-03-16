@@ -2,8 +2,8 @@ const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const DRAFT_KEY = "github-todo-unsynced-draft";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 17:02";
-const APP_COMMIT_MESSAGE = "Add inline task text editing";
+const APP_VERSION = "2026-03-15 17:08";
+const APP_COMMIT_MESSAGE = "Unify auto and manual sync path";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 const INITIAL_DRAFT = loadDraftState();
 const SYNC_RETRY_MS = 4000;
@@ -97,12 +97,7 @@ function initialize() {
   });
 
   elements.refreshButton.addEventListener("click", () => {
-    if (state.hasUnsyncedChanges || state.isSyncing) {
-      void flushPendingSync({ manual: true });
-      return;
-    }
-
-    void fetchTodosFromGitHub();
+    void runSyncAction({ manual: true });
   });
 
   elements.progressToggleButton.addEventListener("click", () => toggleSection("progress"));
@@ -272,7 +267,7 @@ function scheduleBackgroundSync(delay = SYNC_RETRY_MS) {
 
   syncRetryTimer = window.setTimeout(() => {
     syncRetryTimer = null;
-    void flushPendingSync();
+    void runSyncAction({ manual: false });
   }, delay);
 }
 
@@ -651,6 +646,19 @@ async function updateTodos(nextTodos, commitMessage) {
   });
   setStatus("Saving changes...", "idle");
   scheduleBackgroundSync(0);
+}
+
+async function runSyncAction(options = {}) {
+  const { manual = false } = options;
+
+  if (state.hasUnsyncedChanges || state.isSyncing) {
+    await flushPendingSync({ manual });
+    return;
+  }
+
+  if (manual) {
+    await fetchTodosFromGitHub();
+  }
 }
 
 async function commitTodos(nextTodos, commitMessage, hasRetried = false) {
