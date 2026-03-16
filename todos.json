@@ -1,14 +1,6 @@
 {
   "todos": [
     {
-      "id": "558d5bd0-b4ae-4dac-a06a-31458853d6d4",
-      "text": "tmr",
-      "status": "backlog",
-      "completed": false,
-      "created_at": "2026-03-16T06:36:34.858Z",
-      "due_date": "2026-03-16"
-    },
-    {
       "id": "aa50177d-a642-44b7-814b-3bbcdcb5dec4",
       "text": "plan trip",
       "status": "progress",
