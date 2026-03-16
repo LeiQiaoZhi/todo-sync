@@ -838,6 +838,12 @@ textarea:focus-visible {
     margin-top: -0.08rem;
   }
 
+  .delete-button {
+    width: 1.7rem;
+    height: 1.7rem;
+    font-size: 0.86rem;
+  }
+
   .todo-entry > input[type="text"] {
     flex: 1 0 100%;
   }
