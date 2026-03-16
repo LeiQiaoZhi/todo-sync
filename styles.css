@@ -306,6 +306,12 @@ input[type="password"],
   transition: border-color 120ms ease, box-shadow 120ms ease, background-color 120ms ease, transform 120ms ease;
 }
 
+input[type="text"]::placeholder,
+input[type="password"]::placeholder,
+textarea::placeholder {
+  color: color-mix(in srgb, var(--muted) 78%, transparent);
+}
+
 input[type="text"]:focus,
 input[type="password"]:focus,
 .date-input:focus {
@@ -477,13 +483,13 @@ button:disabled {
 .entry-date-button {
   display: inline-flex;
   justify-content: flex-start;
-  font-weight: 500;
+  font-weight: 400;
   padding-inline: 1rem;
   width: 100%;
   pointer-events: none;
   background: var(--surface-strong);
   border: 1px solid var(--border-strong);
-  color: var(--muted);
+  color: color-mix(in srgb, var(--muted) 78%, transparent);
 }
 
 .entry-date-button.has-value {
