@@ -2,8 +2,8 @@ const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const DRAFT_KEY = "github-todo-unsynced-draft";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-16 10:59";
-const APP_COMMIT_MESSAGE = "Keep task edit height stable";
+const APP_VERSION = "2026-03-16 11:03";
+const APP_COMMIT_MESSAGE = "Add done background pulse";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 const INITIAL_DRAFT = loadDraftState();
 const SYNC_RETRY_MS = 4000;
@@ -178,6 +178,7 @@ function updateEntryDateButton() {
 function celebrateCompletion(todoId) {
   state.celebratingTodoId = todoId;
   state.celebratingDoneSection = true;
+  document.body.classList.add("done-background-pulse");
   renderTodos();
 
   if (completionCelebrationTimer) {
@@ -187,6 +188,7 @@ function celebrateCompletion(todoId) {
   completionCelebrationTimer = window.setTimeout(() => {
     state.celebratingTodoId = null;
     state.celebratingDoneSection = false;
+    document.body.classList.remove("done-background-pulse");
     completionCelebrationTimer = null;
     renderTodos();
   }, 900);
