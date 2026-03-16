@@ -463,15 +463,15 @@ button:disabled {
   padding-inline: 1rem;
   width: 100%;
   pointer-events: none;
-  background: transparent;
-  border: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
+  background: var(--surface-strong);
+  border: 1px solid var(--border-strong);
   color: var(--muted);
 }
 
 .entry-date-button.has-value {
-  background: color-mix(in srgb, var(--text) 4%, var(--surface-strong));
+  background: var(--surface-strong);
   color: var(--text);
-  border-color: color-mix(in srgb, var(--text) 8%, transparent);
+  border-color: var(--border-strong);
 }
 
 .entry-date-native-input {
