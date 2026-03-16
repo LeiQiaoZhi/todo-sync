@@ -2,8 +2,8 @@ const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const DRAFT_KEY = "github-todo-unsynced-draft";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 17:15";
-const APP_COMMIT_MESSAGE = "Refresh relative dates after midnight";
+const APP_VERSION = "2026-03-15 17:19";
+const APP_COMMIT_MESSAGE = "Fix stale syncing status UI";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 const INITIAL_DRAFT = loadDraftState();
 const SYNC_RETRY_MS = 4000;
@@ -758,6 +758,8 @@ async function flushPendingSync(options = {}) {
     state.isSyncing = false;
     if (state.hasUnsyncedChanges) {
       scheduleBackgroundSync();
+    } else {
+      setStatus("Changes synced to GitHub.", "success");
     }
   }
 }
