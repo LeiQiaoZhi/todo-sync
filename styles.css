@@ -462,6 +462,9 @@ button:disabled {
   padding-inline: 1rem;
   width: 100%;
   pointer-events: none;
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
+  color: var(--muted);
 }
 
 .entry-date-button.has-value {
