@@ -2,8 +2,8 @@ const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const DRAFT_KEY = "github-todo-unsynced-draft";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-16 10:32";
-const APP_COMMIT_MESSAGE = "Soften composer hints";
+const APP_VERSION = "2026-03-16 10:39";
+const APP_COMMIT_MESSAGE = "Celebrate folded done section";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 const INITIAL_DRAFT = loadDraftState();
 const SYNC_RETRY_MS = 4000;
@@ -23,6 +23,7 @@ const state = {
   hasUnsyncedChanges: Boolean(INITIAL_DRAFT),
   pendingCommitMessage: INITIAL_DRAFT?.pendingCommitMessage || "",
   celebratingTodoId: null,
+  celebratingDoneSection: false,
   collapsedSections: {
     progress: false,
     backlog: false,
@@ -176,6 +177,7 @@ function updateEntryDateButton() {
 
 function celebrateCompletion(todoId) {
   state.celebratingTodoId = todoId;
+  state.celebratingDoneSection = true;
   renderTodos();
 
   if (completionCelebrationTimer) {
@@ -184,6 +186,7 @@ function celebrateCompletion(todoId) {
 
   completionCelebrationTimer = window.setTimeout(() => {
     state.celebratingTodoId = null;
+    state.celebratingDoneSection = false;
     completionCelebrationTimer = null;
     renderTodos();
   }, 900);
@@ -501,6 +504,8 @@ function renderTodos() {
   elements.progressCount.textContent = String(groupedTodos.progress.length);
   elements.backlogCount.textContent = String(groupedTodos.backlog.length);
   elements.doneCount.textContent = String(groupedTodos.done.length);
+  elements.doneToggleButton.classList.toggle("celebrate-done-section", state.celebratingDoneSection);
+  elements.doneCount.classList.toggle("celebrate-done-count", state.celebratingDoneSection);
   syncSectionVisibility();
   elements.emptyState.hidden = state.todos.length > 0;
 }
