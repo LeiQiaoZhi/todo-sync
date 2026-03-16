@@ -431,6 +431,7 @@ button:disabled {
   line-height: 1;
 }
 
+.entry-date-shell,
 .entry-date-button,
 .entry-date-input,
 .due-date-widget {
@@ -438,10 +439,18 @@ button:disabled {
   flex: 0 0 auto;
 }
 
+.entry-date-shell {
+  position: relative;
+  height: var(--control-h);
+}
+
 .entry-date-button {
+  display: inline-flex;
   justify-content: flex-start;
   font-weight: 500;
   padding-inline: 1rem;
+  width: 100%;
+  pointer-events: none;
 }
 
 .entry-date-button.has-value {
@@ -452,11 +461,11 @@ button:disabled {
 
 .entry-date-native-input {
   position: absolute;
-  inset: auto;
-  width: 1px;
-  height: 1px;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   opacity: 0;
-  pointer-events: none;
+  cursor: pointer;
 }
 
 .entry-date-input {
@@ -777,6 +786,7 @@ button:disabled {
     width: 100%;
   }
 
+  .entry-date-shell,
   .entry-date-button,
   .entry-date-input {
     width: 100%;

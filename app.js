@@ -2,8 +2,8 @@ const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const DRAFT_KEY = "github-todo-unsynced-draft";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 17:38";
-const APP_COMMIT_MESSAGE = "Unify composer control styling";
+const APP_VERSION = "2026-03-15 17:42";
+const APP_COMMIT_MESSAGE = "Let Safari use native add-row picker";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 const INITIAL_DRAFT = loadDraftState();
 const SYNC_RETRY_MS = 4000;
@@ -117,17 +117,12 @@ function initialize() {
     }
   });
 
-  elements.todoDateButton.addEventListener("click", () => {
-    openEntryDatePicker();
-  });
-
   elements.todoDateInput.addEventListener("input", () => {
     updateEntryDateButton();
   });
 
   elements.todoDateInput.addEventListener("change", () => {
     updateEntryDateButton();
-    closeEntryDatePicker();
   });
 
   elements.todoForm.addEventListener("submit", (event) => {
@@ -168,23 +163,6 @@ function initialize() {
 
   scheduleRelativeDateRefresh();
   updateEntryDateButton();
-}
-
-function openEntryDatePicker() {
-  if (typeof elements.todoDateInput.showPicker === "function") {
-    elements.todoDateInput.showPicker();
-    return;
-  }
-
-  elements.todoDateInput.focus();
-  elements.todoDateInput.click();
-}
-
-function closeEntryDatePicker() {
-  window.setTimeout(() => {
-    elements.todoDateInput.blur();
-    elements.todoDateButton.focus({ preventScroll: true });
-  }, 0);
 }
 
 function updateEntryDateButton() {
