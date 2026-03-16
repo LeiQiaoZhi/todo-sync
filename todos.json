@@ -3,8 +3,8 @@
     {
       "id": "9616d4c2-b319-46f6-a9e2-55836d3163c1",
       "text": "test",
-      "status": "done",
-      "completed": true,
+      "status": "backlog",
+      "completed": false,
       "created_at": "2026-03-15T22:56:32.509Z",
       "due_date": null
     },
