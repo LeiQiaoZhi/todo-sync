@@ -27,8 +27,8 @@
     {
       "id": "7fc12e1e-df77-467f-9529-01974489f2f6",
       "text": "598 reflection 3",
-      "status": "backlog",
-      "completed": false,
+      "status": "done",
+      "completed": true,
       "created_at": "2026-03-16T07:04:57.671Z",
       "due_date": "2026-04-24"
     },
