@@ -310,8 +310,8 @@ input[type="text"]:focus,
 input[type="password"]:focus,
 .date-input:focus {
   outline: none;
-  border-color: rgba(196, 99, 47, 0.6);
-  box-shadow: 0 0 0 4px rgba(196, 99, 47, 0.12);
+  border-color: color-mix(in srgb, var(--text) 14%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--text) 6%, transparent);
 }
 
 button {
@@ -780,7 +780,7 @@ button:focus-visible,
 input:focus-visible,
 textarea:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 14%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--text) 6%, transparent);
 }
 
 [hidden] {
