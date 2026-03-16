@@ -2,8 +2,8 @@ const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const DRAFT_KEY = "github-todo-unsynced-draft";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 16:45";
-const APP_COMMIT_MESSAGE = "Persist drafts and timeout sync";
+const APP_VERSION = "2026-03-15 16:50";
+const APP_COMMIT_MESSAGE = "Add in-place delete confirm";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 const INITIAL_DRAFT = loadDraftState();
 
@@ -328,6 +328,7 @@ function renderTodos() {
       const item = elements.todoItemTemplate.content.firstElementChild.cloneNode(true);
       const text = item.querySelector(".todo-text");
       const deleteButton = item.querySelector(".delete-button");
+      const deleteConfirmButton = item.querySelector(".delete-confirm-button");
       const dueDateInput = item.querySelector(".due-date-input");
       const dueDateDisplay = item.querySelector(".due-date-display");
       const statusButtons = item.querySelectorAll(".status-option");
@@ -356,8 +357,18 @@ function renderTodos() {
       });
 
       deleteButton.addEventListener("click", () => {
+        deleteButton.hidden = true;
+        deleteConfirmButton.hidden = false;
+      });
+
+      deleteConfirmButton.addEventListener("click", () => {
         const nextTodos = state.todos.filter((currentTodo) => currentTodo.id !== todo.id);
         void updateTodos(nextTodos, `Delete todo: ${truncateCommitText(todo.text)}`);
+      });
+
+      item.addEventListener("mouseleave", () => {
+        deleteButton.hidden = false;
+        deleteConfirmButton.hidden = true;
       });
 
       dueDateDisplay.addEventListener("click", () => {

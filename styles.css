@@ -622,6 +622,19 @@ button:disabled {
   }
 }
 
+.delete-confirm-button {
+  min-width: calc(var(--icon-h) * 2.2);
+  height: var(--icon-h);
+  padding: 0 0.7rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--danger) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--danger) 18%, transparent);
+  color: var(--danger);
+  font-size: 0.74rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
 .empty-state {
   margin: var(--space-3) 0 0;
   text-align: center;
