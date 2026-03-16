@@ -400,6 +400,7 @@ button:disabled {
   gap: var(--space-2);
   align-items: center;
   flex-wrap: wrap;
+  flex: 0 0 auto;
 }
 
 .inline-date-input {
@@ -422,6 +423,7 @@ button:disabled {
   max-height: var(--control-h);
   padding: 0.72rem 0.8rem;
   font-size: 0.88rem;
+  border-radius: 999px;
 }
 
 .due-date-widget {
@@ -661,9 +663,14 @@ button:disabled {
 
   .hero-card,
   .panel-header,
-  .settings-actions,
-  .todo-entry {
+  .settings-actions {
     flex-direction: column;
+    align-items: stretch;
+  }
+
+  .todo-entry {
+    flex-direction: row;
+    flex-wrap: wrap;
     align-items: stretch;
   }
 
@@ -710,13 +717,30 @@ button:disabled {
     justify-content: flex-end;
   }
 
+  .todo-entry > input[type="text"] {
+    flex: 1 0 100%;
+  }
+
+  .todo-entry-side {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
   .todo-entry-side,
   .todo-meta-row,
   .status-control {
     width: 100%;
   }
 
-  .entry-date-input,
+  .entry-date-input {
+    width: 100%;
+  }
+
+  .todo-entry > .primary-button {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
   .due-date-widget {
     width: 100%;
   }
