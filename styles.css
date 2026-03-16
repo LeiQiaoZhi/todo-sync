@@ -418,6 +418,7 @@ button:disabled {
   height: var(--control-h);
   min-height: var(--control-h);
   max-height: var(--control-h);
+  border-radius: var(--radius-md);
 }
 
 .todo-entry > input[type="text"] {
