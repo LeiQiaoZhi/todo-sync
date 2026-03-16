@@ -2,14 +2,15 @@ const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const DRAFT_KEY = "github-todo-unsynced-draft";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 17:11";
-const APP_COMMIT_MESSAGE = "Remove add-row date helper text";
+const APP_VERSION = "2026-03-15 17:15";
+const APP_COMMIT_MESSAGE = "Refresh relative dates after midnight";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 const INITIAL_DRAFT = loadDraftState();
 const SYNC_RETRY_MS = 4000;
 const SYNC_STALL_MS = 20000;
 let syncRetryTimer = null;
 let syncWatchdogTimer = null;
+let dateRefreshTimer = null;
 
 const state = {
   config: loadSavedConfig(),
@@ -109,6 +110,12 @@ function initialize() {
     localStorage.setItem(THEME_KEY, nextTheme);
   });
 
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) {
+      refreshRelativeDates();
+    }
+  });
+
   elements.todoForm.addEventListener("submit", (event) => {
     event.preventDefault();
     const text = elements.todoInput.value.trim();
@@ -144,6 +151,7 @@ function initialize() {
     setStatus("Add your GitHub settings to connect this app.", "idle");
   }
 
+  scheduleRelativeDateRefresh();
 }
 
 function loadThemePreference() {
@@ -639,6 +647,27 @@ async function runSyncAction(options = {}) {
   if (manual) {
     await fetchTodosFromGitHub();
   }
+}
+
+function refreshRelativeDates() {
+  renderTodos();
+  scheduleRelativeDateRefresh();
+}
+
+function scheduleRelativeDateRefresh() {
+  if (dateRefreshTimer) {
+    window.clearTimeout(dateRefreshTimer);
+  }
+
+  const now = new Date();
+  const nextMidnight = new Date(now);
+  nextMidnight.setHours(24, 0, 5, 0);
+  const delay = Math.max(1000, nextMidnight.getTime() - now.getTime());
+
+  dateRefreshTimer = window.setTimeout(() => {
+    dateRefreshTimer = null;
+    refreshRelativeDates();
+  }, delay);
 }
 
 async function commitTodos(nextTodos, commitMessage, hasRetried = false) {
