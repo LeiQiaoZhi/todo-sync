@@ -447,14 +447,6 @@ button:disabled {
   border-color: color-mix(in srgb, var(--text) 8%, transparent);
 }
 
-.date-meta-label {
-  font-size: 0.72rem;
-  color: var(--muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 .due-date-display {
   display: inline-flex;
   align-items: center;

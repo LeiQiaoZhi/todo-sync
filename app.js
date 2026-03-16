@@ -2,8 +2,8 @@ const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const DRAFT_KEY = "github-todo-unsynced-draft";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 17:08";
-const APP_COMMIT_MESSAGE = "Unify auto and manual sync path";
+const APP_VERSION = "2026-03-15 17:11";
+const APP_COMMIT_MESSAGE = "Remove add-row date helper text";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 const INITIAL_DRAFT = loadDraftState();
 const SYNC_RETRY_MS = 4000;
@@ -44,7 +44,6 @@ const elements = {
   todoForm: document.getElementById("todoForm"),
   todoInput: document.getElementById("todoInput"),
   todoDateInput: document.getElementById("todoDateInput"),
-  todoDateMeta: document.getElementById("todoDateMeta"),
   refreshButton: document.getElementById("refreshButton"),
   progressList: document.getElementById("progressList"),
   backlogList: document.getElementById("backlogList"),
@@ -110,10 +109,6 @@ function initialize() {
     localStorage.setItem(THEME_KEY, nextTheme);
   });
 
-  elements.todoDateInput.addEventListener("input", () => {
-    updateEntryDateMeta();
-  });
-
   elements.todoForm.addEventListener("submit", (event) => {
     event.preventDefault();
     const text = elements.todoInput.value.trim();
@@ -135,7 +130,6 @@ function initialize() {
 
     elements.todoInput.value = "";
     elements.todoDateInput.value = "";
-    updateEntryDateMeta();
     void updateTodos(nextTodos, `Add todo: ${truncateCommitText(text)}`);
   });
 
@@ -150,20 +144,6 @@ function initialize() {
     setStatus("Add your GitHub settings to connect this app.", "idle");
   }
 
-  updateEntryDateMeta();
-
-}
-
-function updateEntryDateMeta() {
-  const value = elements.todoDateInput.value;
-  if (!value) {
-    elements.todoDateMeta.hidden = true;
-    elements.todoDateMeta.textContent = "";
-    return;
-  }
-
-  elements.todoDateMeta.hidden = false;
-  elements.todoDateMeta.textContent = formatDueDate(value);
 }
 
 function loadThemePreference() {
