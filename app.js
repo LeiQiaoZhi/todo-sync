@@ -2,8 +2,8 @@ const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const DRAFT_KEY = "github-todo-unsynced-draft";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 17:26";
-const APP_COMMIT_MESSAGE = "Match composer control heights";
+const APP_VERSION = "2026-03-15 17:32";
+const APP_COMMIT_MESSAGE = "Use custom add-row date control";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 const INITIAL_DRAFT = loadDraftState();
 const SYNC_RETRY_MS = 4000;
@@ -44,6 +44,7 @@ const elements = {
   toggleThemeButton: document.getElementById("toggleThemeButton"),
   todoForm: document.getElementById("todoForm"),
   todoInput: document.getElementById("todoInput"),
+  todoDateButton: document.getElementById("todoDateButton"),
   todoDateInput: document.getElementById("todoDateInput"),
   refreshButton: document.getElementById("refreshButton"),
   progressList: document.getElementById("progressList"),
@@ -116,6 +117,18 @@ function initialize() {
     }
   });
 
+  elements.todoDateButton.addEventListener("click", () => {
+    openEntryDatePicker();
+  });
+
+  elements.todoDateInput.addEventListener("input", () => {
+    updateEntryDateButton();
+  });
+
+  elements.todoDateInput.addEventListener("change", () => {
+    updateEntryDateButton();
+  });
+
   elements.todoForm.addEventListener("submit", (event) => {
     event.preventDefault();
     const text = elements.todoInput.value.trim();
@@ -137,6 +150,7 @@ function initialize() {
 
     elements.todoInput.value = "";
     elements.todoDateInput.value = "";
+    updateEntryDateButton();
     void updateTodos(nextTodos, `Add todo: ${truncateCommitText(text)}`);
   });
 
@@ -152,6 +166,24 @@ function initialize() {
   }
 
   scheduleRelativeDateRefresh();
+  updateEntryDateButton();
+}
+
+function openEntryDatePicker() {
+  if (typeof elements.todoDateInput.showPicker === "function") {
+    elements.todoDateInput.showPicker();
+    return;
+  }
+
+  elements.todoDateInput.focus();
+  elements.todoDateInput.click();
+}
+
+function updateEntryDateButton() {
+  const value = elements.todoDateInput.value;
+  const hasValue = Boolean(value);
+  elements.todoDateButton.textContent = hasValue ? formatShortDate(value) : "Date";
+  elements.todoDateButton.classList.toggle("has-value", hasValue);
 }
 
 function loadThemePreference() {

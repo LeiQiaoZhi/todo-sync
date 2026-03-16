@@ -406,6 +406,7 @@ button:disabled {
   align-items: center;
   flex-wrap: wrap;
   flex: 0 0 auto;
+  position: relative;
 }
 
 .inline-date-input {
@@ -416,10 +417,31 @@ button:disabled {
   line-height: 1;
 }
 
+.entry-date-button,
 .entry-date-input,
 .due-date-widget {
   width: 9.5rem;
   flex: 0 0 auto;
+}
+
+.entry-date-button {
+  justify-content: flex-start;
+  font-weight: 500;
+}
+
+.entry-date-button.has-value {
+  background: color-mix(in srgb, var(--primary) 10%, var(--surface-strong));
+  color: var(--text);
+  border-color: color-mix(in srgb, var(--primary) 18%, transparent);
+}
+
+.entry-date-native-input {
+  position: absolute;
+  inset: auto;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .entry-date-input {
@@ -740,6 +762,7 @@ button:disabled {
     width: 100%;
   }
 
+  .entry-date-button,
   .entry-date-input {
     width: 100%;
   }
