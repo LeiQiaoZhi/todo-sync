@@ -517,10 +517,25 @@ button:disabled {
   word-break: break-word;
   font-size: 0.96rem;
   line-height: 1.35;
+  cursor: text;
 }
 
 .todo-item.completed .todo-text {
   color: var(--muted);
+}
+
+.todo-text-editor {
+  width: 100%;
+  min-height: 2.75rem;
+  resize: none;
+  overflow: hidden;
+  padding: 0.55rem 0.72rem;
+  border-radius: 14px;
+  border: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
+  background: color-mix(in srgb, var(--text) 3%, transparent);
+  color: var(--text);
+  font-size: 0.96rem;
+  line-height: 1.35;
 }
 
 .todo-actions {

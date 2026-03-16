@@ -2,8 +2,8 @@ const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const DRAFT_KEY = "github-todo-unsynced-draft";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 16:55";
-const APP_COMMIT_MESSAGE = "Auto-retry stalled background sync";
+const APP_VERSION = "2026-03-15 17:02";
+const APP_COMMIT_MESSAGE = "Add inline task text editing";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 const INITIAL_DRAFT = loadDraftState();
 const SYNC_RETRY_MS = 4000;
@@ -373,6 +373,7 @@ function renderTodos() {
     groupedTodos[status].forEach((todo) => {
       const item = elements.todoItemTemplate.content.firstElementChild.cloneNode(true);
       const text = item.querySelector(".todo-text");
+      const textEditor = item.querySelector(".todo-text-editor");
       const deleteButton = item.querySelector(".delete-button");
       const deleteConfirmButton = item.querySelector(".delete-confirm-button");
       const dueDateInput = item.querySelector(".due-date-input");
@@ -381,9 +382,43 @@ function renderTodos() {
 
       item.style.viewTransitionName = getTodoTransitionName(todo.id);
       text.textContent = todo.text;
+      textEditor.value = todo.text;
       item.classList.toggle("completed", todo.status === "done");
       dueDateInput.value = todo.due_date || "";
       syncTodoDatePresentation(dueDateInput, dueDateDisplay, todo.due_date);
+
+      text.addEventListener("click", () => {
+        text.hidden = true;
+        textEditor.hidden = false;
+        textEditor.value = todo.text;
+        queueMicrotask(() => {
+          textEditor.focus();
+          textEditor.setSelectionRange(textEditor.value.length, textEditor.value.length);
+          autoSizeTaskEditor(textEditor);
+        });
+      });
+
+      textEditor.addEventListener("input", () => {
+        autoSizeTaskEditor(textEditor);
+      });
+
+      textEditor.addEventListener("blur", () => {
+        void commitTaskTextEdit(todo, text, textEditor);
+      });
+
+      textEditor.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          textEditor.value = todo.text;
+          textEditor.hidden = true;
+          text.hidden = false;
+          return;
+        }
+
+        if (event.key === "Enter" && !event.shiftKey && !event.isComposing) {
+          event.preventDefault();
+          textEditor.blur();
+        }
+      });
 
       statusButtons.forEach((button) => {
         const nextStatus = button.dataset.status;
@@ -502,6 +537,29 @@ function withOptionalViewTransition(updateFn) {
 
 function getTodoTransitionName(id) {
   return `todo-${String(id).replace(/[^a-zA-Z0-9_-]/g, "")}`;
+}
+
+function autoSizeTaskEditor(editor) {
+  editor.style.height = "0px";
+  editor.style.height = `${Math.max(editor.scrollHeight, 44)}px`;
+}
+
+async function commitTaskTextEdit(todo, text, editor) {
+  const nextText = editor.value.trim();
+  editor.hidden = true;
+  text.hidden = false;
+
+  if (!nextText || nextText === todo.text) {
+    editor.value = todo.text;
+    text.textContent = todo.text;
+    return;
+  }
+
+  text.textContent = nextText;
+  const nextTodos = state.todos.map((currentTodo) =>
+    currentTodo.id === todo.id ? { ...currentTodo, text: nextText } : currentTodo
+  );
+  await updateTodos(nextTodos, `Edit todo: ${truncateCommitText(nextText)}`);
 }
 
 function syncTodoDatePresentation(input, display, value) {
