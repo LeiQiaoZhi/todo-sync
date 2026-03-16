@@ -2,10 +2,14 @@ const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const DRAFT_KEY = "github-todo-unsynced-draft";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-15 16:50";
-const APP_COMMIT_MESSAGE = "Add in-place delete confirm";
+const APP_VERSION = "2026-03-15 16:55";
+const APP_COMMIT_MESSAGE = "Auto-retry stalled background sync";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 const INITIAL_DRAFT = loadDraftState();
+const SYNC_RETRY_MS = 4000;
+const SYNC_STALL_MS = 20000;
+let syncRetryTimer = null;
+let syncWatchdogTimer = null;
 
 const state = {
   config: loadSavedConfig(),
@@ -143,7 +147,7 @@ function initialize() {
   if (state.hasUnsyncedChanges) {
     setStatus("Restored unsynced local changes.", "idle");
     if (isConfigReady()) {
-      void flushPendingSync();
+      scheduleBackgroundSync(0);
     }
   } else if (isConfigReady()) {
     void fetchTodosFromGitHub({ isStartup: true });
@@ -243,6 +247,48 @@ function persistDraftState() {
 
 function clearDraftState() {
   localStorage.removeItem(DRAFT_KEY);
+}
+
+function clearSyncRetryTimer() {
+  if (syncRetryTimer !== null) {
+    window.clearTimeout(syncRetryTimer);
+    syncRetryTimer = null;
+  }
+}
+
+function clearSyncWatchdog() {
+  if (syncWatchdogTimer !== null) {
+    window.clearTimeout(syncWatchdogTimer);
+    syncWatchdogTimer = null;
+  }
+}
+
+function scheduleBackgroundSync(delay = SYNC_RETRY_MS) {
+  clearSyncRetryTimer();
+
+  if (!state.hasUnsyncedChanges || !isConfigReady()) {
+    return;
+  }
+
+  syncRetryTimer = window.setTimeout(() => {
+    syncRetryTimer = null;
+    void flushPendingSync();
+  }, delay);
+}
+
+function startSyncWatchdog() {
+  clearSyncWatchdog();
+  syncWatchdogTimer = window.setTimeout(() => {
+    if (!state.isSyncing) {
+      return;
+    }
+
+    state.isSyncing = false;
+    state.hasUnsyncedChanges = true;
+    persistDraftState();
+    setStatus("Background sync stalled. Retrying...", "idle");
+    scheduleBackgroundSync(250);
+  }, SYNC_STALL_MS);
 }
 
 function populateSettingsForm() {
@@ -546,7 +592,7 @@ async function updateTodos(nextTodos, commitMessage) {
     renderTodos();
   });
   setStatus("Saving changes...", "idle");
-  void flushPendingSync();
+  scheduleBackgroundSync(0);
 }
 
 async function commitTodos(nextTodos, commitMessage, hasRetried = false) {
@@ -606,6 +652,8 @@ async function flushPendingSync(options = {}) {
   }
 
   state.isSyncing = true;
+  clearSyncRetryTimer();
+  startSyncWatchdog();
   setStatus("Syncing latest changes...", "idle");
 
   try {
@@ -628,9 +676,14 @@ async function flushPendingSync(options = {}) {
     setStatus("Changes synced to GitHub.", "success");
   } catch (error) {
     state.hasUnsyncedChanges = true;
+    persistDraftState();
     setStatus(formatGitHubError(error, false), "error");
   } finally {
+    clearSyncWatchdog();
     state.isSyncing = false;
+    if (state.hasUnsyncedChanges) {
+      scheduleBackgroundSync();
+    }
   }
 }
 
