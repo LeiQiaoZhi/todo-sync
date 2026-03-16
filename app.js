@@ -2,8 +2,8 @@ const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const DRAFT_KEY = "github-todo-unsynced-draft";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-16 10:08";
-const APP_COMMIT_MESSAGE = "Reduce mobile delete button size";
+const APP_VERSION = "2026-03-16 10:13";
+const APP_COMMIT_MESSAGE = "Celebrate tasks moving to done";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 const INITIAL_DRAFT = loadDraftState();
 const SYNC_RETRY_MS = 4000;
@@ -11,6 +11,7 @@ const SYNC_STALL_MS = 20000;
 let syncRetryTimer = null;
 let syncWatchdogTimer = null;
 let dateRefreshTimer = null;
+let completionCelebrationTimer = null;
 
 const state = {
   config: loadSavedConfig(),
@@ -21,6 +22,7 @@ const state = {
   isSyncing: false,
   hasUnsyncedChanges: Boolean(INITIAL_DRAFT),
   pendingCommitMessage: INITIAL_DRAFT?.pendingCommitMessage || "",
+  celebratingTodoId: null,
   collapsedSections: {
     progress: false,
     backlog: false,
@@ -170,6 +172,21 @@ function updateEntryDateButton() {
   const hasValue = Boolean(value);
   elements.todoDateButton.textContent = hasValue ? formatShortDate(value) : "Date";
   elements.todoDateButton.classList.toggle("has-value", hasValue);
+}
+
+function celebrateCompletion(todoId) {
+  state.celebratingTodoId = todoId;
+  renderTodos();
+
+  if (completionCelebrationTimer) {
+    window.clearTimeout(completionCelebrationTimer);
+  }
+
+  completionCelebrationTimer = window.setTimeout(() => {
+    state.celebratingTodoId = null;
+    completionCelebrationTimer = null;
+    renderTodos();
+  }, 900);
 }
 
 function loadThemePreference() {
@@ -385,6 +402,7 @@ function renderTodos() {
       text.textContent = todo.text;
       textEditor.value = todo.text;
       item.classList.toggle("completed", todo.status === "done");
+      item.classList.toggle("celebrate-done", state.celebratingTodoId === todo.id);
       dueDateInput.value = todo.due_date || "";
       syncTodoDatePresentation(dueDateInput, dueDateDisplay, todo.due_date);
 
@@ -427,6 +445,10 @@ function renderTodos() {
         button.addEventListener("click", () => {
           if (nextStatus === todo.status) {
             return;
+          }
+
+          if (nextStatus === "done") {
+            celebrateCompletion(todo.id);
           }
 
           const nextTodos = state.todos.map((currentTodo) =>
