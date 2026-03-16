@@ -569,7 +569,7 @@ button:disabled {
   flex: 1;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  align-items: start;
+  align-items: center;
   column-gap: var(--space-3);
   row-gap: var(--space-2);
   align-self: center;
@@ -578,6 +578,7 @@ button:disabled {
 .todo-text {
   grid-column: 1;
   grid-row: 1;
+  align-self: center;
   word-break: break-word;
   font-size: 0.96rem;
   line-height: 1.35;
@@ -591,6 +592,7 @@ button:disabled {
 .todo-text-editor {
   grid-column: 1;
   grid-row: 1;
+  align-self: center;
   width: 100%;
   min-height: 2.75rem;
   resize: none;
