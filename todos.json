@@ -9,14 +9,6 @@
       "due_date": null
     },
     {
-      "id": "70a6ae0b-6864-4f20-9640-d51224595c35",
-      "text": "123",
-      "status": "progress",
-      "completed": false,
-      "created_at": "2026-03-16T06:41:39.300Z",
-      "due_date": null
-    },
-    {
       "id": "aa50177d-a642-44b7-814b-3bbcdcb5dec4",
       "text": "plan trip",
       "status": "progress",
