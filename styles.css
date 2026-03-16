@@ -400,6 +400,20 @@ button:disabled {
   flex: 1;
 }
 
+.todo-entry > input[type="text"],
+.entry-date-button,
+.todo-entry > .primary-button {
+  border-radius: 999px;
+  height: var(--control-h);
+  min-height: var(--control-h);
+  max-height: var(--control-h);
+}
+
+.todo-entry > input[type="text"] {
+  padding: 0 1rem;
+  line-height: calc(var(--control-h) - 2px);
+}
+
 .todo-entry-side {
   display: flex;
   gap: var(--space-2);
@@ -427,6 +441,7 @@ button:disabled {
 .entry-date-button {
   justify-content: flex-start;
   font-weight: 500;
+  padding-inline: 1rem;
 }
 
 .entry-date-button.has-value {
