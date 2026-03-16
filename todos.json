@@ -1,14 +1,6 @@
 {
   "todos": [
     {
-      "id": "c09a0e16-566a-4dfe-9134-9661aa2e270d",
-      "text": "手机",
-      "status": "backlog",
-      "completed": false,
-      "created_at": "2026-03-16T06:44:59.986Z",
-      "due_date": null
-    },
-    {
       "id": "aa50177d-a642-44b7-814b-3bbcdcb5dec4",
       "text": "plan trip",
       "status": "progress",
