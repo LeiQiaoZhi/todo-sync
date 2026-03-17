@@ -775,7 +775,7 @@ button:disabled {
   justify-content: center;
   min-width: 1rem;
   height: 1.3rem;
-  margin-top: 0.01rem;
+  margin-top: 0.12rem;
   padding: 0;
   border: 0;
   background: transparent;
@@ -808,6 +808,7 @@ button:disabled {
   grid-column: 2;
   grid-row: 1;
   align-self: start;
+  margin-top: 0.11rem;
   padding-left: 0;
   word-break: break-word;
   font-size: 0.96rem;
@@ -823,6 +824,7 @@ button:disabled {
   grid-column: 2;
   grid-row: 1;
   align-self: start;
+  margin-top: 0.11rem;
   width: 100%;
   min-height: calc(1.35em + 0.5rem);
   resize: none;
