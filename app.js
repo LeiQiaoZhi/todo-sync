@@ -2,8 +2,8 @@ const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const DRAFT_KEY = "github-todo-unsynced-draft";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-17 01:09";
-const APP_COMMIT_MESSAGE = "Align empty sub-todo icon";
+const APP_VERSION = "2026-03-17 01:11";
+const APP_COMMIT_MESSAGE = "Add sub-todo reordering";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 const INITIAL_DRAFT = loadDraftState();
 const SYNC_RETRY_MS = 4000;
@@ -253,7 +253,7 @@ function syncSubtodoPresentation(todo, panel, trigger, summary, count, body, lis
   addButton.setAttribute("title", hasSubtodos ? "Add another sub-todo" : "Add sub-todo");
   list.innerHTML = "";
 
-  subtodos.forEach((subtodo) => {
+  subtodos.forEach((subtodo, index) => {
     const item = document.createElement("li");
     item.className = "subtodo-item";
     item.classList.toggle("completed", subtodo.completed);
@@ -273,6 +273,25 @@ function syncSubtodoPresentation(todo, panel, trigger, summary, count, body, lis
     const text = document.createElement("span");
     text.className = "subtodo-text";
     text.textContent = subtodo.text;
+
+    const orderControls = document.createElement("div");
+    orderControls.className = "subtodo-order-controls";
+
+    const moveUpButton = document.createElement("button");
+    moveUpButton.type = "button";
+    moveUpButton.className = "subtodo-order-button";
+    moveUpButton.setAttribute("aria-label", `Move sub-todo ${subtodo.text} up`);
+    moveUpButton.setAttribute("title", "Move up");
+    moveUpButton.textContent = "↑";
+    moveUpButton.disabled = index === 0;
+
+    const moveDownButton = document.createElement("button");
+    moveDownButton.type = "button";
+    moveDownButton.className = "subtodo-order-button";
+    moveDownButton.setAttribute("aria-label", `Move sub-todo ${subtodo.text} down`);
+    moveDownButton.setAttribute("title", "Move down");
+    moveDownButton.textContent = "↓";
+    moveDownButton.disabled = index === subtodos.length - 1;
 
     const removeButton = document.createElement("button");
     removeButton.type = "button";
@@ -311,10 +330,44 @@ function syncSubtodoPresentation(todo, panel, trigger, summary, count, body, lis
       void updateTodos(nextTodos, `Delete sub-todo: ${truncateCommitText(subtodo.text)}`);
     });
 
+    moveUpButton.addEventListener("click", () => {
+      if (index === 0) {
+        return;
+      }
+
+      const nextTodos = state.todos.map((currentTodo) =>
+        currentTodo.id === todo.id
+          ? { ...currentTodo, subtodos: moveItem(currentTodo.subtodos, index, index - 1) }
+          : currentTodo
+      );
+      void updateTodos(nextTodos, `Reorder sub-todo: ${truncateCommitText(subtodo.text)}`);
+    });
+
+    moveDownButton.addEventListener("click", () => {
+      if (index === subtodos.length - 1) {
+        return;
+      }
+
+      const nextTodos = state.todos.map((currentTodo) =>
+        currentTodo.id === todo.id
+          ? { ...currentTodo, subtodos: moveItem(currentTodo.subtodos, index, index + 1) }
+          : currentTodo
+      );
+      void updateTodos(nextTodos, `Reorder sub-todo: ${truncateCommitText(subtodo.text)}`);
+    });
+
+    orderControls.append(moveUpButton, moveDownButton);
     label.append(checkbox, marker);
-    item.append(label, text, removeButton);
+    item.append(label, text, orderControls, removeButton);
     list.appendChild(item);
   });
+}
+
+function moveItem(items, fromIndex, toIndex) {
+  const nextItems = [...items];
+  const [movedItem] = nextItems.splice(fromIndex, 1);
+  nextItems.splice(toIndex, 0, movedItem);
+  return nextItems;
 }
 
 function openEntryDatePicker() {
