@@ -2,8 +2,8 @@ const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const DRAFT_KEY = "github-todo-unsynced-draft";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-16 11:14";
-const APP_COMMIT_MESSAGE = "Restore regular header icons";
+const APP_VERSION = "2026-03-16 11:19";
+const APP_COMMIT_MESSAGE = "Fix add-row date picker on Edge";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 const INITIAL_DRAFT = loadDraftState();
 const SYNC_RETRY_MS = 4000;
@@ -47,6 +47,7 @@ const elements = {
   toggleThemeButton: document.getElementById("toggleThemeButton"),
   todoForm: document.getElementById("todoForm"),
   todoInput: document.getElementById("todoInput"),
+  entryDateShell: document.getElementById("entryDateShell"),
   todoDateButton: document.getElementById("todoDateButton"),
   todoDateInput: document.getElementById("todoDateInput"),
   refreshButton: document.getElementById("refreshButton"),
@@ -120,6 +121,14 @@ function initialize() {
     }
   });
 
+  elements.entryDateShell.addEventListener("click", (event) => {
+    if (event.target === elements.todoDateInput) {
+      return;
+    }
+
+    openEntryDatePicker();
+  });
+
   elements.todoDateInput.addEventListener("input", () => {
     updateEntryDateButton();
   });
@@ -173,6 +182,20 @@ function updateEntryDateButton() {
   const hasValue = Boolean(value);
   elements.todoDateButton.textContent = hasValue ? formatShortDate(value) : "Date";
   elements.todoDateButton.classList.toggle("has-value", hasValue);
+}
+
+function openEntryDatePicker() {
+  try {
+    if (typeof elements.todoDateInput.showPicker === "function") {
+      elements.todoDateInput.showPicker();
+      return;
+    }
+  } catch (error) {
+    // Fall through to focus/click for browsers that block showPicker here.
+  }
+
+  elements.todoDateInput.focus({ preventScroll: true });
+  elements.todoDateInput.click();
 }
 
 function celebrateCompletion(todoId) {
