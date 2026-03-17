@@ -968,9 +968,26 @@ button:disabled {
   font-weight: 500;
 }
 
+.subtodo-add-inline.is-icon-only {
+  min-width: 1.45rem;
+  min-height: 1.45rem;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--text) 7%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--text) 3%, transparent);
+  font-size: 0.92rem;
+  font-weight: 400;
+  line-height: 1;
+}
+
 .subtodo-add-inline:hover {
   background: color-mix(in srgb, var(--text) 4%, transparent);
   color: var(--text);
+}
+
+.subtodo-add-inline.is-icon-only:hover {
+  background: color-mix(in srgb, var(--text) 6%, transparent);
+  border-color: color-mix(in srgb, var(--text) 10%, transparent);
 }
 
 .subtodo-list {

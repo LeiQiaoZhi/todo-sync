@@ -2,8 +2,8 @@ const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const DRAFT_KEY = "github-todo-unsynced-draft";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-17 01:12";
-const APP_COMMIT_MESSAGE = "Split sub-todo trigger by state";
+const APP_VERSION = "2026-03-17 01:07";
+const APP_COMMIT_MESSAGE = "Use subtle sub-todo add icon";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 const INITIAL_DRAFT = loadDraftState();
 const SYNC_RETRY_MS = 4000;
@@ -247,7 +247,10 @@ function syncSubtodoPresentation(todo, panel, trigger, summary, count, body, lis
   form.hidden = !composerOpen;
   input.value = "";
   addButton.hidden = composerOpen;
-  addButton.textContent = subtodos.length > 0 ? "Add another" : "Add sub-todo";
+  addButton.textContent = hasSubtodos ? "+" : "Add sub-todo";
+  addButton.classList.toggle("is-icon-only", hasSubtodos);
+  addButton.setAttribute("aria-label", hasSubtodos ? "Add another sub-todo" : "Add sub-todo");
+  addButton.setAttribute("title", hasSubtodos ? "Add another sub-todo" : "Add sub-todo");
   list.innerHTML = "";
 
   subtodos.forEach((subtodo) => {
