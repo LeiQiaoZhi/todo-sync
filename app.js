@@ -2,8 +2,8 @@ const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const DRAFT_KEY = "github-todo-unsynced-draft";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-16 11:34";
-const APP_COMMIT_MESSAGE = "Add foldable sub-todos";
+const APP_VERSION = "2026-03-16 11:38";
+const APP_COMMIT_MESSAGE = "Update light theme icon";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 const INITIAL_DRAFT = loadDraftState();
 const SYNC_RETRY_MS = 4000;
@@ -312,7 +312,7 @@ function loadThemePreference() {
 
 function applyTheme(theme) {
   document.documentElement.dataset.theme = theme;
-  elements.toggleThemeButton.textContent = theme === "dark" ? "☀" : "☾";
+  elements.toggleThemeButton.textContent = theme === "dark" ? "◌" : "☾";
   elements.toggleThemeButton.setAttribute(
     "aria-label",
     theme === "dark" ? "Switch to light theme" : "Switch to dark theme"
