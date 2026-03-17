@@ -775,7 +775,7 @@ button:disabled {
   justify-content: center;
   width: 0.92rem;
   height: 0.92rem;
-  margin-top: 0.18rem;
+  margin-top: 0.24rem;
   padding: 0;
   border: 0;
   background: transparent;
@@ -794,7 +794,7 @@ button:disabled {
   grid-column: 1;
   grid-row: 1;
   align-self: center;
-  padding-left: 1.1rem;
+  padding-left: 1.28rem;
   word-break: break-word;
   font-size: 0.96rem;
   line-height: 1.35;
@@ -824,7 +824,7 @@ button:disabled {
   color: var(--text);
   font-size: 0.96rem;
   line-height: 1.35;
-  padding-left: 1.2rem;
+  padding-left: 1.38rem;
 }
 
 .todo-item.has-subtodos .todo-text-editor {
