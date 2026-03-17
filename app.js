@@ -2,8 +2,8 @@ const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const DRAFT_KEY = "github-todo-unsynced-draft";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-16 11:42";
-const APP_COMMIT_MESSAGE = "Narrow composer date control";
+const APP_VERSION = "2026-03-16 11:46";
+const APP_COMMIT_MESSAGE = "Clarify relative weekday labels";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 const INITIAL_DRAFT = loadDraftState();
 const SYNC_RETRY_MS = 4000;
@@ -1172,7 +1172,7 @@ function formatDueDate(value) {
   }
 
   if (deltaDays > 1 && deltaDays <= 7) {
-    return `Next ${formatWeekday(value)} · ${shortDate}`;
+    return `This ${formatWeekday(value)} · ${shortDate}`;
   }
 
   if (deltaDays === -1) {
