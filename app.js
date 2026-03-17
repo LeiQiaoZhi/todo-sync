@@ -2,8 +2,8 @@ const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const DRAFT_KEY = "github-todo-unsynced-draft";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-17 01:25";
-const APP_COMMIT_MESSAGE = "Match sub-todo editor behavior";
+const APP_VERSION = "2026-03-17 01:27";
+const APP_COMMIT_MESSAGE = "Hide dot in populated sub-todo badge";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 const INITIAL_DRAFT = loadDraftState();
 const SYNC_RETRY_MS = 4000;
@@ -238,6 +238,10 @@ function syncSubtodoPresentation(todo, panel, trigger, count, body, list, form, 
   panel.closest(".todo-item")?.classList.toggle("has-subtodos", hasSubtodos);
   trigger.classList.toggle("is-empty", !hasSubtodos);
   trigger.classList.toggle("is-summary", hasSubtodos);
+  const triggerIcon = trigger.querySelector(".subtodo-icon");
+  if (triggerIcon) {
+    triggerIcon.hidden = hasSubtodos;
+  }
   count.hidden = !hasSubtodos;
   trigger.setAttribute("aria-label", toggleLabel);
   trigger.setAttribute("title", toggleLabel);
