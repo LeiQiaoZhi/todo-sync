@@ -670,6 +670,11 @@ button:disabled {
   white-space: nowrap;
 }
 
+.due-date-display:hover {
+  color: var(--text);
+  text-shadow: 0 0 10px color-mix(in srgb, var(--text) 10%, transparent);
+}
+
 .sync-button {
   font-size: 1rem;
 }
@@ -815,6 +820,10 @@ button:disabled {
   letter-spacing: 0.03em;
 }
 
+.subtodo-toggle:hover {
+  color: var(--text);
+}
+
 .subtodo-title {
   color: inherit;
 }
@@ -842,6 +851,13 @@ button:disabled {
   color: var(--muted);
   font-size: 0.98rem;
   line-height: 1;
+}
+
+.subtodo-add-toggle:hover {
+  background: color-mix(in srgb, var(--text) 8%, transparent);
+  border-color: color-mix(in srgb, var(--text) 10%, transparent);
+  color: var(--text);
+  box-shadow: 0 4px 10px color-mix(in srgb, var(--text) 6%, transparent);
 }
 
 .subtodo-body {
@@ -875,6 +891,12 @@ button:disabled {
   color: var(--text);
   font-size: 0.76rem;
   font-weight: 600;
+}
+
+.subtodo-submit:hover {
+  background: color-mix(in srgb, var(--text) 8%, transparent);
+  border-color: color-mix(in srgb, var(--text) 10%, transparent);
+  box-shadow: 0 4px 10px color-mix(in srgb, var(--text) 6%, transparent);
 }
 
 .subtodo-list {
@@ -951,6 +973,7 @@ button:disabled {
   background: color-mix(in srgb, var(--danger) 8%, transparent);
   border-color: color-mix(in srgb, var(--danger) 10%, transparent);
   color: var(--danger);
+  box-shadow: 0 4px 10px color-mix(in srgb, var(--danger) 8%, transparent);
 }
 
 .todo-meta-row {
@@ -1070,6 +1093,12 @@ button:disabled {
   font-size: 0.74rem;
   font-weight: 700;
   white-space: nowrap;
+}
+
+.delete-confirm-button:hover {
+  background: color-mix(in srgb, var(--danger) 22%, transparent);
+  border-color: color-mix(in srgb, var(--danger) 22%, transparent);
+  box-shadow: 0 6px 14px color-mix(in srgb, var(--danger) 10%, transparent);
 }
 
 .empty-state {
