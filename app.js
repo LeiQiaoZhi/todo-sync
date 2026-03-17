@@ -2,8 +2,8 @@ const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const DRAFT_KEY = "github-todo-unsynced-draft";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-17 01:04";
-const APP_COMMIT_MESSAGE = "Match composer side control widths";
+const APP_VERSION = "2026-03-17 01:12";
+const APP_COMMIT_MESSAGE = "Split sub-todo trigger by state";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 const INITIAL_DRAFT = loadDraftState();
 const SYNC_RETRY_MS = 4000;
@@ -219,30 +219,35 @@ function closeSubtodoComposer(todoId, options = {}) {
   }
 }
 
-function syncSubtodoPresentation(todo, panel, toggle, count, body, list, form, input, addButton) {
+function syncSubtodoPresentation(todo, panel, trigger, summary, count, body, list, form, input, addButton) {
   const subtodos = Array.isArray(todo.subtodos) ? todo.subtodos : [];
   const completedCount = subtodos.filter((subtodo) => subtodo.completed).length;
   const collapsed = isSubtodoCollapsed(todo.id);
   const composerOpen = isSubtodoComposerOpen(todo.id);
   const isEmptyIdle = subtodos.length === 0 && !composerOpen;
+  const hasSubtodos = subtodos.length > 0;
   const bodyVisible = !collapsed && (composerOpen || subtodos.length > 0);
   const toggleLabel =
-    subtodos.length === 0
+    !hasSubtodos
       ? "Add sub-todos"
       : `${completedCount} of ${subtodos.length} sub-todos complete`;
 
   count.textContent = subtodos.length === 0 ? "0" : `${completedCount}/${subtodos.length}`;
   panel.classList.toggle("is-collapsed", !bodyVisible);
   panel.classList.toggle("is-empty-idle", isEmptyIdle);
-  toggle.setAttribute("aria-expanded", String(bodyVisible));
-  toggle.setAttribute("aria-label", toggleLabel);
-  toggle.setAttribute("title", toggleLabel);
+  panel.closest(".todo-item")?.classList.toggle("has-subtodos", hasSubtodos);
+  trigger.hidden = hasSubtodos;
+  summary.hidden = !hasSubtodos;
+  trigger.setAttribute("aria-label", toggleLabel);
+  trigger.setAttribute("title", toggleLabel);
+  summary.setAttribute("aria-expanded", String(bodyVisible));
+  summary.setAttribute("aria-label", toggleLabel);
+  summary.setAttribute("title", toggleLabel);
   body.hidden = !bodyVisible;
   form.hidden = !composerOpen;
   input.value = "";
   addButton.hidden = composerOpen;
   addButton.textContent = subtodos.length > 0 ? "Add another" : "Add sub-todo";
-  count.hidden = subtodos.length === 0;
   list.innerHTML = "";
 
   subtodos.forEach((subtodo) => {
@@ -550,7 +555,8 @@ function renderTodos() {
       const dueDateInput = item.querySelector(".due-date-input");
       const dueDateDisplay = item.querySelector(".due-date-display");
       const statusButtons = item.querySelectorAll(".status-option");
-      const subtodoToggle = item.querySelector(".subtodo-toggle");
+      const subtodoTrigger = item.querySelector(".subtodo-trigger");
+      const subtodoSummary = item.querySelector(".subtodo-summary");
       const subtodoCount = item.querySelector(".subtodo-count");
       const subtodoPanel = item.querySelector(".subtodo-panel");
       const subtodoBody = item.querySelector(".subtodo-body");
@@ -570,7 +576,8 @@ function renderTodos() {
       syncSubtodoPresentation(
         todo,
         subtodoPanel,
-        subtodoToggle,
+        subtodoTrigger,
+        subtodoSummary,
         subtodoCount,
         subtodoBody,
         subtodoList,
@@ -667,7 +674,7 @@ function renderTodos() {
         );
       });
 
-      subtodoToggle.addEventListener("click", () => {
+      const toggleSubtodos = () => {
         const hasSubtodos = Array.isArray(todo.subtodos) && todo.subtodos.length > 0;
 
         if (isSubtodoCollapsed(todo.id) && !hasSubtodos) {
@@ -687,7 +694,10 @@ function renderTodos() {
             focusSubtodoInput(todo.id);
           });
         }
-      });
+      };
+
+      subtodoTrigger.addEventListener("click", toggleSubtodos);
+      subtodoSummary.addEventListener("click", toggleSubtodos);
 
       subtodoAddButton.addEventListener("click", () => {
         state.openSubtodoComposers[todo.id] = true;

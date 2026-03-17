@@ -10,14 +10,14 @@
       href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=2026-03-17-0104" />
+    <link rel="stylesheet" href="styles.css?v=2026-03-17-0112" />
   </head>
   <body>
     <main class="app-shell">
       <section class="hero-card">
         <div class="topbar-main">
           <p id="buildVersion" class="build-version">
-            Version 2026-03-17 01:04 | Match composer side control widths
+            Version 2026-03-17 01:12 | Split sub-todo trigger by state
           </p>
           <p id="statusText" class="status-text">Add your GitHub settings to connect this app.</p>
         </div>
@@ -159,6 +159,9 @@
     <template id="todoItemTemplate">
       <li class="todo-item">
         <div class="todo-main">
+          <button class="subtodo-trigger" type="button" aria-label="Add sub-todos" title="Add sub-todos">
+            <span class="subtodo-icon" aria-hidden="true">⊙</span>
+          </button>
           <p class="todo-text"></p>
           <textarea
             class="todo-text-editor"
@@ -183,8 +186,7 @@
         </div>
         <div class="subtodo-panel">
           <div class="subtodo-header">
-            <button class="subtodo-toggle" type="button" aria-expanded="false">
-              <span class="subtodo-icon" aria-hidden="true">⊙</span>
+            <button class="subtodo-summary" type="button" aria-expanded="false">
               <span class="subtodo-count">0</span>
             </button>
           </div>
@@ -206,6 +208,6 @@
       </li>
     </template>
 
-  <script src="app.js?v=2026-03-17-0104"></script>
+  <script src="app.js?v=2026-03-17-0112"></script>
 </body>
 </html>
