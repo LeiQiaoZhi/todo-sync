@@ -772,6 +772,7 @@ button:disabled {
   column-gap: var(--space-3);
   row-gap: var(--space-2);
   align-self: center;
+  transform: translateY(0.1rem);
   padding-top: 0;
   padding-bottom: 0;
   grid-column: 1;
@@ -1307,6 +1308,7 @@ textarea:focus-visible {
     row-gap: var(--space-2);
     align-items: start;
     align-self: start;
+    transform: none;
     min-width: 0;
     grid-column: 1 / -1;
     grid-row: 1;
