@@ -769,7 +769,7 @@ button:disabled {
   grid-column: 1;
   grid-row: 1;
   justify-self: start;
-  align-self: center;
+  align-self: start;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -802,7 +802,7 @@ button:disabled {
 .todo-text {
   grid-column: 2;
   grid-row: 1;
-  align-self: center;
+  align-self: start;
   padding-left: 0;
   word-break: break-word;
   font-size: 0.96rem;
@@ -817,7 +817,7 @@ button:disabled {
 .todo-text-editor {
   grid-column: 2;
   grid-row: 1;
-  align-self: center;
+  align-self: start;
   width: 100%;
   min-height: calc(1.35em + 0.5rem);
   resize: none;
