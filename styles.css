@@ -974,13 +974,13 @@ button:disabled {
 }
 
 .subtodo-add-inline.is-icon-only {
-  min-width: 1.45rem;
-  min-height: 1.45rem;
+  min-width: 1.28rem;
+  min-height: 1.28rem;
   padding: 0;
   border: 1px solid color-mix(in srgb, var(--text) 7%, transparent);
   border-radius: 999px;
   background: color-mix(in srgb, var(--text) 3%, transparent);
-  font-size: 0.92rem;
+  font-size: 0.8rem;
   font-weight: 400;
   line-height: 1;
 }
