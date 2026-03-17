@@ -795,9 +795,19 @@ button:disabled {
   opacity: 1;
 }
 
+.subtodo-trigger.is-summary:hover,
+.subtodo-trigger.is-summary:focus-visible {
+  background: color-mix(in srgb, var(--text) 7%, transparent);
+}
+
 .subtodo-trigger.is-summary.is-complete {
   background: color-mix(in srgb, var(--done-accent) 14%, transparent);
   color: var(--done-accent);
+}
+
+.subtodo-trigger.is-summary.is-complete:hover,
+.subtodo-trigger.is-summary.is-complete:focus-visible {
+  background: color-mix(in srgb, var(--done-accent) 18%, transparent);
 }
 
 .subtodo-trigger:hover,
