@@ -2,8 +2,8 @@ const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const DRAFT_KEY = "github-todo-unsynced-draft";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-17 00:11";
-const APP_COMMIT_MESSAGE = "Update light theme toggle icon";
+const APP_VERSION = "2026-03-17 00:12";
+const APP_COMMIT_MESSAGE = "Compact folded sub-todos";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 const INITIAL_DRAFT = loadDraftState();
 const SYNC_RETRY_MS = 4000;
@@ -219,7 +219,7 @@ function closeSubtodoComposer(todoId, options = {}) {
   }
 }
 
-function syncSubtodoPresentation(todo, toggle, count, body, list, form, input, addToggle) {
+function syncSubtodoPresentation(todo, panel, toggle, count, body, list, form, input, addToggle) {
   const subtodos = Array.isArray(todo.subtodos) ? todo.subtodos : [];
   const completedCount = subtodos.filter((subtodo) => subtodo.completed).length;
   const collapsed = isSubtodoCollapsed(todo.id);
@@ -227,6 +227,7 @@ function syncSubtodoPresentation(todo, toggle, count, body, list, form, input, a
   const bodyVisible = !collapsed && (composerOpen || subtodos.length > 0);
 
   count.textContent = subtodos.length === 0 ? "0" : `${completedCount}/${subtodos.length}`;
+  panel.classList.toggle("is-collapsed", !bodyVisible);
   toggle.setAttribute("aria-expanded", String(bodyVisible));
   body.hidden = !bodyVisible;
   form.hidden = !composerOpen;
@@ -543,6 +544,7 @@ function renderTodos() {
       const statusButtons = item.querySelectorAll(".status-option");
       const subtodoToggle = item.querySelector(".subtodo-toggle");
       const subtodoCount = item.querySelector(".subtodo-count");
+      const subtodoPanel = item.querySelector(".subtodo-panel");
       const subtodoBody = item.querySelector(".subtodo-body");
       const subtodoList = item.querySelector(".subtodo-list");
       const subtodoForm = item.querySelector(".subtodo-form");
@@ -557,7 +559,17 @@ function renderTodos() {
       item.classList.toggle("celebrate-done", state.celebratingTodoId === todo.id);
       dueDateInput.value = todo.due_date || "";
       syncTodoDatePresentation(dueDateInput, dueDateDisplay, todo.due_date);
-      syncSubtodoPresentation(todo, subtodoToggle, subtodoCount, subtodoBody, subtodoList, subtodoForm, subtodoInput, subtodoAddToggle);
+      syncSubtodoPresentation(
+        todo,
+        subtodoPanel,
+        subtodoToggle,
+        subtodoCount,
+        subtodoBody,
+        subtodoList,
+        subtodoForm,
+        subtodoInput,
+        subtodoAddToggle
+      );
 
       text.addEventListener("click", () => {
         text.hidden = true;
