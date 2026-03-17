@@ -2,8 +2,8 @@ const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const DRAFT_KEY = "github-todo-unsynced-draft";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-17 01:50";
-const APP_COMMIT_MESSAGE = "Normalize inline editor metrics";
+const APP_VERSION = "2026-03-17 01:56";
+const APP_COMMIT_MESSAGE = "Use real single-line alignment";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 const INITIAL_DRAFT = loadDraftState();
 const SYNC_RETRY_MS = 4000;
@@ -12,6 +12,7 @@ let syncRetryTimer = null;
 let syncWatchdogTimer = null;
 let dateRefreshTimer = null;
 let completionCelebrationTimer = null;
+let todoLineModeFrame = null;
 
 const state = {
   config: loadSavedConfig(),
@@ -122,6 +123,10 @@ function initialize() {
     if (!document.hidden) {
       refreshRelativeDates();
     }
+  });
+
+  window.addEventListener("resize", () => {
+    scheduleTodoLineModeSync();
   });
 
   elements.entryDateShell.addEventListener("click", (event) => {
@@ -730,6 +735,7 @@ function renderTodos() {
 
       textEditor.addEventListener("input", () => {
         autoSizeTaskEditor(textEditor);
+        syncTodoLineMode(item);
       });
 
       textEditor.addEventListener("blur", () => {
@@ -896,6 +902,7 @@ function renderTodos() {
   elements.doneCount.classList.toggle("celebrate-done-count", state.celebratingDoneSection);
   syncSectionVisibility();
   elements.emptyState.hidden = state.todos.length > 0;
+  scheduleTodoLineModeSync();
 }
 
 function getListElement(status) {
@@ -958,6 +965,36 @@ function getTodoTransitionName(id) {
 function autoSizeTaskEditor(editor) {
   editor.style.height = "0px";
   editor.style.height = `${Math.max(editor.scrollHeight, 26)}px`;
+}
+
+function scheduleTodoLineModeSync() {
+  if (todoLineModeFrame) {
+    cancelAnimationFrame(todoLineModeFrame);
+  }
+
+  todoLineModeFrame = requestAnimationFrame(() => {
+    todoLineModeFrame = null;
+    document.querySelectorAll(".todo-item").forEach((item) => {
+      syncTodoLineMode(item);
+    });
+  });
+}
+
+function syncTodoLineMode(item) {
+  const text = item.querySelector(".todo-text");
+  const textEditor = item.querySelector(".todo-text-editor");
+  const activeTextNode = textEditor && !textEditor.hidden ? textEditor : text;
+
+  if (!activeTextNode) {
+    return;
+  }
+
+  const computedStyle = window.getComputedStyle(activeTextNode);
+  const lineHeight = Number.parseFloat(computedStyle.lineHeight);
+  const nodeHeight = activeTextNode.getBoundingClientRect().height;
+  const isMultiline = Number.isFinite(lineHeight) && nodeHeight > lineHeight * 1.5;
+
+  item.classList.toggle("is-multiline", isMultiline);
 }
 
 async function commitTaskTextEdit(todo, text, editor) {

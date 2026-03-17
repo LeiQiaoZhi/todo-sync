@@ -768,13 +768,10 @@ button:disabled {
   min-width: 0;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: start;
+  align-items: center;
   column-gap: var(--space-3);
   row-gap: var(--space-2);
   align-self: center;
-  transform: translateY(0.1rem);
-  padding-top: 0;
-  padding-bottom: 0;
   grid-column: 1;
   grid-row: 1;
 }
@@ -783,7 +780,6 @@ button:disabled {
   grid-column: 1;
   grid-row: 1;
   justify-self: start;
-  align-self: start;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -833,8 +829,6 @@ button:disabled {
 .todo-text {
   grid-column: 2;
   grid-row: 1;
-  align-self: start;
-  margin-top: 0.07rem;
   padding-left: 0;
   word-break: break-word;
   font-size: 0.96rem;
@@ -849,8 +843,6 @@ button:disabled {
 .todo-text-editor {
   grid-column: 2;
   grid-row: 1;
-  align-self: start;
-  margin-top: 0.07rem;
   width: 100%;
   min-height: calc(1.35em + 2px);
   resize: none;
@@ -871,6 +863,17 @@ button:disabled {
   -webkit-appearance: none;
   padding-left: 0.1rem;
   box-sizing: border-box;
+}
+
+.todo-item.is-multiline .todo-main {
+  align-items: start;
+}
+
+.todo-item.is-multiline .subtodo-trigger,
+.todo-item.is-multiline .todo-text,
+.todo-item.is-multiline .todo-text-editor,
+.todo-item.is-multiline .todo-meta-row {
+  align-self: start;
 }
 
 .todo-actions {
