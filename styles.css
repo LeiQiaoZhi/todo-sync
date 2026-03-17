@@ -693,10 +693,10 @@ button:disabled {
 }
 
 .todo-item {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   gap: var(--space-3);
-  align-items: center;
+  align-items: start;
   padding: 0.68rem 0.78rem;
   border-radius: var(--radius-md);
   background: var(--surface-strong);
@@ -746,13 +746,13 @@ button:disabled {
 
 .todo-main {
   min-width: 0;
-  flex: 1;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
+  align-items: start;
   column-gap: var(--space-3);
   row-gap: var(--space-2);
-  align-self: center;
+  grid-column: 1;
+  grid-row: 1;
 }
 
 .todo-text {
@@ -787,7 +787,9 @@ button:disabled {
 }
 
 .todo-actions {
-  flex: 0 0 auto;
+  grid-column: 2;
+  grid-row: 1;
+  align-self: start;
   gap: 0.45rem;
 }
 
@@ -797,7 +799,8 @@ button:disabled {
   gap: var(--space-2);
   width: 100%;
   margin-top: 0.1rem;
-  flex: 1 0 100%;
+  grid-column: 1 / -1;
+  grid-row: 2;
 }
 
 .subtodo-header {
