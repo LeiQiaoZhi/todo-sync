@@ -2,8 +2,8 @@ const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const DRAFT_KEY = "github-todo-unsynced-draft";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-17 01:18";
-const APP_COMMIT_MESSAGE = "Stabilize sub-todo inline edit size";
+const APP_VERSION = "2026-03-17 01:23";
+const APP_COMMIT_MESSAGE = "Keep sub-todo trigger in one slot";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 const INITIAL_DRAFT = loadDraftState();
 const SYNC_RETRY_MS = 4000;
@@ -219,7 +219,7 @@ function closeSubtodoComposer(todoId, options = {}) {
   }
 }
 
-function syncSubtodoPresentation(todo, panel, trigger, summary, count, body, list, form, input, addButton) {
+function syncSubtodoPresentation(todo, panel, trigger, count, body, list, form, input, addButton) {
   const subtodos = Array.isArray(todo.subtodos) ? todo.subtodos : [];
   const completedCount = subtodos.filter((subtodo) => subtodo.completed).length;
   const collapsed = isSubtodoCollapsed(todo.id);
@@ -236,13 +236,13 @@ function syncSubtodoPresentation(todo, panel, trigger, summary, count, body, lis
   panel.classList.toggle("is-collapsed", !bodyVisible);
   panel.classList.toggle("is-empty-idle", isEmptyIdle);
   panel.closest(".todo-item")?.classList.toggle("has-subtodos", hasSubtodos);
-  trigger.hidden = hasSubtodos;
-  summary.hidden = !hasSubtodos;
+  trigger.classList.toggle("is-empty", !hasSubtodos);
+  trigger.classList.toggle("is-summary", hasSubtodos);
+  count.hidden = !hasSubtodos;
   trigger.setAttribute("aria-label", toggleLabel);
   trigger.setAttribute("title", toggleLabel);
-  summary.setAttribute("aria-expanded", String(bodyVisible));
-  summary.setAttribute("aria-label", toggleLabel);
-  summary.setAttribute("title", toggleLabel);
+  trigger.setAttribute("aria-expanded", String(bodyVisible));
+  panel.hidden = !bodyVisible;
   body.hidden = !bodyVisible;
   form.hidden = !composerOpen;
   input.value = "";
@@ -673,7 +673,6 @@ function renderTodos() {
       const dueDateDisplay = item.querySelector(".due-date-display");
       const statusButtons = item.querySelectorAll(".status-option");
       const subtodoTrigger = item.querySelector(".subtodo-trigger");
-      const subtodoSummary = item.querySelector(".subtodo-summary");
       const subtodoCount = item.querySelector(".subtodo-count");
       const subtodoPanel = item.querySelector(".subtodo-panel");
       const subtodoBody = item.querySelector(".subtodo-body");
@@ -694,7 +693,6 @@ function renderTodos() {
         todo,
         subtodoPanel,
         subtodoTrigger,
-        subtodoSummary,
         subtodoCount,
         subtodoBody,
         subtodoList,
@@ -814,7 +812,6 @@ function renderTodos() {
       };
 
       subtodoTrigger.addEventListener("click", toggleSubtodos);
-      subtodoSummary.addEventListener("click", toggleSubtodos);
 
       subtodoAddButton.addEventListener("click", () => {
         state.openSubtodoComposers[todo.id] = true;

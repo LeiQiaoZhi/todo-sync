@@ -757,7 +757,7 @@ button:disabled {
 .todo-main {
   min-width: 0;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: start;
   column-gap: var(--space-3);
   row-gap: var(--space-2);
@@ -769,19 +769,28 @@ button:disabled {
   grid-column: 1;
   grid-row: 1;
   justify-self: start;
-  align-self: start;
+  align-self: center;
   display: inline-flex;
   align-items: center;
-  justify-content: flex-start;
-  width: 1rem;
+  justify-content: center;
+  min-width: 1rem;
   height: 1.3rem;
-  margin-top: 0;
+  margin-top: 0.01rem;
   padding: 0;
   border: 0;
   background: transparent;
   color: color-mix(in srgb, var(--muted) 62%, transparent);
   opacity: 0.18;
   line-height: 1;
+}
+
+.subtodo-trigger.is-summary {
+  min-width: 1.9rem;
+  padding: 0 0.34rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--text) 5%, transparent);
+  color: var(--muted);
+  opacity: 1;
 }
 
 .subtodo-trigger:hover,
@@ -791,18 +800,14 @@ button:disabled {
 }
 
 .todo-text {
-  grid-column: 1;
+  grid-column: 2;
   grid-row: 1;
   align-self: center;
-  padding-left: 1.46rem;
+  padding-left: 0;
   word-break: break-word;
   font-size: 0.96rem;
   line-height: 1.35;
   cursor: text;
-}
-
-.todo-item.has-subtodos .todo-text {
-  padding-left: 0;
 }
 
 .todo-item.completed .todo-text {
@@ -810,7 +815,7 @@ button:disabled {
 }
 
 .todo-text-editor {
-  grid-column: 1;
+  grid-column: 2;
   grid-row: 1;
   align-self: center;
   width: 100%;
@@ -824,10 +829,6 @@ button:disabled {
   color: var(--text);
   font-size: 0.96rem;
   line-height: 1.35;
-  padding-left: 1.56rem;
-}
-
-.todo-item.has-subtodos .todo-text-editor {
   padding-left: 0.1rem;
 }
 
@@ -843,51 +844,18 @@ button:disabled {
   flex-direction: column;
   gap: var(--space-2);
   width: 100%;
-  margin-top: -0.04rem;
+  margin-top: -0.02rem;
   grid-column: 1 / -1;
   grid-row: 2;
 }
 
 .subtodo-panel.is-collapsed {
   gap: 0;
-  margin-top: -0.08rem;
+  margin-top: 0;
 }
 
 .subtodo-panel.is-empty-idle {
-  margin-top: -0.16rem;
-}
-
-.subtodo-header {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
   gap: 0;
-}
-
-.subtodo-panel.is-collapsed .subtodo-header {
-  gap: 0;
-}
-
-.subtodo-panel.is-empty-idle .subtodo-header {
-  gap: 0;
-}
-
-.subtodo-summary {
-  display: inline-flex;
-  align-items: center;
-  gap: 0;
-  min-height: 1.08rem;
-  padding: 0;
-  background: transparent;
-  border: 0;
-  color: var(--muted);
-  font-size: 0.64rem;
-  letter-spacing: 0;
-}
-
-.subtodo-summary:hover,
-.subtodo-summary:focus-visible {
-  color: var(--text);
 }
 
 .subtodo-icon {
@@ -905,21 +873,14 @@ button:disabled {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 1.35rem;
-  min-height: 1.35rem;
-  padding: 0 0.38rem;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--text) 5%, transparent);
-  color: var(--muted);
-  font-size: 0.68rem;
+  min-width: 0;
+  min-height: 1.3rem;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 0.64rem;
   font-weight: 700;
-}
-
-.subtodo-panel.is-collapsed .subtodo-count {
-  min-width: 1.08rem;
-  min-height: 1.08rem;
-  padding: 0 0.28rem;
-  font-size: 0.62rem;
 }
 
 .subtodo-body {
@@ -1135,7 +1096,7 @@ button:disabled {
 }
 
 .todo-meta-row {
-  grid-column: 2;
+  grid-column: 3;
   grid-row: 1;
   display: inline-flex;
   gap: var(--space-2);
@@ -1306,7 +1267,7 @@ textarea:focus-visible {
 
   .todo-main {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: auto minmax(0, 1fr) auto;
     column-gap: var(--space-2);
     row-gap: var(--space-2);
     align-items: start;
@@ -1315,11 +1276,18 @@ textarea:focus-visible {
     grid-row: 1;
   }
 
+  .subtodo-trigger {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: start;
+    margin-top: 0.08rem;
+  }
+
   .todo-text,
   .todo-text-editor {
     text-align: left;
     align-self: start;
-    grid-column: 1;
+    grid-column: 2;
     grid-row: 1;
     padding-right: calc(1.7rem + var(--space-2));
   }
