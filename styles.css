@@ -786,11 +786,11 @@ button:disabled {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 1.42rem;
-  height: 1.42rem;
+  min-width: 1.78rem;
+  height: 1.78rem;
   margin-top: 0;
-  margin-left: -0.21rem;
-  margin-right: -0.21rem;
+  margin-left: -0.39rem;
+  margin-right: -0.39rem;
   padding: 0;
   border: 0;
   background: transparent;
