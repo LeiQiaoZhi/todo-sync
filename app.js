@@ -2,8 +2,8 @@ const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const DRAFT_KEY = "github-todo-unsynced-draft";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-16 11:50";
-const APP_COMMIT_MESSAGE = "Boost done background animation";
+const APP_VERSION = "2026-03-16 11:54";
+const APP_COMMIT_MESSAGE = "Add clear date control";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 const INITIAL_DRAFT = loadDraftState();
 const SYNC_RETRY_MS = 4000;
@@ -50,6 +50,7 @@ const elements = {
   todoInput: document.getElementById("todoInput"),
   entryDateShell: document.getElementById("entryDateShell"),
   todoDateButton: document.getElementById("todoDateButton"),
+  todoDateClearButton: document.getElementById("todoDateClearButton"),
   todoDateInput: document.getElementById("todoDateInput"),
   refreshButton: document.getElementById("refreshButton"),
   progressList: document.getElementById("progressList"),
@@ -138,6 +139,12 @@ function initialize() {
     updateEntryDateButton();
   });
 
+  elements.todoDateClearButton.addEventListener("click", (event) => {
+    event.stopPropagation();
+    elements.todoDateInput.value = "";
+    updateEntryDateButton();
+  });
+
   elements.todoForm.addEventListener("submit", (event) => {
     event.preventDefault();
     const text = elements.todoInput.value.trim();
@@ -183,6 +190,7 @@ function updateEntryDateButton() {
   const hasValue = Boolean(value);
   elements.todoDateButton.textContent = hasValue ? formatShortDate(value) : "Date";
   elements.todoDateButton.classList.toggle("has-value", hasValue);
+  elements.todoDateClearButton.hidden = !hasValue;
 }
 
 function isSubtodoCollapsed(todoId) {

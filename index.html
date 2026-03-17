@@ -10,14 +10,14 @@
       href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=2026-03-16-1150" />
+    <link rel="stylesheet" href="styles.css?v=2026-03-16-1154" />
   </head>
   <body>
     <main class="app-shell">
       <section class="hero-card">
         <div class="topbar-main">
           <p id="buildVersion" class="build-version">
-            Version 2026-03-16 11:50 | Boost done background animation
+            Version 2026-03-16 11:54 | Add clear date control
           </p>
           <p id="statusText" class="status-text">Add your GitHub settings to connect this app.</p>
         </div>
@@ -106,6 +106,9 @@
           <div class="todo-entry-side">
             <div id="entryDateShell" class="entry-date-shell">
               <span id="todoDateButton" class="ghost-button entry-date-button" aria-hidden="true">Date</span>
+              <button id="todoDateClearButton" class="entry-date-clear" type="button" aria-label="Clear due date" hidden>
+                ×
+              </button>
               <input id="todoDateInput" class="entry-date-native-input" type="date" aria-label="Due date" />
             </div>
           </div>
@@ -203,6 +206,6 @@
       </li>
     </template>
 
-  <script src="app.js?v=2026-03-16-1150"></script>
+  <script src="app.js?v=2026-03-16-1154"></script>
 </body>
 </html>

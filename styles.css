@@ -577,7 +577,7 @@ button:disabled {
   display: inline-flex;
   justify-content: flex-start;
   font-weight: 400;
-  padding-inline: 1rem;
+  padding-inline: 1rem 1.9rem;
   width: 100%;
   pointer-events: none;
   background: var(--surface-strong);
@@ -589,6 +589,28 @@ button:disabled {
   background: var(--surface-strong);
   color: var(--text);
   border-color: var(--border-strong);
+}
+
+.entry-date-clear {
+  position: absolute;
+  top: 50%;
+  right: 0.3rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  padding: 0;
+  transform: translateY(-50%);
+  background: transparent;
+  border-color: transparent;
+  color: color-mix(in srgb, var(--muted) 72%, transparent);
+  font-size: 0.9rem;
+  line-height: 1;
+  z-index: 1;
+}
+
+.entry-date-clear:hover {
+  background: color-mix(in srgb, var(--text) 6%, transparent);
+  border-color: color-mix(in srgb, var(--text) 8%, transparent);
+  color: var(--text);
 }
 
 .entry-date-native-input {
