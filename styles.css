@@ -1142,7 +1142,7 @@ textarea:focus-visible {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     column-gap: var(--space-2);
-    row-gap: var(--space-2);
+    row-gap: 0.48rem;
     align-items: flex-start;
   }
 
@@ -1174,10 +1174,16 @@ textarea:focus-visible {
 
   .hero-card {
     gap: 0.45rem;
+    padding: 0.62rem 0.72rem;
   }
 
   .topbar-main {
     gap: 0.05rem;
+    min-width: 0;
+  }
+
+  .topbar-actions {
+    gap: 0.32rem;
   }
 
   .settings-grid {
@@ -1247,13 +1253,13 @@ textarea:focus-visible {
     width: auto;
     max-width: 100%;
     justify-content: flex-end;
-    padding: 0.16rem;
+    padding: 0.14rem;
     gap: 0.16rem;
     margin-left: auto;
   }
 
   .status-option {
-    padding: 0.16rem 0.5rem;
+    padding: 0.14rem 0.44rem;
     font-size: 0.7rem;
   }
 
@@ -1265,14 +1271,46 @@ textarea:focus-visible {
 
   .subtodo-form {
     flex-wrap: wrap;
+    gap: var(--space-1);
   }
 
   .subtodo-input {
     width: 100%;
+    min-height: 2.15rem;
   }
 
   .subtodo-panel {
     grid-column: 1 / -1;
+    margin-top: 0.2rem;
+    gap: 0.45rem;
+  }
+
+  .subtodo-header {
+    gap: var(--space-1);
+  }
+
+  .subtodo-toggle {
+    min-height: 1.8rem;
+  }
+
+  .subtodo-add-toggle {
+    width: 1.8rem;
+    height: 1.8rem;
+  }
+
+  .subtodo-submit {
+    min-height: 2.15rem;
+    width: 100%;
+  }
+
+  .subtodo-item {
+    gap: 0.48rem;
+    align-items: start;
+  }
+
+  .subtodo-remove {
+    width: 1.6rem;
+    height: 1.6rem;
   }
 
   .todo-entry > .primary-button {
