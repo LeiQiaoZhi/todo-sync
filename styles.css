@@ -214,12 +214,22 @@ h2 {
   align-items: center;
   justify-content: space-between;
   gap: var(--space-2);
-  padding: 0;
+  padding: 0.14rem 0.18rem;
+  margin: -0.14rem -0.18rem;
+  border-radius: var(--radius-sm);
   background: transparent;
   color: inherit;
   border: 0;
   text-align: left;
   cursor: pointer;
+  transition: background-color 160ms ease;
+}
+
+.todo-group-header:hover,
+.todo-group-header:focus-visible,
+.done-toggle:hover,
+.done-toggle:focus-visible {
+  background: color-mix(in srgb, var(--text) 4%, transparent);
 }
 
 .todo-group-progress .todo-group-header h2,
