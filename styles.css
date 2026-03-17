@@ -809,6 +809,10 @@ button:disabled {
   margin-top: -0.08rem;
 }
 
+.subtodo-panel.is-empty-idle {
+  margin-top: -0.16rem;
+}
+
 .subtodo-header {
   display: flex;
   align-items: center;
@@ -818,6 +822,10 @@ button:disabled {
 
 .subtodo-panel.is-collapsed .subtodo-header {
   gap: 0.28rem;
+}
+
+.subtodo-panel.is-empty-idle .subtodo-header {
+  gap: 0;
 }
 
 .subtodo-toggle {
@@ -838,6 +846,14 @@ button:disabled {
   gap: 0.3rem;
   font-size: 0.64rem;
   letter-spacing: 0.02em;
+}
+
+.subtodo-panel.is-empty-idle .subtodo-toggle {
+  min-height: 0.92rem;
+  gap: 0;
+  color: color-mix(in srgb, var(--muted) 78%, transparent);
+  font-size: 0.59rem;
+  letter-spacing: 0.01em;
 }
 
 .subtodo-toggle:hover {
@@ -867,6 +883,10 @@ button:disabled {
   min-height: 1.08rem;
   padding: 0 0.28rem;
   font-size: 0.62rem;
+}
+
+.subtodo-panel.is-empty-idle .subtodo-count {
+  display: none;
 }
 
 .subtodo-body {

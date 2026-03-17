@@ -2,8 +2,8 @@ const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const DRAFT_KEY = "github-todo-unsynced-draft";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-17 00:43";
-const APP_COMMIT_MESSAGE = "Tighten task-to-subtodo spacing";
+const APP_VERSION = "2026-03-17 00:54";
+const APP_COMMIT_MESSAGE = "Quiet empty sub-todo state";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 const INITIAL_DRAFT = loadDraftState();
 const SYNC_RETRY_MS = 4000;
@@ -224,16 +224,19 @@ function syncSubtodoPresentation(todo, panel, toggle, count, body, list, form, i
   const completedCount = subtodos.filter((subtodo) => subtodo.completed).length;
   const collapsed = isSubtodoCollapsed(todo.id);
   const composerOpen = isSubtodoComposerOpen(todo.id);
+  const isEmptyIdle = subtodos.length === 0 && !composerOpen;
   const bodyVisible = !collapsed && (composerOpen || subtodos.length > 0);
 
   count.textContent = subtodos.length === 0 ? "0" : `${completedCount}/${subtodos.length}`;
   panel.classList.toggle("is-collapsed", !bodyVisible);
+  panel.classList.toggle("is-empty-idle", isEmptyIdle);
   toggle.setAttribute("aria-expanded", String(bodyVisible));
   body.hidden = !bodyVisible;
   form.hidden = !composerOpen;
   input.value = "";
   addButton.hidden = composerOpen;
   addButton.textContent = subtodos.length > 0 ? "Add another" : "Add sub-todo";
+  count.hidden = subtodos.length === 0;
   list.innerHTML = "";
 
   subtodos.forEach((subtodo) => {
