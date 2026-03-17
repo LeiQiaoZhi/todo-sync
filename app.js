@@ -2,8 +2,8 @@ const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const DRAFT_KEY = "github-todo-unsynced-draft";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-17 00:12";
-const APP_COMMIT_MESSAGE = "Compact folded sub-todos";
+const APP_VERSION = "2026-03-17 00:14";
+const APP_COMMIT_MESSAGE = "Refine sub-todo add interaction";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 const INITIAL_DRAFT = loadDraftState();
 const SYNC_RETRY_MS = 4000;
@@ -219,7 +219,7 @@ function closeSubtodoComposer(todoId, options = {}) {
   }
 }
 
-function syncSubtodoPresentation(todo, panel, toggle, count, body, list, form, input, addToggle) {
+function syncSubtodoPresentation(todo, panel, toggle, count, body, list, form, input, addButton) {
   const subtodos = Array.isArray(todo.subtodos) ? todo.subtodos : [];
   const completedCount = subtodos.filter((subtodo) => subtodo.completed).length;
   const collapsed = isSubtodoCollapsed(todo.id);
@@ -232,9 +232,8 @@ function syncSubtodoPresentation(todo, panel, toggle, count, body, list, form, i
   body.hidden = !bodyVisible;
   form.hidden = !composerOpen;
   input.value = "";
-  addToggle.classList.toggle("is-open", composerOpen);
-  addToggle.setAttribute("aria-label", composerOpen ? "Hide sub-todo input" : "Add sub-todo");
-  addToggle.setAttribute("title", composerOpen ? "Hide sub-todo input" : "Add sub-todo");
+  addButton.hidden = composerOpen;
+  addButton.textContent = subtodos.length > 0 ? "Add another" : "Add sub-todo";
   list.innerHTML = "";
 
   subtodos.forEach((subtodo) => {
@@ -549,7 +548,7 @@ function renderTodos() {
       const subtodoList = item.querySelector(".subtodo-list");
       const subtodoForm = item.querySelector(".subtodo-form");
       const subtodoInput = item.querySelector(".subtodo-input");
-      const subtodoAddToggle = item.querySelector(".subtodo-add-toggle");
+      const subtodoAddButton = item.querySelector(".subtodo-add-inline");
 
       item.style.viewTransitionName = getTodoTransitionName(todo.id);
       item.dataset.todoId = todo.id;
@@ -568,7 +567,7 @@ function renderTodos() {
         subtodoList,
         subtodoForm,
         subtodoInput,
-        subtodoAddToggle
+        subtodoAddButton
       );
 
       text.addEventListener("click", () => {
@@ -660,21 +659,34 @@ function renderTodos() {
       });
 
       subtodoToggle.addEventListener("click", () => {
-        state.collapsedSubtodos[todo.id] = !isSubtodoCollapsed(todo.id);
-        renderTodos();
-      });
+        const hasSubtodos = Array.isArray(todo.subtodos) && todo.subtodos.length > 0;
 
-      subtodoAddToggle.addEventListener("click", () => {
-        const nextComposerState = !isSubtodoComposerOpen(todo.id);
-        state.openSubtodoComposers[todo.id] = nextComposerState;
-        state.collapsedSubtodos[todo.id] = false;
+        if (isSubtodoCollapsed(todo.id) && !hasSubtodos) {
+          state.collapsedSubtodos[todo.id] = false;
+          state.openSubtodoComposers[todo.id] = true;
+        } else {
+          const nextCollapsed = !isSubtodoCollapsed(todo.id);
+          state.collapsedSubtodos[todo.id] = nextCollapsed;
+          if (nextCollapsed) {
+            state.openSubtodoComposers[todo.id] = false;
+          }
+        }
         renderTodos();
 
-        if (nextComposerState) {
+        if (state.openSubtodoComposers[todo.id]) {
           queueMicrotask(() => {
             focusSubtodoInput(todo.id);
           });
         }
+      });
+
+      subtodoAddButton.addEventListener("click", () => {
+        state.openSubtodoComposers[todo.id] = true;
+        state.collapsedSubtodos[todo.id] = false;
+        renderTodos();
+        queueMicrotask(() => {
+          focusSubtodoInput(todo.id);
+        });
       });
 
       subtodoForm.addEventListener("submit", (event) => {
