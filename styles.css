@@ -968,18 +968,19 @@ button:disabled {
   border: 0;
   border-radius: var(--radius-sm);
   background: transparent;
-  color: var(--muted);
+  color: color-mix(in srgb, var(--muted) 68%, transparent);
   font-size: 0.75rem;
   font-weight: 500;
+  opacity: 0.42;
 }
 
 .subtodo-add-inline.is-icon-only {
   min-width: 1.28rem;
   min-height: 1.28rem;
   padding: 0;
-  border: 1px solid color-mix(in srgb, var(--text) 7%, transparent);
+  border: 1px solid transparent;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--text) 3%, transparent);
+  background: transparent;
   font-size: 0.8rem;
   font-weight: 400;
   line-height: 1;
@@ -988,6 +989,7 @@ button:disabled {
 .subtodo-add-inline:hover {
   background: color-mix(in srgb, var(--text) 4%, transparent);
   color: var(--text);
+  opacity: 1;
 }
 
 .subtodo-add-inline.is-icon-only:hover {
@@ -1094,19 +1096,21 @@ button:disabled {
   border-radius: 999px;
   background: transparent;
   border-color: transparent;
-  color: color-mix(in srgb, var(--muted) 72%, transparent);
+  color: color-mix(in srgb, var(--muted) 68%, transparent);
   font-size: 0.72rem;
   line-height: 1;
+  opacity: 0.42;
 }
 
 .subtodo-order-button:hover:not(:disabled) {
   background: color-mix(in srgb, var(--text) 5%, transparent);
   border-color: color-mix(in srgb, var(--text) 8%, transparent);
   color: var(--text);
+  opacity: 1;
 }
 
 .subtodo-order-button:disabled {
-  opacity: 0.2;
+  opacity: 0.16;
   cursor: default;
 }
 
@@ -1116,8 +1120,9 @@ button:disabled {
   padding: 0;
   background: transparent;
   border-color: transparent;
-  color: color-mix(in srgb, var(--muted) 70%, transparent);
+  color: color-mix(in srgb, var(--muted) 68%, transparent);
   font-size: 0.84rem;
+  opacity: 0.42;
 }
 
 .subtodo-remove:hover {
@@ -1125,6 +1130,7 @@ button:disabled {
   border-color: color-mix(in srgb, var(--danger) 10%, transparent);
   color: var(--danger);
   box-shadow: 0 4px 10px color-mix(in srgb, var(--danger) 8%, transparent);
+  opacity: 1;
 }
 
 .todo-meta-row {
