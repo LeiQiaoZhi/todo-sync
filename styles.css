@@ -772,10 +772,10 @@ button:disabled {
   align-self: start;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  width: 0.92rem;
-  height: 0.92rem;
-  margin-top: 0.24rem;
+  justify-content: flex-start;
+  width: 1rem;
+  height: 1.3rem;
+  margin-top: 0;
   padding: 0;
   border: 0;
   background: transparent;
@@ -794,7 +794,7 @@ button:disabled {
   grid-column: 1;
   grid-row: 1;
   align-self: center;
-  padding-left: 1.28rem;
+  padding-left: 1.46rem;
   word-break: break-word;
   font-size: 0.96rem;
   line-height: 1.35;
@@ -824,7 +824,7 @@ button:disabled {
   color: var(--text);
   font-size: 0.96rem;
   line-height: 1.35;
-  padding-left: 1.38rem;
+  padding-left: 1.56rem;
 }
 
 .todo-item.has-subtodos .todo-text-editor {
@@ -894,10 +894,10 @@ button:disabled {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 0.86rem;
-  height: 0.86rem;
+  width: 0.72rem;
+  height: 0.72rem;
   color: inherit;
-  font-size: 0.72rem;
+  font-size: 0.58rem;
   line-height: 1;
 }
 
