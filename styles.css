@@ -725,9 +725,9 @@ button:disabled {
 }
 
 .todo-item:hover {
-  background: color-mix(in srgb, var(--text) 2%, var(--surface-strong));
-  border-color: color-mix(in srgb, var(--text) 9%, transparent);
-  box-shadow: 0 8px 18px color-mix(in srgb, var(--text) 6%, transparent);
+  background: color-mix(in srgb, var(--text) 1.4%, var(--surface-strong));
+  border-color: color-mix(in srgb, var(--text) 7%, transparent);
+  box-shadow: 0 5px 12px color-mix(in srgb, var(--text) 4%, transparent);
 }
 
 .todo-item.celebrate-done {
