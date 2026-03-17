@@ -2,8 +2,8 @@ const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const DRAFT_KEY = "github-todo-unsynced-draft";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-17 00:54";
-const APP_COMMIT_MESSAGE = "Quiet empty sub-todo state";
+const APP_VERSION = "2026-03-17 01:01";
+const APP_COMMIT_MESSAGE = "Simplify sub-todo idle trigger";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 const INITIAL_DRAFT = loadDraftState();
 const SYNC_RETRY_MS = 4000;
@@ -226,11 +226,17 @@ function syncSubtodoPresentation(todo, panel, toggle, count, body, list, form, i
   const composerOpen = isSubtodoComposerOpen(todo.id);
   const isEmptyIdle = subtodos.length === 0 && !composerOpen;
   const bodyVisible = !collapsed && (composerOpen || subtodos.length > 0);
+  const toggleLabel =
+    subtodos.length === 0
+      ? "Add sub-todos"
+      : `${completedCount} of ${subtodos.length} sub-todos complete`;
 
   count.textContent = subtodos.length === 0 ? "0" : `${completedCount}/${subtodos.length}`;
   panel.classList.toggle("is-collapsed", !bodyVisible);
   panel.classList.toggle("is-empty-idle", isEmptyIdle);
   toggle.setAttribute("aria-expanded", String(bodyVisible));
+  toggle.setAttribute("aria-label", toggleLabel);
+  toggle.setAttribute("title", toggleLabel);
   body.hidden = !bodyVisible;
   form.hidden = !composerOpen;
   input.value = "";
