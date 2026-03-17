@@ -1023,7 +1023,9 @@ button:disabled {
 .subtodo-text-editor {
   width: 100%;
   min-width: 0;
-  min-height: calc(1.3em + 0.38rem);
+  min-height: calc(1.3em + 0.36rem);
+  resize: none;
+  overflow: hidden;
   padding: 0.18rem 0.1rem;
   border-radius: var(--radius-sm);
   border: 1px solid color-mix(in srgb, var(--text) 8%, transparent);

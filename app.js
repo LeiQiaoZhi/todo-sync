@@ -2,8 +2,8 @@ const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const DRAFT_KEY = "github-todo-unsynced-draft";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-17 01:24";
-const APP_COMMIT_MESSAGE = "Top-align multiline task rows";
+const APP_VERSION = "2026-03-17 01:25";
+const APP_COMMIT_MESSAGE = "Match sub-todo editor behavior";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 const INITIAL_DRAFT = loadDraftState();
 const SYNC_RETRY_MS = 4000;
@@ -274,9 +274,9 @@ function syncSubtodoPresentation(todo, panel, trigger, count, body, list, form, 
     text.className = "subtodo-text";
     text.textContent = subtodo.text;
 
-    const textEditor = document.createElement("input");
-    textEditor.type = "text";
+    const textEditor = document.createElement("textarea");
     textEditor.className = "subtodo-text-editor";
+    textEditor.rows = 1;
     textEditor.maxLength = 160;
     textEditor.value = subtodo.text;
     textEditor.hidden = true;
@@ -345,7 +345,12 @@ function syncSubtodoPresentation(todo, panel, trigger, count, body, list, form, 
       queueMicrotask(() => {
         textEditor.focus();
         textEditor.setSelectionRange(textEditor.value.length, textEditor.value.length);
+        autoSizeSubtodoEditor(textEditor);
       });
+    });
+
+    textEditor.addEventListener("input", () => {
+      autoSizeSubtodoEditor(textEditor);
     });
 
     textEditor.addEventListener("blur", () => {
@@ -404,6 +409,11 @@ function moveItem(items, fromIndex, toIndex) {
   const [movedItem] = nextItems.splice(fromIndex, 1);
   nextItems.splice(toIndex, 0, movedItem);
   return nextItems;
+}
+
+function autoSizeSubtodoEditor(editor) {
+  editor.style.height = "0px";
+  editor.style.height = `${Math.max(editor.scrollHeight, 24)}px`;
 }
 
 async function commitSubtodoTextEdit(todoId, subtodo, text, editor) {
