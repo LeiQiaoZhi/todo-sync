@@ -2,8 +2,8 @@ const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const DRAFT_KEY = "github-todo-unsynced-draft";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-17 01:13";
-const APP_COMMIT_MESSAGE = "Align desktop empty sub-todo trigger";
+const APP_VERSION = "2026-03-17 01:14";
+const APP_COMMIT_MESSAGE = "Add inline sub-todo editing";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 const INITIAL_DRAFT = loadDraftState();
 const SYNC_RETRY_MS = 4000;
@@ -274,6 +274,14 @@ function syncSubtodoPresentation(todo, panel, trigger, summary, count, body, lis
     text.className = "subtodo-text";
     text.textContent = subtodo.text;
 
+    const textEditor = document.createElement("input");
+    textEditor.type = "text";
+    textEditor.className = "subtodo-text-editor";
+    textEditor.maxLength = 160;
+    textEditor.value = subtodo.text;
+    textEditor.hidden = true;
+    textEditor.setAttribute("aria-label", "Edit sub-todo text");
+
     const orderControls = document.createElement("div");
     orderControls.className = "subtodo-order-controls";
 
@@ -330,6 +338,34 @@ function syncSubtodoPresentation(todo, panel, trigger, summary, count, body, lis
       void updateTodos(nextTodos, `Delete sub-todo: ${truncateCommitText(subtodo.text)}`);
     });
 
+    text.addEventListener("click", () => {
+      text.hidden = true;
+      textEditor.hidden = false;
+      textEditor.value = subtodo.text;
+      queueMicrotask(() => {
+        textEditor.focus();
+        textEditor.setSelectionRange(textEditor.value.length, textEditor.value.length);
+      });
+    });
+
+    textEditor.addEventListener("blur", () => {
+      void commitSubtodoTextEdit(todo.id, subtodo, text, textEditor);
+    });
+
+    textEditor.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        textEditor.value = subtodo.text;
+        textEditor.hidden = true;
+        text.hidden = false;
+        return;
+      }
+
+      if (event.key === "Enter" && !event.isComposing) {
+        event.preventDefault();
+        textEditor.blur();
+      }
+    });
+
     moveUpButton.addEventListener("click", () => {
       if (index === 0) {
         return;
@@ -358,7 +394,7 @@ function syncSubtodoPresentation(todo, panel, trigger, summary, count, body, lis
 
     orderControls.append(moveUpButton, moveDownButton);
     label.append(checkbox, marker);
-    item.append(label, text, orderControls, removeButton);
+    item.append(label, text, textEditor, orderControls, removeButton);
     list.appendChild(item);
   });
 }
@@ -368,6 +404,31 @@ function moveItem(items, fromIndex, toIndex) {
   const [movedItem] = nextItems.splice(fromIndex, 1);
   nextItems.splice(toIndex, 0, movedItem);
   return nextItems;
+}
+
+async function commitSubtodoTextEdit(todoId, subtodo, text, editor) {
+  const nextText = editor.value.trim();
+  editor.hidden = true;
+  text.hidden = false;
+
+  if (!nextText || nextText === subtodo.text) {
+    editor.value = subtodo.text;
+    text.textContent = subtodo.text;
+    return;
+  }
+
+  text.textContent = nextText;
+  const nextTodos = state.todos.map((currentTodo) =>
+    currentTodo.id === todoId
+      ? {
+          ...currentTodo,
+          subtodos: currentTodo.subtodos.map((currentSubtodo) =>
+            currentSubtodo.id === subtodo.id ? { ...currentSubtodo, text: nextText } : currentSubtodo
+          ),
+        }
+      : currentTodo
+  );
+  await updateTodos(nextTodos, `Edit sub-todo: ${truncateCommitText(nextText)}`);
 }
 
 function openEntryDatePicker() {
