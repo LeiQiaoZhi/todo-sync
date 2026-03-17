@@ -863,6 +863,12 @@ button:disabled {
   box-shadow: 0 4px 10px color-mix(in srgb, var(--text) 6%, transparent);
 }
 
+.subtodo-add-toggle.is-open {
+  background: color-mix(in srgb, var(--text) 8%, transparent);
+  border-color: color-mix(in srgb, var(--text) 10%, transparent);
+  color: var(--text);
+}
+
 .subtodo-body {
   display: flex;
   flex-direction: column;

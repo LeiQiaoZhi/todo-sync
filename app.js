@@ -2,8 +2,8 @@ const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const DRAFT_KEY = "github-todo-unsynced-draft";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-17 00:03";
-const APP_COMMIT_MESSAGE = "Fix desktop task card layout";
+const APP_VERSION = "2026-03-17 00:07";
+const APP_COMMIT_MESSAGE = "Refine sub-todo add UX";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 const INITIAL_DRAFT = loadDraftState();
 const SYNC_RETRY_MS = 4000;
@@ -25,6 +25,7 @@ const state = {
   celebratingTodoId: null,
   celebratingDoneSection: false,
   collapsedSubtodos: {},
+  openSubtodoComposers: {},
   collapsedSections: {
     progress: false,
     backlog: false,
@@ -197,19 +198,42 @@ function isSubtodoCollapsed(todoId) {
   return state.collapsedSubtodos[todoId] ?? true;
 }
 
+function isSubtodoComposerOpen(todoId) {
+  return state.openSubtodoComposers[todoId] ?? false;
+}
+
 function focusSubtodoInput(todoId) {
   const item = document.querySelector(`[data-todo-id="${todoId}"]`);
   item?.querySelector(".subtodo-input")?.focus();
 }
 
-function syncSubtodoPresentation(todo, toggle, count, body, list) {
+function closeSubtodoComposer(todoId, options = {}) {
+  const { collapseIfEmpty = false } = options;
+  state.openSubtodoComposers[todoId] = false;
+
+  if (collapseIfEmpty) {
+    const todo = state.todos.find((entry) => entry.id === todoId);
+    if (!todo || !Array.isArray(todo.subtodos) || todo.subtodos.length === 0) {
+      state.collapsedSubtodos[todoId] = true;
+    }
+  }
+}
+
+function syncSubtodoPresentation(todo, toggle, count, body, list, form, input, addToggle) {
   const subtodos = Array.isArray(todo.subtodos) ? todo.subtodos : [];
   const completedCount = subtodos.filter((subtodo) => subtodo.completed).length;
   const collapsed = isSubtodoCollapsed(todo.id);
+  const composerOpen = isSubtodoComposerOpen(todo.id);
+  const bodyVisible = !collapsed && (composerOpen || subtodos.length > 0);
 
   count.textContent = subtodos.length === 0 ? "0" : `${completedCount}/${subtodos.length}`;
-  toggle.setAttribute("aria-expanded", String(!collapsed));
-  body.hidden = collapsed;
+  toggle.setAttribute("aria-expanded", String(bodyVisible));
+  body.hidden = !bodyVisible;
+  form.hidden = !composerOpen;
+  input.value = "";
+  addToggle.classList.toggle("is-open", composerOpen);
+  addToggle.setAttribute("aria-label", composerOpen ? "Hide sub-todo input" : "Add sub-todo");
+  addToggle.setAttribute("title", composerOpen ? "Hide sub-todo input" : "Add sub-todo");
   list.innerHTML = "";
 
   subtodos.forEach((subtodo) => {
@@ -533,7 +557,7 @@ function renderTodos() {
       item.classList.toggle("celebrate-done", state.celebratingTodoId === todo.id);
       dueDateInput.value = todo.due_date || "";
       syncTodoDatePresentation(dueDateInput, dueDateDisplay, todo.due_date);
-      syncSubtodoPresentation(todo, subtodoToggle, subtodoCount, subtodoBody, subtodoList);
+      syncSubtodoPresentation(todo, subtodoToggle, subtodoCount, subtodoBody, subtodoList, subtodoForm, subtodoInput, subtodoAddToggle);
 
       text.addEventListener("click", () => {
         text.hidden = true;
@@ -629,11 +653,16 @@ function renderTodos() {
       });
 
       subtodoAddToggle.addEventListener("click", () => {
+        const nextComposerState = !isSubtodoComposerOpen(todo.id);
+        state.openSubtodoComposers[todo.id] = nextComposerState;
         state.collapsedSubtodos[todo.id] = false;
         renderTodos();
-        queueMicrotask(() => {
-          focusSubtodoInput(todo.id);
-        });
+
+        if (nextComposerState) {
+          queueMicrotask(() => {
+            focusSubtodoInput(todo.id);
+          });
+        }
       });
 
       subtodoForm.addEventListener("submit", (event) => {
@@ -658,8 +687,29 @@ function renderTodos() {
               }
             : currentTodo
         );
+        state.openSubtodoComposers[todo.id] = false;
         state.collapsedSubtodos[todo.id] = false;
         void updateTodos(nextTodos, `Add sub-todo: ${truncateCommitText(nextText)}`);
+      });
+
+      subtodoInput.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          event.preventDefault();
+          closeSubtodoComposer(todo.id, { collapseIfEmpty: true });
+          renderTodos();
+        }
+      });
+
+      subtodoInput.addEventListener("blur", () => {
+        queueMicrotask(() => {
+          const itemRoot = document.querySelector(`[data-todo-id="${todo.id}"]`);
+          const activeWithinItem = itemRoot?.contains(document.activeElement);
+
+          if (!subtodoInput.value.trim() && !activeWithinItem) {
+            closeSubtodoComposer(todo.id, { collapseIfEmpty: true });
+            renderTodos();
+          }
+        });
       });
 
       getListElement(status).appendChild(item);
