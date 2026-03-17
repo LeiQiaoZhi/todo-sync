@@ -1337,17 +1337,27 @@ textarea:focus-visible {
   .subtodo-trigger {
     grid-column: 1;
     grid-row: 1;
-    align-self: start;
-    margin-top: 0.08rem;
+    align-self: center;
+    margin-top: 0;
   }
 
   .todo-text,
   .todo-text-editor {
     text-align: left;
-    align-self: start;
+    align-self: center;
     grid-column: 2;
     grid-row: 1;
     padding-right: calc(1.7rem + var(--space-2));
+  }
+
+  .todo-item.is-multiline .subtodo-trigger {
+    align-self: start;
+    margin-top: 0.08rem;
+  }
+
+  .todo-item.is-multiline .todo-text,
+  .todo-item.is-multiline .todo-text-editor {
+    align-self: start;
   }
 
   .hero-card,
