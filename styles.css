@@ -552,6 +552,10 @@ button:disabled {
   position: relative;
 }
 
+.todo-entry {
+  --composer-side-w: 7.35rem;
+}
+
 .inline-date-input {
   display: block;
   padding: 0.2rem 0.56rem;
@@ -564,13 +568,18 @@ button:disabled {
 .entry-date-button,
 .entry-date-input,
 .due-date-widget {
-  width: 7.8rem;
+  width: var(--composer-side-w);
   flex: 0 0 auto;
 }
 
 .entry-date-shell {
   position: relative;
   height: var(--control-h);
+}
+
+.todo-entry > .primary-button {
+  width: var(--composer-side-w);
+  padding-inline: 0.9rem;
 }
 
 .entry-date-button {
