@@ -10,14 +10,14 @@
       href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=2026-03-16-1119" />
+    <link rel="stylesheet" href="styles.css?v=2026-03-16-1134" />
   </head>
   <body>
     <main class="app-shell">
       <section class="hero-card">
         <div class="topbar-main">
           <p id="buildVersion" class="build-version">
-            Version 2026-03-16 11:19 | Fix add-row date picker on Edge
+            Version 2026-03-16 11:34 | Add foldable sub-todos
           </p>
           <p id="statusText" class="status-text">Add your GitHub settings to connect this app.</p>
         </div>
@@ -178,9 +178,31 @@
           <button class="icon-button delete-button" type="button" aria-label="Delete todo">×</button>
           <button class="delete-confirm-button" type="button" hidden>Confirm</button>
         </div>
+        <div class="subtodo-panel">
+          <div class="subtodo-header">
+            <button class="subtodo-toggle" type="button" aria-expanded="false">
+              <span class="subtodo-title">Sub-todos</span>
+              <span class="subtodo-count">0</span>
+            </button>
+            <button class="subtodo-add-toggle" type="button" aria-label="Add sub-todo" title="Add sub-todo">+</button>
+          </div>
+          <div class="subtodo-body" hidden>
+            <form class="subtodo-form">
+              <input
+                class="subtodo-input"
+                type="text"
+                maxlength="160"
+                placeholder="Add sub-todo"
+                autocomplete="off"
+              />
+              <button class="subtodo-submit" type="submit">Add</button>
+            </form>
+            <ul class="subtodo-list"></ul>
+          </div>
+        </div>
       </li>
     </template>
 
-  <script src="app.js?v=2026-03-16-1119"></script>
+  <script src="app.js?v=2026-03-16-1134"></script>
 </body>
 </html>

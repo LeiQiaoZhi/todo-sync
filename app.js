@@ -2,8 +2,8 @@ const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const DRAFT_KEY = "github-todo-unsynced-draft";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-16 11:19";
-const APP_COMMIT_MESSAGE = "Fix add-row date picker on Edge";
+const APP_VERSION = "2026-03-16 11:34";
+const APP_COMMIT_MESSAGE = "Add foldable sub-todos";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 const INITIAL_DRAFT = loadDraftState();
 const SYNC_RETRY_MS = 4000;
@@ -24,6 +24,7 @@ const state = {
   pendingCommitMessage: INITIAL_DRAFT?.pendingCommitMessage || "",
   celebratingTodoId: null,
   celebratingDoneSection: false,
+  collapsedSubtodos: {},
   collapsedSections: {
     progress: false,
     backlog: false,
@@ -182,6 +183,89 @@ function updateEntryDateButton() {
   const hasValue = Boolean(value);
   elements.todoDateButton.textContent = hasValue ? formatShortDate(value) : "Date";
   elements.todoDateButton.classList.toggle("has-value", hasValue);
+}
+
+function isSubtodoCollapsed(todoId) {
+  return state.collapsedSubtodos[todoId] ?? true;
+}
+
+function focusSubtodoInput(todoId) {
+  const item = document.querySelector(`[data-todo-id="${todoId}"]`);
+  item?.querySelector(".subtodo-input")?.focus();
+}
+
+function syncSubtodoPresentation(todo, toggle, count, body, list) {
+  const subtodos = Array.isArray(todo.subtodos) ? todo.subtodos : [];
+  const completedCount = subtodos.filter((subtodo) => subtodo.completed).length;
+  const collapsed = isSubtodoCollapsed(todo.id);
+
+  count.textContent = subtodos.length === 0 ? "0" : `${completedCount}/${subtodos.length}`;
+  toggle.setAttribute("aria-expanded", String(!collapsed));
+  body.hidden = collapsed;
+  list.innerHTML = "";
+
+  subtodos.forEach((subtodo) => {
+    const item = document.createElement("li");
+    item.className = "subtodo-item";
+    item.classList.toggle("completed", subtodo.completed);
+
+    const label = document.createElement("label");
+    label.className = "subtodo-check";
+
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = subtodo.completed;
+    checkbox.setAttribute("aria-label", `Mark sub-todo ${subtodo.text} complete`);
+
+    const marker = document.createElement("span");
+    marker.className = "subtodo-check-mark";
+    marker.setAttribute("aria-hidden", "true");
+
+    const text = document.createElement("span");
+    text.className = "subtodo-text";
+    text.textContent = subtodo.text;
+
+    const removeButton = document.createElement("button");
+    removeButton.type = "button";
+    removeButton.className = "subtodo-remove";
+    removeButton.setAttribute("aria-label", `Delete sub-todo ${subtodo.text}`);
+    removeButton.textContent = "×";
+
+    checkbox.addEventListener("change", () => {
+      const nextTodos = state.todos.map((currentTodo) =>
+        currentTodo.id === todo.id
+          ? {
+              ...currentTodo,
+              subtodos: currentTodo.subtodos.map((currentSubtodo) =>
+                currentSubtodo.id === subtodo.id
+                  ? { ...currentSubtodo, completed: checkbox.checked }
+                  : currentSubtodo
+              ),
+            }
+          : currentTodo
+      );
+      void updateTodos(
+        nextTodos,
+        `${checkbox.checked ? "Complete" : "Reopen"} sub-todo: ${truncateCommitText(subtodo.text)}`
+      );
+    });
+
+    removeButton.addEventListener("click", () => {
+      const nextTodos = state.todos.map((currentTodo) =>
+        currentTodo.id === todo.id
+          ? {
+              ...currentTodo,
+              subtodos: currentTodo.subtodos.filter((currentSubtodo) => currentSubtodo.id !== subtodo.id),
+            }
+          : currentTodo
+      );
+      void updateTodos(nextTodos, `Delete sub-todo: ${truncateCommitText(subtodo.text)}`);
+    });
+
+    label.append(checkbox, marker);
+    item.append(label, text, removeButton);
+    list.appendChild(item);
+  });
 }
 
 function openEntryDatePicker() {
@@ -425,14 +509,23 @@ function renderTodos() {
       const dueDateInput = item.querySelector(".due-date-input");
       const dueDateDisplay = item.querySelector(".due-date-display");
       const statusButtons = item.querySelectorAll(".status-option");
+      const subtodoToggle = item.querySelector(".subtodo-toggle");
+      const subtodoCount = item.querySelector(".subtodo-count");
+      const subtodoBody = item.querySelector(".subtodo-body");
+      const subtodoList = item.querySelector(".subtodo-list");
+      const subtodoForm = item.querySelector(".subtodo-form");
+      const subtodoInput = item.querySelector(".subtodo-input");
+      const subtodoAddToggle = item.querySelector(".subtodo-add-toggle");
 
       item.style.viewTransitionName = getTodoTransitionName(todo.id);
+      item.dataset.todoId = todo.id;
       text.textContent = todo.text;
       textEditor.value = todo.text;
       item.classList.toggle("completed", todo.status === "done");
       item.classList.toggle("celebrate-done", state.celebratingTodoId === todo.id);
       dueDateInput.value = todo.due_date || "";
       syncTodoDatePresentation(dueDateInput, dueDateDisplay, todo.due_date);
+      syncSubtodoPresentation(todo, subtodoToggle, subtodoCount, subtodoBody, subtodoList);
 
       text.addEventListener("click", () => {
         text.hidden = true;
@@ -520,6 +613,45 @@ function renderTodos() {
           nextTodos,
           `${dueDateInput.value ? "Update due date" : "Clear due date"}: ${truncateCommitText(todo.text)}`
         );
+      });
+
+      subtodoToggle.addEventListener("click", () => {
+        state.collapsedSubtodos[todo.id] = !isSubtodoCollapsed(todo.id);
+        renderTodos();
+      });
+
+      subtodoAddToggle.addEventListener("click", () => {
+        state.collapsedSubtodos[todo.id] = false;
+        renderTodos();
+        queueMicrotask(() => {
+          focusSubtodoInput(todo.id);
+        });
+      });
+
+      subtodoForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const nextText = subtodoInput.value.trim();
+        if (!nextText) {
+          return;
+        }
+
+        const nextTodos = state.todos.map((currentTodo) =>
+          currentTodo.id === todo.id
+            ? {
+                ...currentTodo,
+                subtodos: [
+                  ...currentTodo.subtodos,
+                  {
+                    id: crypto.randomUUID(),
+                    text: nextText,
+                    completed: false,
+                  },
+                ],
+              }
+            : currentTodo
+        );
+        state.collapsedSubtodos[todo.id] = false;
+        void updateTodos(nextTodos, `Add sub-todo: ${truncateCommitText(nextText)}`);
       });
 
       getListElement(status).appendChild(item);
@@ -637,7 +769,23 @@ function normalizeTodo(todo) {
     completed: status === "done",
     created_at: String(todo.created_at || new Date().toISOString()),
     due_date: normalizeDueDate(todo.due_date),
+    subtodos: normalizeSubtodos(todo.subtodos),
   };
+}
+
+function normalizeSubtodos(subtodos) {
+  if (!Array.isArray(subtodos)) {
+    return [];
+  }
+
+  return subtodos
+    .filter((subtodo) => subtodo && typeof subtodo === "object")
+    .map((subtodo) => ({
+      id: String(subtodo.id || crypto.randomUUID()),
+      text: String(subtodo.text || "").trim(),
+      completed: Boolean(subtodo.completed),
+    }))
+    .filter((subtodo) => subtodo.text);
 }
 
 async function fetchTodosFromGitHub(options = {}) {
@@ -975,7 +1123,12 @@ function truncateCommitText(text) {
 }
 
 function cloneTodos(todos) {
-  return todos.map((todo) => ({ ...todo }));
+  return todos.map((todo) => ({
+    ...todo,
+    subtodos: Array.isArray(todo.subtodos)
+      ? todo.subtodos.map((subtodo) => ({ ...subtodo }))
+      : [],
+  }));
 }
 
 function normalizeTodos(todos) {
