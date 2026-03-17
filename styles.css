@@ -695,7 +695,8 @@ button:disabled {
 .todo-item {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: var(--space-3);
+  column-gap: var(--space-3);
+  row-gap: 0.28rem;
   align-items: start;
   padding: 0.68rem 0.78rem;
   border-radius: var(--radius-md);
@@ -798,14 +799,14 @@ button:disabled {
   flex-direction: column;
   gap: var(--space-2);
   width: 100%;
-  margin-top: 0.04rem;
+  margin-top: -0.04rem;
   grid-column: 1 / -1;
   grid-row: 2;
 }
 
 .subtodo-panel.is-collapsed {
   gap: 0;
-  margin-top: 0;
+  margin-top: -0.08rem;
 }
 
 .subtodo-header {
