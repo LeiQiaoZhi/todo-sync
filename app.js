@@ -2,8 +2,8 @@ const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const DRAFT_KEY = "github-todo-unsynced-draft";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-17 01:27";
-const APP_COMMIT_MESSAGE = "Hide dot in populated sub-todo badge";
+const APP_VERSION = "2026-03-17 01:28";
+const APP_COMMIT_MESSAGE = "Green completed sub-todo badge";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 const INITIAL_DRAFT = loadDraftState();
 const SYNC_RETRY_MS = 4000;
@@ -226,6 +226,7 @@ function syncSubtodoPresentation(todo, panel, trigger, count, body, list, form, 
   const composerOpen = isSubtodoComposerOpen(todo.id);
   const isEmptyIdle = subtodos.length === 0 && !composerOpen;
   const hasSubtodos = subtodos.length > 0;
+  const allSubtodosDone = hasSubtodos && completedCount === subtodos.length;
   const bodyVisible = !collapsed && (composerOpen || subtodos.length > 0);
   const toggleLabel =
     !hasSubtodos
@@ -238,6 +239,7 @@ function syncSubtodoPresentation(todo, panel, trigger, count, body, list, form, 
   panel.closest(".todo-item")?.classList.toggle("has-subtodos", hasSubtodos);
   trigger.classList.toggle("is-empty", !hasSubtodos);
   trigger.classList.toggle("is-summary", hasSubtodos);
+  trigger.classList.toggle("is-complete", allSubtodosDone);
   const triggerIcon = trigger.querySelector(".subtodo-icon");
   if (triggerIcon) {
     triggerIcon.hidden = hasSubtodos;
