@@ -769,14 +769,19 @@ button:disabled {
   grid-column: 1;
   grid-row: 1;
   justify-self: start;
-  align-self: center;
+  align-self: start;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 0.92rem;
   height: 0.92rem;
+  margin-top: 0.18rem;
   padding: 0;
   border: 0;
   background: transparent;
   color: color-mix(in srgb, var(--muted) 62%, transparent);
   opacity: 0.18;
+  line-height: 1;
 }
 
 .subtodo-trigger:hover,
