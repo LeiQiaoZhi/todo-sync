@@ -1,6 +1,15 @@
 {
   "todos": [
     {
+      "id": "696f8fbe-510f-487c-b804-c03d58c90ef6",
+      "text": "prepare driving to stanford",
+      "status": "progress",
+      "completed": false,
+      "created_at": "2026-03-18T04:26:23.936Z",
+      "due_date": null,
+      "subtodos": []
+    },
+    {
       "id": "874aea87-77ab-4eb9-be81-cef4270a2573",
       "text": "print appointment notice and go to OPT biometrics appointment",
       "status": "backlog",
