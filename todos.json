@@ -90,6 +90,11 @@
           "id": "a008e3d8-64e3-4acf-a204-d3cac2506e51",
           "text": "parking",
           "completed": false
+        },
+        {
+          "id": "41c8aca8-548f-4502-b869-65f7d6f8c547",
+          "text": "travel time between each places",
+          "completed": false
         }
       ]
     },
