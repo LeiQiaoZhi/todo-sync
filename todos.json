@@ -12,6 +12,11 @@
           "id": "3e1e8474-83d4-438d-8671-2a7f01951f64",
           "text": "pack: clothes, camera, laptop, controllers, cables",
           "completed": false
+        },
+        {
+          "id": "5c1aaa45-acaa-42cf-9677-00cc0dcd5375",
+          "text": "find and plan stops along the way",
+          "completed": false
         }
       ]
     },
