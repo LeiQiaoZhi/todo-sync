@@ -113,22 +113,22 @@
         {
           "id": "a008e3d8-64e3-4acf-a204-d3cac2506e51",
           "text": "parking",
-          "completed": false
+          "completed": true
         },
         {
           "id": "41c8aca8-548f-4502-b869-65f7d6f8c547",
           "text": "travel time between each places",
-          "completed": false
+          "completed": true
         },
         {
           "id": "85dea4bf-3f6c-4a14-bfda-e7e82d6f821e",
           "text": "weather: suitable clothing",
-          "completed": false
+          "completed": true
         },
         {
           "id": "a097b9a9-d10e-466b-9743-c80b25ec9044",
           "text": "prepare pdf",
-          "completed": false
+          "completed": true
         }
       ]
     },
