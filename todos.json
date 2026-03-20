@@ -3,8 +3,8 @@
     {
       "id": "ee44550d-a6b7-4b5f-ba08-977074e63d7e",
       "text": "send federal tax money",
-      "status": "progress",
-      "completed": false,
+      "status": "done",
+      "completed": true,
       "created_at": "2026-03-20T01:40:19.023Z",
       "due_date": "2026-03-21",
       "subtodos": []
