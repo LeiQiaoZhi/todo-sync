@@ -95,7 +95,7 @@
     {
       "id": "93d1f44d-9032-4522-a5bd-f15d48d13dc6",
       "text": "532 alpha build",
-      "status": "backlog",
+      "status": "progress",
       "completed": false,
       "created_at": "2026-03-16T07:03:59.732Z",
       "due_date": "2026-03-25",
