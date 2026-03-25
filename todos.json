@@ -104,6 +104,11 @@
           "id": "5cf4cc92-7fc3-45aa-be62-04e11a9bb3d1",
           "text": "make car go on ramp",
           "completed": true
+        },
+        {
+          "id": "25d35a2f-75b0-40ee-8f05-0725a57a3ac7",
+          "text": "intro scene",
+          "completed": false
         }
       ]
     },
