@@ -103,7 +103,7 @@
         {
           "id": "5cf4cc92-7fc3-45aa-be62-04e11a9bb3d1",
           "text": "make car go on ramp",
-          "completed": false
+          "completed": true
         }
       ]
     },
