@@ -32,6 +32,11 @@
           "id": "f003532e-6e17-47ab-a07c-0e439366223c",
           "text": "enemy?",
           "completed": false
+        },
+        {
+          "id": "14515a5b-691e-4b8d-aee6-aeb2e2bf2d49",
+          "text": "bug: last scene not in scene list",
+          "completed": false
         }
       ]
     },
