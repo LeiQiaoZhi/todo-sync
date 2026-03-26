@@ -1,85 +1,6 @@
 {
   "todos": [
     {
-      "id": "b4267e7f-89b6-4e1d-964e-10442f90287e",
-      "text": "playtest feedback",
-      "status": "progress",
-      "completed": false,
-      "created_at": "2026-03-26T17:15:22.646Z",
-      "due_date": null,
-      "subtodos": [
-        {
-          "id": "11b2cc2b-911d-45a2-90b8-89d1a57d28de",
-          "text": "camera when collide or on ramp is dizzy",
-          "completed": false
-        },
-        {
-          "id": "128e5cc8-9673-49c1-80ba-edb4c885e94c",
-          "text": "tutorial time not enough",
-          "completed": false
-        },
-        {
-          "id": "c1fb7c52-1ef3-4891-b81c-012f606c1804",
-          "text": "time not enough for main level",
-          "completed": false
-        },
-        {
-          "id": "98d08914-5d33-455a-90b5-097d52be2d74",
-          "text": "turning hard at high speed",
-          "completed": false
-        },
-        {
-          "id": "f003532e-6e17-47ab-a07c-0e439366223c",
-          "text": "enemy? player wants to interact with it but couldnt",
-          "completed": false
-        },
-        {
-          "id": "14515a5b-691e-4b8d-aee6-aeb2e2bf2d49",
-          "text": "bug: last scene not in scene list",
-          "completed": true
-        },
-        {
-          "id": "c5ccc385-aa0a-45be-b98d-a185d608ef5d",
-          "text": "ramp boost speed a bit too high",
-          "completed": false
-        },
-        {
-          "id": "772b71f9-a9e3-4790-ac99-5bd91ca1bf60",
-          "text": "tree look confusing",
-          "completed": false
-        },
-        {
-          "id": "41620ac6-2d81-45b2-86da-a372771d32a4",
-          "text": "intro cg doesn’t relate to cars",
-          "completed": false
-        },
-        {
-          "id": "0ad27e8a-157f-4bcb-ab08-48d858362ed7",
-          "text": "bug reverse direction",
-          "completed": false
-        },
-        {
-          "id": "d9ef98aa-d288-4c63-bed0-4eacbca18bf2",
-          "text": "only restart button when finished",
-          "completed": false
-        },
-        {
-          "id": "c4647528-c4fe-424a-8eb7-ea098ac51718",
-          "text": "direction of the car at the tutorial",
-          "completed": false
-        }
-      ]
-    },
-    {
-      "id": "fd557a2a-bcba-49c6-8377-43bfce978f03",
-      "text": "depreciation request",
-      "status": "backlog",
-      "completed": false,
-      "created_at": "2026-03-25T18:06:21.357Z",
-      "due_date": "2026-04-01",
-      "subtodos": []
-    },
-    {
       "id": "ee44550d-a6b7-4b5f-ba08-977074e63d7e",
       "text": "send federal tax money",
       "status": "done",
@@ -138,7 +59,7 @@
     {
       "id": "fe5ac09b-8702-4e00-99b9-46691c04c96a",
       "text": "AI Midterm 2",
-      "status": "progress",
+      "status": "backlog",
       "completed": false,
       "created_at": "2026-03-16T07:11:44.320Z",
       "due_date": "2026-03-30",
@@ -174,24 +95,19 @@
     {
       "id": "93d1f44d-9032-4522-a5bd-f15d48d13dc6",
       "text": "532 alpha build",
-      "status": "done",
-      "completed": true,
+      "status": "progress",
+      "completed": false,
       "created_at": "2026-03-16T07:03:59.732Z",
       "due_date": "2026-03-25",
       "subtodos": [
         {
           "id": "5cf4cc92-7fc3-45aa-be62-04e11a9bb3d1",
           "text": "make car go on ramp",
-          "completed": true
+          "completed": false
         },
         {
-          "id": "25d35a2f-75b0-40ee-8f05-0725a57a3ac7",
-          "text": "intro scene",
-          "completed": true
-        },
-        {
-          "id": "99ecf6c8-8917-4430-b49a-2aa49de84ef4",
-          "text": "alpha map blockout",
+          "id": "fc1e59ee-9126-4602-8d46-d2bd6779839d",
+          "text": "opening scene",
           "completed": false
         }
       ]
