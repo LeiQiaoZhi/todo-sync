@@ -12,6 +12,16 @@
           "id": "11b2cc2b-911d-45a2-90b8-89d1a57d28de",
           "text": "camera when collide or on ramp is dizzy",
           "completed": false
+        },
+        {
+          "id": "128e5cc8-9673-49c1-80ba-edb4c885e94c",
+          "text": "tutorial time not enough",
+          "completed": false
+        },
+        {
+          "id": "c1fb7c52-1ef3-4891-b81c-012f606c1804",
+          "text": "time not enough for main level",
+          "completed": false
         }
       ]
     },
