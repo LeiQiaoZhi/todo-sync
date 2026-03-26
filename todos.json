@@ -57,6 +57,16 @@
           "id": "0ad27e8a-157f-4bcb-ab08-48d858362ed7",
           "text": "bug reverse direction",
           "completed": false
+        },
+        {
+          "id": "d9ef98aa-d288-4c63-bed0-4eacbca18bf2",
+          "text": "only restart button when finished",
+          "completed": false
+        },
+        {
+          "id": "c4647528-c4fe-424a-8eb7-ea098ac51718",
+          "text": "direction of the car at the tutorial",
+          "completed": false
         }
       ]
     },
