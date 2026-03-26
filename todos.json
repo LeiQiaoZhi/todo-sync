@@ -37,6 +37,11 @@
           "id": "14515a5b-691e-4b8d-aee6-aeb2e2bf2d49",
           "text": "bug: last scene not in scene list",
           "completed": true
+        },
+        {
+          "id": "c5ccc385-aa0a-45be-b98d-a185d608ef5d",
+          "text": "ramp boost speed a bit too high",
+          "completed": false
         }
       ]
     },
