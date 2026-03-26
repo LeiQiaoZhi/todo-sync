@@ -47,6 +47,16 @@
           "id": "772b71f9-a9e3-4790-ac99-5bd91ca1bf60",
           "text": "tree look confusing",
           "completed": false
+        },
+        {
+          "id": "41620ac6-2d81-45b2-86da-a372771d32a4",
+          "text": "intro cg doesn’t relate to cars",
+          "completed": false
+        },
+        {
+          "id": "0ad27e8a-157f-4bcb-ab08-48d858362ed7",
+          "text": "bug reverse direction",
+          "completed": false
         }
       ]
     },
