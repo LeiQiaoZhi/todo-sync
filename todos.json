@@ -17,6 +17,11 @@
           "id": "ee0c658a-1051-4120-bd68-f3f4ed224399",
           "text": "try sample instead of choosing the best dir always",
           "completed": false
+        },
+        {
+          "id": "1cde04f3-707d-4d7b-a596-f5b6b2869bff",
+          "text": "proper obstacle avoidance using raycast",
+          "completed": false
         }
       ]
     },
