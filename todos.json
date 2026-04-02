@@ -22,6 +22,11 @@
           "id": "1cde04f3-707d-4d7b-a596-f5b6b2869bff",
           "text": "proper obstacle avoidance using raycast",
           "completed": false
+        },
+        {
+          "id": "3e10aca0-c938-435f-9916-e58f45872771",
+          "text": "weapon system: pickup weapons, throw hand weapon",
+          "completed": false
         }
       ]
     },
