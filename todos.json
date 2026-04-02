@@ -32,6 +32,11 @@
           "id": "3e10aca0-c938-435f-9916-e58f45872771",
           "text": "weapon system: pickup weapons, throw hand weapon",
           "completed": false
+        },
+        {
+          "id": "14256304-6776-4c60-9215-1f5750f3a9e4",
+          "text": "bleed effect",
+          "completed": false
         }
       ]
     },
