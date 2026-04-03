@@ -33,6 +33,11 @@
           "completed": true
         },
         {
+          "id": "b6146452-e608-42c7-be2c-542407c5d9f9",
+          "text": "new weapon: spear",
+          "completed": false
+        },
+        {
           "id": "ee0c658a-1051-4120-bd68-f3f4ed224399",
           "text": "try sample instead of choosing the best dir always",
           "completed": false
@@ -40,11 +45,6 @@
         {
           "id": "f673550f-4cec-4161-b0e1-12a3a584d55c",
           "text": "better death effect: sliced body parts",
-          "completed": false
-        },
-        {
-          "id": "b6146452-e608-42c7-be2c-542407c5d9f9",
-          "text": "new weapon: spear",
           "completed": false
         },
         {
