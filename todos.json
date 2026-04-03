@@ -56,6 +56,11 @@
           "id": "ace22b5d-10fc-458d-ad7a-3fbe2ce229bb",
           "text": "cape",
           "completed": false
+        },
+        {
+          "id": "fae57d6d-10e4-437b-9caa-6abec7d0fb0c",
+          "text": "pickup indicator",
+          "completed": false
         }
       ]
     },
