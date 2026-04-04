@@ -81,6 +81,11 @@
           "id": "2c2eae14-f104-4fd3-a2f3-4a227c314458",
           "text": "thrown weapon / projectile pin on body",
           "completed": false
+        },
+        {
+          "id": "7a357a3b-d08f-4870-a6bf-bb7e37e23203",
+          "text": "bug: shouldn't interact with multiple pickups at once",
+          "completed": false
         }
       ]
     },
