@@ -71,6 +71,11 @@
           "id": "8fe08b5c-ffe8-4194-acca-b2f635945d4f",
           "text": "refactor: let enemies use weapon system as well",
           "completed": false
+        },
+        {
+          "id": "ee897af9-80a2-427a-aae9-bb92bf4c940e",
+          "text": "configure weapon drop on spear and bow enemies",
+          "completed": false
         }
       ]
     },
