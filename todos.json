@@ -61,6 +61,11 @@
           "id": "fae57d6d-10e4-437b-9caa-6abec7d0fb0c",
           "text": "pickup indicator",
           "completed": false
+        },
+        {
+          "id": "4f759f04-85b3-404b-9bcf-bdd1b5d0bd1a",
+          "text": "enemy drop weapon",
+          "completed": false
         }
       ]
     },
