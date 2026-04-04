@@ -85,7 +85,7 @@
         {
           "id": "7a357a3b-d08f-4870-a6bf-bb7e37e23203",
           "text": "bug: shouldn't interact with multiple pickups at once",
-          "completed": false
+          "completed": true
         }
       ]
     },
