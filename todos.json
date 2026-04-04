@@ -66,6 +66,11 @@
           "id": "4f759f04-85b3-404b-9bcf-bdd1b5d0bd1a",
           "text": "enemy drop weapon",
           "completed": false
+        },
+        {
+          "id": "8fe08b5c-ffe8-4194-acca-b2f635945d4f",
+          "text": "refactor: let enemies use weapon system as well",
+          "completed": false
         }
       ]
     },
