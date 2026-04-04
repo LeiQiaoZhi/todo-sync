@@ -76,6 +76,11 @@
           "id": "ee897af9-80a2-427a-aae9-bb92bf4c940e",
           "text": "configure weapon drop on spear and bow enemies",
           "completed": false
+        },
+        {
+          "id": "2c2eae14-f104-4fd3-a2f3-4a227c314458",
+          "text": "thrown weapon / projectile pin on body",
+          "completed": false
         }
       ]
     },
