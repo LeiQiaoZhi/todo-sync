@@ -7,7 +7,13 @@
       "completed": false,
       "created_at": "2026-04-02T19:11:40.331Z",
       "due_date": "2026-04-08",
-      "subtodos": []
+      "subtodos": [
+        {
+          "id": "03d9a320-16fd-4e78-a6e6-88b3c0a25cc3",
+          "text": "intro cg: add sentences about settlement",
+          "completed": false
+        }
+      ]
     },
     {
       "id": "c6cd38b9-d3dd-409e-9b29-a009559a884f",
