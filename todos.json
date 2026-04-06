@@ -12,6 +12,11 @@
           "id": "03d9a320-16fd-4e78-a6e6-88b3c0a25cc3",
           "text": "intro cg: add sentences about settlement",
           "completed": false
+        },
+        {
+          "id": "535c79c1-651a-4f12-aed1-73de81141be5",
+          "text": "intro cg: add car to make smooth transition to tutorial",
+          "completed": false
         }
       ]
     },
