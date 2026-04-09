@@ -37,6 +37,11 @@
           "id": "081f8379-b47b-42f6-b0ff-e99b58a0e752",
           "text": "post process for light-up stage doesn't look good",
           "completed": false
+        },
+        {
+          "id": "2b6519de-0e02-40b1-ab95-05c62aa4c5a5",
+          "text": "\"click to start\" at the title screen",
+          "completed": false
         }
       ]
     },
