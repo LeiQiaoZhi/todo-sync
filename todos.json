@@ -32,6 +32,11 @@
           "id": "71ef3dcf-33d9-4d96-a548-76cd6909f2e2",
           "text": "destination ramp doesn't look like a ramp",
           "completed": false
+        },
+        {
+          "id": "081f8379-b47b-42f6-b0ff-e99b58a0e752",
+          "text": "post process for light-up stage doesn't look good",
+          "completed": false
         }
       ]
     },
