@@ -27,6 +27,11 @@
           "id": "14544ea7-5e5f-49bb-bf41-546dd21c2d3a",
           "text": "destination ramp not smooth",
           "completed": false
+        },
+        {
+          "id": "71ef3dcf-33d9-4d96-a548-76cd6909f2e2",
+          "text": "destination ramp doesn't look like a ramp",
+          "completed": false
         }
       ]
     },
