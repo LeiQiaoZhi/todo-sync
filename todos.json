@@ -22,6 +22,11 @@
           "id": "e3395323-8251-4817-b305-8fa82bbf6bee",
           "text": "bug: reverse direction wrong",
           "completed": false
+        },
+        {
+          "id": "14544ea7-5e5f-49bb-bf41-546dd21c2d3a",
+          "text": "destination ramp not smooth",
+          "completed": false
         }
       ]
     },
