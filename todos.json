@@ -7,7 +7,13 @@
       "completed": false,
       "created_at": "2026-04-09T06:28:32.652Z",
       "due_date": null,
-      "subtodos": []
+      "subtodos": [
+        {
+          "id": "412753cc-4fec-46d1-bda6-9f9d94989264",
+          "text": "bug: timer still going after reach home portal",
+          "completed": false
+        }
+      ]
     },
     {
       "id": "ac720908-4b1b-4173-9955-79aaded12b48",
