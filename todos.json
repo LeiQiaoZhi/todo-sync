@@ -11,7 +11,7 @@
         {
           "id": "412753cc-4fec-46d1-bda6-9f9d94989264",
           "text": "bug: timer still going after reach home portal",
-          "completed": false
+          "completed": true
         },
         {
           "id": "6f10bdee-2481-441a-be18-4aaaab5755b6",
