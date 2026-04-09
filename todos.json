@@ -17,6 +17,11 @@
           "id": "6f10bdee-2481-441a-be18-4aaaab5755b6",
           "text": "car pitch unstable when driving",
           "completed": false
+        },
+        {
+          "id": "e3395323-8251-4817-b305-8fa82bbf6bee",
+          "text": "bug: reverse direction wrong",
+          "completed": false
         }
       ]
     },
