@@ -71,6 +71,16 @@
           "id": "c78e9d7c-6e0b-48aa-a122-8db232b16f69",
           "text": "player don’t go on grass?",
           "completed": false
+        },
+        {
+          "id": "92688861-abe9-44bf-887b-ce5b5b365342",
+          "text": "start jump spot not good will collide",
+          "completed": false
+        },
+        {
+          "id": "66900b72-e27d-418a-a00b-9cb4dd257b12",
+          "text": "not enough batteries",
+          "completed": false
         }
       ]
     },
