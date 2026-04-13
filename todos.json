@@ -61,6 +61,16 @@
           "id": "2cda59e6-d7ad-4691-871b-1f97559a832a",
           "text": "better scene transitions (no restart button, CG)",
           "completed": true
+        },
+        {
+          "id": "d0e47556-5a8a-47b7-bf83-434553706c04",
+          "text": "energy bar vfx",
+          "completed": false
+        },
+        {
+          "id": "c78e9d7c-6e0b-48aa-a122-8db232b16f69",
+          "text": "player don’t go on grass?",
+          "completed": false
         }
       ]
     },
