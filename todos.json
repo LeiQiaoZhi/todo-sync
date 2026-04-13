@@ -91,6 +91,16 @@
           "id": "f84af6f0-d578-4567-b280-1445381a6c71",
           "text": "tutorial time too short",
           "completed": false
+        },
+        {
+          "id": "b49a9e73-06d9-4fb5-86b3-29ef12e7aee0",
+          "text": "low speed control not good",
+          "completed": false
+        },
+        {
+          "id": "12eb43ee-fb16-49f5-a11c-4e0e903ace9a",
+          "text": "tutorial add how much energy brought back",
+          "completed": false
         }
       ]
     },
