@@ -81,6 +81,16 @@
           "id": "66900b72-e27d-418a-a00b-9cb4dd257b12",
           "text": "not enough batteries",
           "completed": false
+        },
+        {
+          "id": "73382ed5-3f1e-4f9c-9e69-f199ea3524a8",
+          "text": "restart not working",
+          "completed": false
+        },
+        {
+          "id": "f84af6f0-d578-4567-b280-1445381a6c71",
+          "text": "tutorial time too short",
+          "completed": false
         }
       ]
     },
