@@ -101,6 +101,11 @@
           "id": "12eb43ee-fb16-49f5-a11c-4e0e903ace9a",
           "text": "tutorial add how much energy brought back",
           "completed": false
+        },
+        {
+          "id": "815f2dd6-011b-46e2-a6be-1e73c7b61ff8",
+          "text": "used battery stay as guides in day timr",
+          "completed": false
         }
       ]
     },
