@@ -303,8 +303,8 @@
     {
       "id": "2b20f4ec-1d24-4c25-8ffc-d2b765cfd233",
       "text": "598 reflection 2",
-      "status": "backlog",
-      "completed": false,
+      "status": "done",
+      "completed": true,
       "created_at": "2026-03-16T07:04:39.245Z",
       "due_date": "2026-04-10",
       "subtodos": []
