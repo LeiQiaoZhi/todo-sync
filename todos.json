@@ -3,8 +3,8 @@
     {
       "id": "48ab81f1-62b6-4220-903c-220531c1d7ac",
       "text": "学位认证补充材料",
-      "status": "progress",
-      "completed": false,
+      "status": "done",
+      "completed": true,
       "created_at": "2026-04-17T21:33:56.884Z",
       "due_date": "2026-04-17",
       "subtodos": []
