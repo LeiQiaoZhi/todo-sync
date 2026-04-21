@@ -21,8 +21,8 @@
     {
       "id": "44fa54f3-2dc9-48f6-aa64-73877148c642",
       "text": "洗衣服和床单浴巾 卫生",
-      "status": "progress",
-      "completed": false,
+      "status": "done",
+      "completed": true,
       "created_at": "2026-04-17T08:24:39.761Z",
       "due_date": null,
       "subtodos": []
