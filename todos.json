@@ -12,8 +12,8 @@
     {
       "id": "e9c4144a-571c-481d-9a99-ae893c886ac3",
       "text": "研究usc毕业认证",
-      "status": "progress",
-      "completed": false,
+      "status": "done",
+      "completed": true,
       "created_at": "2026-04-17T08:24:51.838Z",
       "due_date": null,
       "subtodos": []
