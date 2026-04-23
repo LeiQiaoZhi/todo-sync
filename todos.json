@@ -59,8 +59,8 @@
     {
       "id": "f02555f4-4b29-4e3f-9fa5-d16e11565b2c",
       "text": "car maintainance",
-      "status": "progress",
-      "completed": false,
+      "status": "done",
+      "completed": true,
       "created_at": "2026-04-07T17:32:47.781Z",
       "due_date": "2026-04-23",
       "subtodos": []
