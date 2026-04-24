@@ -12,6 +12,11 @@
           "id": "4b12e8a2-7263-4c8a-a3df-f0927252a03a",
           "text": "change discord email",
           "completed": true
+        },
+        {
+          "id": "b600e6e4-638e-4372-9549-9ee4526b37fa",
+          "text": "bank",
+          "completed": false
         }
       ]
     },
