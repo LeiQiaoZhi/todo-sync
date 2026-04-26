@@ -12,6 +12,11 @@
           "id": "2ae02205-8666-4ab5-88e2-3607fbb2b549",
           "text": "add grass",
           "completed": false
+        },
+        {
+          "id": "a2110a82-2c56-4e62-aef5-b16d262f0f14",
+          "text": "world space rotate vfx",
+          "completed": false
         }
       ]
     },
