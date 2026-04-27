@@ -47,6 +47,11 @@
           "id": "e4f0196b-2149-414c-8b50-666acfc2a52d",
           "text": "plane ticket and hotel",
           "completed": true
+        },
+        {
+          "id": "35238bcd-b42c-4dc9-a9cf-5977c435c86a",
+          "text": "phone number",
+          "completed": false
         }
       ]
     },
