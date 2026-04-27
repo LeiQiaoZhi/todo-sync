@@ -46,7 +46,7 @@
         {
           "id": "e4f0196b-2149-414c-8b50-666acfc2a52d",
           "text": "plane ticket and hotel",
-          "completed": false
+          "completed": true
         }
       ]
     },
