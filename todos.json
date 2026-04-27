@@ -3,8 +3,8 @@
     {
       "id": "44753181-9b93-40f3-bcf2-554e538dc8d7",
       "text": "AGP tasks",
-      "status": "progress",
-      "completed": false,
+      "status": "done",
+      "completed": true,
       "created_at": "2026-04-24T20:24:23.305Z",
       "due_date": "2026-04-25",
       "subtodos": [
