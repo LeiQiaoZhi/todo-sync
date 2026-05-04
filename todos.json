@@ -56,7 +56,7 @@
         {
           "id": "bf79f036-c246-41c6-b7b9-9ae424ba9c57",
           "text": "return ski stuff",
-          "completed": false
+          "completed": true
         },
         {
           "id": "5c5d5394-771f-4dd1-81bc-e9d1ed19031d",
