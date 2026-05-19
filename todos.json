@@ -116,7 +116,7 @@
       "status": "progress",
       "completed": false,
       "created_at": "2026-04-08T02:07:44.897Z",
-      "due_date": null,
+      "due_date": "2026-06-30",
       "subtodos": [
         {
           "id": "a857b15d-a83a-4ed3-9626-7652734fd537",
