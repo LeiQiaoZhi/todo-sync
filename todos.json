@@ -12,6 +12,11 @@
           "id": "6576bd73-a253-431a-9198-19f34b53efbe",
           "text": "setup",
           "completed": false
+        },
+        {
+          "id": "08649b3e-6005-4160-a077-681fc0a8dcc8",
+          "text": "buy car-fix stuff",
+          "completed": false
         }
       ]
     },
