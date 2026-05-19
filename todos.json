@@ -1,6 +1,15 @@
 {
   "todos": [
     {
+      "id": "074ce815-e938-4d4f-8eeb-f2f43ea9c54f",
+      "text": "chores",
+      "status": "progress",
+      "completed": false,
+      "created_at": "2026-05-19T17:23:41.308Z",
+      "due_date": "2026-05-19",
+      "subtodos": []
+    },
+    {
       "id": "64f5c835-fc8e-4116-8d46-93e9792479d3",
       "text": "agp tasks",
       "status": "done",
