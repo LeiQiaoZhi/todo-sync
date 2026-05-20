@@ -32,6 +32,11 @@
           "id": "fd0632a2-a88b-4bf5-a303-90c8d42b6335",
           "text": "clear data on second-hand electronics",
           "completed": false
+        },
+        {
+          "id": "e28789d4-66e1-434f-9f26-fbaeeb81b453",
+          "text": "fix car",
+          "completed": false
         }
       ]
     },
