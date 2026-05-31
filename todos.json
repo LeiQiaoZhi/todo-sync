@@ -111,6 +111,11 @@
           "id": "5c5d5394-771f-4dd1-81bc-e9d1ed19031d",
           "text": "sell second hand stuff",
           "completed": true
+        },
+        {
+          "id": "6a698b12-ad7a-441b-8961-79b0feeeb68d",
+          "text": "cancel opt",
+          "completed": false
         }
       ]
     },
