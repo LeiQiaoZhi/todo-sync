@@ -2,8 +2,8 @@ const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const DRAFT_KEY = "github-todo-unsynced-draft";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-05-31 00:42";
-const APP_COMMIT_MESSAGE = "Subtle empty task date control";
+const APP_VERSION = "2026-05-31 00:59";
+const APP_COMMIT_MESSAGE = "Prevent stuck saving status";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 const INITIAL_DRAFT = loadDraftState();
 const SYNC_RETRY_MS = 4000;
@@ -1140,7 +1140,7 @@ async function updateTodos(nextTodos, commitMessage) {
     persistDraftState();
     renderTodos();
   });
-  setStatus("Saving changes...", "idle");
+  setStatus(state.isSyncing ? "Queued changes for sync..." : "Saving changes...", "idle");
   await flushPendingSync();
 }
 
@@ -1221,9 +1221,7 @@ async function flushPendingSync(options = {}) {
   }
 
   if (state.isSyncing) {
-    if (manual) {
-      setStatus("Still syncing your latest changes...", "idle");
-    }
+    setStatus(manual ? "Still syncing your latest changes..." : "Queued changes for sync...", "idle");
     return;
   }
 
@@ -1265,7 +1263,8 @@ async function flushPendingSync(options = {}) {
     clearSyncWatchdog();
     state.isSyncing = false;
     if (state.hasUnsyncedChanges) {
-      scheduleBackgroundSync();
+      setStatus("Syncing queued changes...", "idle");
+      scheduleBackgroundSync(0);
     } else {
       setStatus("Changes synced to GitHub.", "success");
     }
