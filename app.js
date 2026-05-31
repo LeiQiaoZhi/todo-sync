@@ -2,8 +2,8 @@ const STORAGE_KEY = "github-todo-sync-config";
 const THEME_KEY = "github-todo-theme";
 const DRAFT_KEY = "github-todo-unsynced-draft";
 const TODOS_PATH = "todos.json";
-const APP_VERSION = "2026-03-17 01:59";
-const APP_COMMIT_MESSAGE = "Fix mobile task row centering";
+const APP_VERSION = "2026-05-31 00:42";
+const APP_COMMIT_MESSAGE = "Subtle empty task date control";
 const TODO_STATUSES = ["progress", "backlog", "done"];
 const INITIAL_DRAFT = loadDraftState();
 const SYNC_RETRY_MS = 4000;
@@ -466,6 +466,21 @@ function openEntryDatePicker() {
   elements.todoDateInput.click();
 }
 
+function openInlineDatePicker(input) {
+  try {
+    input.focus({ preventScroll: true });
+    if (typeof input.showPicker === "function") {
+      input.showPicker();
+      return;
+    }
+  } catch (error) {
+    // Fall through to focus/click for browsers that block showPicker here.
+  }
+
+  input.focus({ preventScroll: true });
+  input.click();
+}
+
 function celebrateCompletion(todoId) {
   state.celebratingTodoId = todoId;
   state.celebratingDoneSection = true;
@@ -796,7 +811,7 @@ function renderTodos() {
         dueDateDisplay.hidden = true;
         dueDateInput.hidden = false;
         queueMicrotask(() => {
-          dueDateInput.focus();
+          openInlineDatePicker(dueDateInput);
         });
       });
 
@@ -809,6 +824,10 @@ function renderTodos() {
           nextTodos,
           `${dueDateInput.value ? "Update due date" : "Clear due date"}: ${truncateCommitText(todo.text)}`
         );
+      });
+
+      dueDateInput.addEventListener("blur", () => {
+        syncTodoDatePresentation(dueDateInput, dueDateDisplay, dueDateInput.value || null);
       });
 
       const toggleSubtodos = () => {
@@ -1018,9 +1037,12 @@ async function commitTaskTextEdit(todo, text, editor) {
 function syncTodoDatePresentation(input, display, value) {
   const hasValue = Boolean(value);
   input.classList.toggle("has-value", hasValue);
-  input.hidden = hasValue;
-  display.hidden = !hasValue;
-  display.textContent = hasValue ? formatDueDate(value) : "";
+  display.classList.toggle("is-empty", !hasValue);
+  input.hidden = true;
+  display.hidden = false;
+  display.textContent = hasValue ? formatDueDate(value) : "Date";
+  display.setAttribute("aria-label", hasValue ? `Edit due date, ${formatDueDate(value)}` : "Add due date");
+  display.setAttribute("title", hasValue ? "Edit due date" : "Add due date");
 }
 
 function normalizeTodo(todo) {
@@ -1119,7 +1141,7 @@ async function updateTodos(nextTodos, commitMessage) {
     renderTodos();
   });
   setStatus("Saving changes...", "idle");
-  scheduleBackgroundSync(0);
+  await flushPendingSync();
 }
 
 async function runSyncAction(options = {}) {
