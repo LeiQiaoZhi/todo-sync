@@ -3,8 +3,8 @@
     {
       "id": "074ce815-e938-4d4f-8eeb-f2f43ea9c54f",
       "text": "chores",
-      "status": "progress",
-      "completed": false,
+      "status": "done",
+      "completed": true,
       "created_at": "2026-05-19T17:23:41.308Z",
       "due_date": "2026-05-19",
       "subtodos": [
